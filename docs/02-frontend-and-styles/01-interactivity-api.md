@@ -6,7 +6,9 @@
 ## 1. The Zero-KB JavaScript Philosophy
 This parent theme strictly prohibits the enqueueing of legacy JavaScript libraries like jQuery or heavy frontend frameworks (e.g., React or Vue) for standard UI behaviors[cite: 3]. 
 
-Instead, it leverages the native **WordPress Interactivity API** (introduced in WP 6.5) as the standard for frontend behavior[cite: 3]. This ensures that pages without interactive components ship with **0 KB of client-side JavaScript**[cite: 3].
+Instead, it leverages the native **WordPress Interactivity API** as the standard for frontend behavior[cite: 3]. This ensures that pages without interactive components ship with **0 KB of client-side JavaScript**[cite: 3].
+
+> **Version note:** the API shipped privately in WP 6.4 (Core-blocks only) and became [public and developer-usable in WP 6.5](https://developer.wordpress.org/block-editor/reference-guides/interactivity-api/). It already powers several Core blocks — Search, Query, Navigation, and File — so the theme builds on a battle-tested, Core-maintained foundation rather than a bespoke script layer. The theme's 6.8 floor comfortably exceeds the 6.5 requirement.
 
 ## 2. Core Architecture
 The Interactivity API uses a lightweight declarative approach[cite: 3]. It relies on HTML directives connected to a centralized JavaScript store[cite: 3]. Under the hood, it is powered by **Preact and Preact Signals**, guaranteeing lightning-fast DOM updates without heavy virtual DOM diffing overhead[cite: 3].

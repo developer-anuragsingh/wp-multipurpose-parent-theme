@@ -57,7 +57,7 @@ Each technical domain is maintained in an isolated sub-document. Use the links b
 
 ### D. Advanced WordPress Core Feature Integrations
 * **Block Bindings API:** Connects post metadata and custom fields directly to core blocks (`core/paragraph`, `core/heading`, `core/image`).
-* **Speculation Rules API:** Injects dynamic prefetch/prerender rules into the document `<head>`, enabling near-instant page transitions.
+* **Speculation Rules API:** Relies on WordPress Core's built-in Speculative Loading (6.8+) for near-instant transitions, tuned via the `wp_speculation_rules_configuration` filter — the theme never hand-injects speculation rules. See `04-modern-wp-features/02-speculation-rules.md`.
 
 ---
 

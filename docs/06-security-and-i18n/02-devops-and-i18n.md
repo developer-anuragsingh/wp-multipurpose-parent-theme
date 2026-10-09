@@ -4,9 +4,14 @@
 **Module:** Security & i18n  
 
 ## 1. Local Development (WordPress Studio)
-Traditional environments (LocalWP, XAMPP, Docker) are heavy and require database container management. This theme is optimized for **WordPress Studio**, which runs entirely on WebAssembly (WASM) and SQLite[cite: 4].
+Traditional environments (LocalWP, XAMPP, Docker) are heavy and require database container management. This theme is convenient to develop against **WordPress Studio**, which runs on WebAssembly (WASM) and SQLite[cite: 4].
 * **Instant Spin-up:** No server configuration required[cite: 4].
-* **Client Approvals:** Developers will use Studio's built-in feature to generate 7-day cloud-hosted preview URLs for instant client sign-offs without setting up ngrok tunnels[cite: 4].
+* **Client Approvals:** Studio can generate temporary cloud-hosted preview URLs for client sign-offs without ngrok tunnels[cite: 4].
+
+> **Caveats (verify before relying):**
+> * **SQLite is not WordPress core's database.** It is provided through the SQLite database integration (a feature/canonical plugin that Studio bundles), not the official core engine. Production always runs MySQL/MariaDB — never ship code assuming SQLite behaviour (reinforces `agent-rules.md` §3).
+> * **Studio features change.** Specific conveniences (preview URL duration, one-click sync) are product features of a fast-moving tool, not guarantees — treat exact numbers/behaviours as "subject to change" and confirm against current Studio docs.
+> * Studio is a convenience, not a requirement: the theme must also develop and run on any standard MySQL-backed WordPress 6.8+ environment.
 
 ## 2. Deployment Pipeline (CI/CD)
 The deployment workflow depends strictly on the hosting environment:
