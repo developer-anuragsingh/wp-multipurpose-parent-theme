@@ -6,6 +6,9 @@
 > `02-testing-and-ci.md` defines *which* gates a change must pass. This document covers the *tooling* that runs them — the config files at the repo root, the pre-commit hook, and the CI workflow — and how they fit together. The gate definitions in `02-testing-and-ci.md` remain authoritative; nothing here loosens them.
 
 ## 1. One-Time Install
+
+> **New to this repo? Run this first.** Immediately after cloning, run `composer install && npm install` in the repo root. This installs the dev tooling AND activates the git pre-commit hook (via the `prepare` script) so every teammate is held to the same quality gates automatically. Until you run it, the pre-commit hook stays dormant on your machine — CI still enforces the gates on push, but local checks won't fire.
+
 The tooling is dev-only; it adds no runtime dependency to the shipped theme.
 
 ```bash
