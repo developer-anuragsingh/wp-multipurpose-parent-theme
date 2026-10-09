@@ -48,14 +48,21 @@ You are an expert WordPress developer and System Architect. When writing or modi
 * **Consistent Text Domain:** Always pass the `nexus-theme` text domain literally as a string (never a variable or constant) so string extraction tools can parse it.
 * **No Interpolated Translations:** Use `printf()` / `sprintf()` with placeholders (`%s`, `%d`) and translator comments (`/* translators: ... */`) instead of concatenating variables into translated strings.
 
-## 7. Verification & Quality Gates (Definition of Done)
+## 7. Coding Standards & Principles
+* **Principles:** Apply KISS (simplest solution that works), DRY (centralize duplicated knowledge), YAGNI (no speculative features), and SOLID — SOLID scoped to the OOP PHP in `inc/` only, NOT to HTML templates / `theme.json` / patterns. Keep concerns separated: markup in `templates/`+`parts/`, tokens in `theme.json`, behaviour in `inc/` and the Interactivity store.
+* **Strings & Constants:** Centralize repeated or semantic strings (meta keys, option names, hook/nonce actions, post-type/taxonomy slugs, REST namespaces, cache keys, capability strings) as constants — a typo in a magic string must become a hard error, not a silent bug. EXCEPTIONS: user-facing strings always go through gettext (`esc_html__( ..., 'nexus-theme' )`), never constants, and the text domain stays a literal. Do NOT force trivial single-use strings into constants (KISS).
+* **Naming & structure:** Prefix all globals `nexus_` / `NEXUS_` / `Nexus\`; `snake_case` functions/hooks, `PascalCase` classes, `UPPER_SNAKE_CASE` constants; one concern per file under `inc/` with PSR-4 autoloading; small single-responsibility functions with guard clauses; no dead/commented-out code.
+* **Debounce vs. throttle:** Debounce async/expensive checks only (local checks stay instant); throttle continuous events (scroll/resize).
+* **Docs & Git:** PHPDoc/JSDoc on every function (explain *why*); Conventional Commits; small reviewed PRs; never bypass pre-commit hooks. Full detail in `docs/07-performance-and-qa/05-coding-standards.md`.
+
+## 8. Verification & Quality Gates (Definition of Done)
 * **Lint Before Done:** PHP MUST pass PHP_CodeSniffer against the WordPress Coding Standards (`WordPress`, `WordPress-Extra`) ruleset. JavaScript/CSS MUST pass `@wordpress/scripts` lint (`wp-scripts lint-js`, `lint-style`). Do not consider a change complete until it lints clean.
 * **theme.json & Template Validity:** Validate `theme.json` against the published schema (`https://schemas.wp.org/trunk/theme.json`) and ensure required FSE templates (`templates/index.html` at minimum) exist and parse as valid block markup.
 * **Build Must Succeed:** If a build step exists (Interactivity API bundles, Tailwind for isolated blocks), run it and confirm it completes without error before reporting done.
 * **CI Enforcement:** These gates (PHPCS, JS/CSS lint, theme.json validation) are expected to run in CI under `.github/workflows/`. A change that would break CI is not done. Never bypass hooks or skip the gates to declare completion.
 * **Honest Verification Reporting:** State explicitly what was linted, built, or validated and what could not be verified. A command exiting without error on one surface is not proof the whole change is production-ready.
 
-## 8. Strict Agent Workflow & Scoping Rules
+## 9. Strict Agent Workflow & Scoping Rules
 * **Grill-First Scoping (Anti-Passivity):** When the user introduces a new idea, feature, or architectural change, do NOT rush to generate full code or plans. Actively challenge technical assumptions, ask targeted prerequisite questions, and flag subjective/visual changes as 'Ungrillable', suggesting local WordPress Studio prototyping instead.
 * **Token Optimization & Diff Policy:** When modifying code, ONLY output the specific modified snippets or diffs. NEVER output the entire file unless explicitly requested. Present complex, multi-step plans iteratively and wait for user confirmation before proceeding to the next step.
 * **Zero-PHP Child Theme Rule:** When creating a child theme, rely entirely on `theme.json` cascading and HTML template overrides (copying `.html` files into `/templates/` or `/parts/`). NEVER create a `functions.php` file just to enqueue parent stylesheets.

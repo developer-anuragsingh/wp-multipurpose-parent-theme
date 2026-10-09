@@ -25,7 +25,8 @@ Native attributes give instant browser feedback with no JavaScript:
 
 ### B. Instant-Feedback Behavior (Interactivity API)
 When you need live, inline feedback beyond native constraints, use the Interactivity API — not a JS framework.
-* **Timing:** validate a field on `blur` (first interaction), then re-validate on `input` once it has already errored, so the message clears as the user fixes it. Debounce async checks (e.g. "email already registered") by ~300 ms.
+* **Timing:** validate a field on `blur` (first interaction), then re-validate on `input` once it has already errored, so the message clears as the user fixes it.
+* **Debounce async/expensive checks only:** server-dependent checks (e.g. "email already registered") are debounced by ~300 ms so a request fires only after the user pauses typing — this cuts needless requests and server load. Cheap *local* checks (required, format, length) run **instantly** with no debounce; delaying them just makes feedback feel laggy. Throttle (not debounce) continuous events like scroll/resize. See `07-performance-and-qa/05-coding-standards.md` §6.
 * **Do not** show errors on untouched fields or on every keystroke before first blur — that is noisy and hostile.
 * Directives: `data-wp-on--blur`, `data-wp-on--input`, and `data-wp-bind--aria-invalid` driving state.
 
