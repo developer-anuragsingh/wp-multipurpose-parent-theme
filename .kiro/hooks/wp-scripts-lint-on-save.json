@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Lint JS/CSS on save",
+      "trigger": "PostFileSave",
+      "description": "Runs @wordpress/scripts lint on saved JS/CSS for instant feedback. Skips silently if dependencies are not installed yet.",
+      "matcher": "theme/src/.*\\.(js|css)$",
+      "action": {
+        "type": "command",
+        "command": "cd \"/Users/param/Developer/WP Multipurpose Parent Theme/wp-multipurpose-parent-theme\" && if [ -d node_modules/@wordpress/scripts ]; then npm run --silent lint:js || true; npm run --silent lint:css || true; else echo \"@wordpress/scripts not installed yet — run 'npm install' to enable this check.\"; fi"
+      }
+    }
+  ]
+}

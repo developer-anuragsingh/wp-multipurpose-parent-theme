@@ -5,3 +5,7 @@ vendor/
 *.log
 .vscode/
 .idea/
+
+# Workflow worktrees and agent task artifacts (not part of the theme)
+.worktrees/
+.agents/

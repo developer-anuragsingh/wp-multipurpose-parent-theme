@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "PHPCS on PHP save",
+      "trigger": "PostFileSave",
+      "description": "Runs WordPress Coding Standards (PHPCS) on a saved PHP file for instant feedback. Skips silently if PHPCS is not installed yet.",
+      "matcher": "theme/.*\\.php$",
+      "action": {
+        "type": "command",
+        "command": "cd \"/Users/param/Developer/WP Multipurpose Parent Theme/wp-multipurpose-parent-theme\" && if [ -x vendor/bin/phpcs ]; then FILE=$(python3 -c \"import sys,json;print(json.load(sys.stdin).get('filePath',''))\" 2>/dev/null); if [ -n \"$FILE\" ]; then vendor/bin/phpcs --standard=.phpcs.xml.dist \"$FILE\"; else vendor/bin/phpcs --standard=.phpcs.xml.dist; fi; else echo \"PHPCS not installed yet — run 'composer install' to enable this check.\"; fi"
+      }
+    }
+  ]
+}

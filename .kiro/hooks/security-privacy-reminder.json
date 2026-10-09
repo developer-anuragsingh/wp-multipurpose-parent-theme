@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Security & data-privacy checklist",
+      "trigger": "PreToolUse",
+      "description": "Before writing code, surfaces the project's security and user-data privacy rules that linters cannot enforce (capability checks, PII minimization, secrets, consent).",
+      "matcher": "fs_write|str_replace|fs_append",
+      "action": {
+        "type": "agent",
+        "prompt": "Before writing or editing this file, confirm the change complies with the project's security and data-privacy rules that automated linters CANNOT catch (see agent-rules.md §2 and docs/06-security-and-i18n/). Specifically verify, where applicable: (1) Authorization — every privileged action gated with current_user_can(); a nonce is NOT authorization. (2) REST/Interactivity endpoints declare an explicit permission_callback plus args validation/sanitization. (3) No secrets hardcoded or exposed to client-side JS / Interactivity state. (4) PII minimized; no PII in logs; WP_DEBUG_DISPLAY off in production. (5) No raw cardholder data touched (delegate to PCI gateway). (6) Non-essential data collection / third-party embeds are consent-gated. (7) User-facing strings use gettext with the literal 'nexus-theme' text domain. If any apply and are not satisfied, fix them in this edit. Do not restate this checklist in your reply; just apply it."
+      }
+    }
+  ]
+}
