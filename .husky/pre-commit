@@ -1,0 +1,10 @@
+# Run the configured linters against staged files only.
+npx lint-staged
+
+# Secret scan on staged changes. Guarded so it does not hard-fail when
+# gitleaks is not installed locally; CI runs the authoritative scan.
+if command -v gitleaks >/dev/null 2>&1; then
+	gitleaks protect --staged --redact --config .gitleaks.toml
+else
+	echo "gitleaks not installed locally; skipping local secret scan (CI will enforce it)."
+fi

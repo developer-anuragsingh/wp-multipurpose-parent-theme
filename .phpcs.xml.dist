@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<ruleset name="Nexus Theme">
+	<description>Coding standards for the Nexus WP multipurpose parent theme (WordPress + WordPress-Extra, PHP 8.1 compatibility).</description>
+
+	<!-- Scan the theme source only. -->
+	<file>theme/</file>
+
+	<!-- Never scan tooling or build output. -->
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/.worktrees/*</exclude-pattern>
+
+	<!-- Show progress and sniff codes; only sniff PHP. -->
+	<arg value="ps"/>
+	<arg name="extensions" value="php"/>
+	<arg name="colors"/>
+
+	<!-- WordPress Coding Standards. -->
+	<rule ref="WordPress"/>
+	<rule ref="WordPress-Extra"/>
+
+	<!-- PHP cross-version compatibility: PHP 8.1 and up. -->
+	<config name="testVersion" value="8.1-"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<!-- Minimum supported WordPress version. -->
+	<config name="minimum_wp_version" value="6.8"/>
+	<config name="minimum_supported_wp_version" value="6.8"/>
+
+	<!-- Enforce the project text domain for i18n sniffs. -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="nexus-theme"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Enforce the project global prefixes. -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="nexus"/>
+				<element value="Nexus"/>
+				<element value="NEXUS"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>

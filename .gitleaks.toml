@@ -1,0 +1,17 @@
+# Gitleaks configuration for the Nexus WP parent theme.
+# Extends the bundled default rule set and scopes it away from third-party
+# and generated paths so only theme-authored code is scanned.
+
+title = "Nexus theme gitleaks config"
+
+[extend]
+# Use all of gitleaks' built-in secret-detection rules as the baseline.
+useDefault = true
+
+[allowlist]
+description = "Ignore dependency, build, and worktree paths"
+paths = [
+  '''(^|/)vendor/''',
+  '''(^|/)node_modules/''',
+  '''(^|/)\.worktrees/''',
+]
