@@ -14,10 +14,10 @@
   "devDependencies": {
     "@wordpress/scripts": "^36.1.0",
     "husky": "^9.1.7",
-    "lint-staged": "^17.6.0"
+    "lint-staged": "^17.0.0"
   },
   "lint-staged": {
-    "*.php": "composer lint --",
+    "theme/**/*.php": "vendor/bin/phpcs --standard=.phpcs.xml.dist",
     "theme/src/js/**/*.{js,jsx,ts,tsx}": "wp-scripts lint-js",
     "theme/src/css/**/*.css": "wp-scripts lint-style"
   },
