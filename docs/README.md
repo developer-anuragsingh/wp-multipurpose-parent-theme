@@ -2,7 +2,7 @@
 
 **Document Identifier:** `docs/README.md`  
 **Current Version:** 1.4.0 (Separated Quotes and Editorial Blogs into distinct niches)  
-**Target Environment:** WordPress 6.5 – 7.1+  
+**Target Environment:** WordPress 6.8 – 7.1+ (6.8 floor required by core Speculation Rules; theme.json v3 needs 6.6)  
 **Architecture:** Full-Site Editing (FSE) & Native Block Engine  
 **Repository Model:** Modular Multi-File Documentation with Code Isolation  
 

@@ -11,7 +11,7 @@
 * **Operators** responsible for backups, updates, and privacy settings.
 
 ## 2. Installation & Activation
-1. Requirements: WordPress 6.5+ (tested to 7.1.1), PHP 8.1+.
+1. Requirements: WordPress 6.8+ (tested to 7.1.1), PHP 8.1+. The 6.8 floor is required because the theme relies on core Speculation Rules (6.8), theme.json v3 and Synced Pattern Overrides (6.6), and the Interactivity API / Block Bindings (6.5).
 2. Upload the theme (or install a child theme — see §4) and activate under **Appearance → Themes**.
 3. Open **Appearance → Editor** (the Site Editor) — this replaces the old Customizer and Menus screens.
 
