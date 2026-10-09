@@ -44,7 +44,7 @@ Centralize **repeated or semantic** strings; do not blindly constant-ify every l
 ## 4. WordPress Naming & Organization
 * **Prefix everything global** with `nexus_` / `NEXUS_` / `Nexus\` (functions, constants, hooks, option keys, class namespace) to avoid collisions with core and plugins.
 * **Casing:** `snake_case` for functions/variables/hooks, `PascalCase` for classes, `UPPER_SNAKE_CASE` for constants — matching WordPress Coding Standards.
-* **File organization in `inc/`:** one concern per file/subfolder — e.g. `inc/bindings/`, `inc/rest/`, `inc/security/`, `inc/seo/`, `inc/setup/`. Load via Composer PSR-4 autoloading where classes are used, rather than a wall of manual `require`.
+* **File organization in `inc/`:** one concern per file/subfolder — e.g. `inc/bindings/`, `inc/rest/`, `inc/security/`, `inc/seo/`. Autoload the `Nexus\` namespace from `inc/` via the theme's own hand-rolled autoloader (declared in `functions.php`) using **WordPress class-file naming** — a class maps to `class-{lowercased-hyphenated}.php` (e.g. `Nexus\Setup` → `inc/class-setup.php`; sub-namespaces → subdirectories). This is NOT Composer PSR-4: Composer is dev-only tooling here and no `vendor/autoload.php` ships with the theme (agent-rules §4 bans runtime deps). The naming satisfies the enforced `WordPress-Extra` ruleset. Prefer this over a wall of manual `require`.
 * **Enqueue standards:** register/enqueue assets on the correct hook, versioned with `NEXUS_THEME_VERSION`, loaded conditionally (only where used) to protect the JS/CSS budget.
 
 ## 5. CSS Standards
