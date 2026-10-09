@@ -3,8 +3,12 @@ Thumbs.db
 node_modules/
 vendor/
 *.log
-.vscode/
 .idea/
+
+# Share only the team-wide VS Code config; ignore personal/local VS Code files
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 
 # Workflow worktrees and agent task artifacts (not part of the theme)
 .worktrees/

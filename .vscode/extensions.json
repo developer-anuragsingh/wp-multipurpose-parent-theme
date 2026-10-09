@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "wongjn.php-sniffer",
+    "dbaeumer.vscode-eslint",
+    "stylelint.vscode-stylelint",
+    "bmewburn.vscode-intelephense-client",
+    "editorconfig.editorconfig"
+  ]
+}

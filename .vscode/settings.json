@@ -1,0 +1,35 @@
+// Nexus theme — team-shared format-on-save + lint settings.
+// Requires the recommended extensions (see extensions.json). Mirrors the
+// project's PHPCS/.phpcs.xml.dist and the @wordpress/scripts lint config.
+{
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
+  },
+
+  // PHP: WordPress Coding Standards via PHPCS / phpcbf (PHP Sniffer extension).
+  "phpSniffer.standard": ".phpcs.xml.dist",
+  "phpSniffer.autoDetect": true,
+  "phpSniffer.run": "onSave",
+  "[php]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "wongjn.php-sniffer"
+  },
+
+  // JS/TS: ESLint --fix on save (config shipped by @wordpress/scripts).
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+
+  // CSS: Stylelint --fix on save (@wordpress/scripts stylelint config).
+  "css.validate": false,
+  "stylelint.validate": ["css"],
+  "[css]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint"
+  }
+}
