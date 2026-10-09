@@ -20,7 +20,7 @@
 | :--- | :--- |
 | **JavaScript (initial)** | 0 KB on non-interactive pages; ≤ 15 KB where the Interactivity API runtime loads |
 | **CSS (critical/render-blocking)** | ≤ 20 KB |
-| **Tailwind (isolated blocks, if used)** | ≤ 10 KB (hard limit, tree-shaken) |
+| **Tailwind (isolated blocks, if used)** | ≤ 10 KB project budget, verified in CI (v4 JIT generates only used utilities; prefer `@utility` over `@layer components`) |
 | **Fonts** | ≤ 2 `.woff2` files, ≤ 90 KB total, `font-display: swap` |
 | **Hero image (LCP)** | ≤ 150 KB, AVIF/WebP |
 | **Total page weight (typical content page)** | ≤ 500 KB |

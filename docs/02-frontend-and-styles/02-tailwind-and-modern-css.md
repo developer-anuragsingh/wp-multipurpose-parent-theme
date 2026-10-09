@@ -14,11 +14,14 @@ When writing custom CSS for specific niche components, developers must utilize m
 * **The `:has()` Selector:** Utilized for advanced parent-element state styling based on child elements, eliminating the need for JavaScript state toggling in many UI components[cite: 3].
 * **Native Grid & Negative Margins:** WordPress natively supports CSS Grid (`layout.type: "grid"`) and negative margins. Always prefer native block grid settings over writing custom Flexbox/Grid CSS[cite: 3].
 
-## 3. Tailwind CSS (Strictly Scoped)
-Tailwind CSS is permitted **only** for highly complex, isolated custom blocks where native tools fall short. 
-* **Utility-First Approach:** Tailwind provides rapid utility classes without shipping unused CSS, making it the best alternative to heavy frameworks[cite: 3].
-* **Bundle Size Limit:** The Tailwind compiler must be configured to aggressively tree-shake the output. The final compiled CSS bundle must remain strictly under **10 KB** for production[cite: 3].
-* **Editor Isolation:** Tailwind classes must not leak into the global Gutenberg editor scope. They should be strictly scoped to specific template parts or custom block wrappers to avoid editor conflicts.
+## 3. Tailwind CSS (Strictly Scoped — Tailwind v4)
+Tailwind CSS is permitted **only** for highly complex, isolated custom blocks where native tools fall short.
+* **Utility-First / JIT:** In Tailwind v4 the engine generates only the utility classes actually found in your source — there is no legacy `purge` step and nothing to "tree-shake" after the fact; unused utilities are simply never generated. Ensure the content/source paths are configured so the scanner sees your block markup.
+* **Use `@utility`, NOT `@layer components`:** In v4, `@layer components` is emitted as a plain native CSS cascade layer and its contents are **always shipped whether used or not** — so custom classes defined there are never eliminated and will bloat the bundle ([Tailwind discussion](https://github.com/tailwindlabs/tailwindcss/discussions/20351)). Define reusable custom classes with the `@utility` API instead, so they participate in on-demand generation.
+* **Bundle Size Budget:** Keep the compiled Tailwind CSS small — treat **≤ 10 KB** as a *project budget* (see `07-performance-and-qa/01-performance-budget.md`), not a guarantee from the tool. Verify the real size in CI rather than assuming.
+* **Editor Isolation:** Tailwind classes must not leak into the global Gutenberg editor scope. Scope them to specific template parts or custom block wrappers to avoid editor conflicts.
+
+> Note: the native CSS `@layer` guidance in §2 (for organizing your own hand-written CSS specificity) is unrelated to Tailwind's `@layer components` directive discussed here — do not conflate the two.
 
 ## 4. Media & Asset Optimization
 * **Image Formats:** All CSS background images and theme-provided assets must use **AVIF** or **WebP** formats by default to ensure optimal performance[cite: 3].

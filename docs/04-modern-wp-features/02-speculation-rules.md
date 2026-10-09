@@ -6,6 +6,8 @@
 ## 1. Instant Page Loads
 To provide an app-like, ultra-fast user experience, this theme uses the **Speculation Rules API** — the browser anticipates the user's next navigation and fetches the page in the background, so a click renders near-instantly.
 
+> **Browser scope:** this is a Chromium-only enhancement (Chrome/Edge/Opera 121+). Safari and Firefox silently ignore it with no ill effect — those users (including iOS Safari) navigate normally but get no speed-up. Treat speculative loading as a progressive enhancement, not a guarantee of "instant everywhere." See `08-reliability-and-seo/03-browser-support.md`.
+
 ## 2. Use WordPress Core — Do NOT Hand-Inject
 **Important (WP 6.8+):** Speculative Loading is built into WordPress Core as of [6.8](https://make.wordpress.org/core/2025/03/06/speculative-loading-in-6-8/). Core already emits the `<script type="speculationrules">` tag automatically on the front end. The theme MUST NOT hand-inject its own `<script type="speculationrules">` into `<head>` — doing so collides with core's output and produces duplicate/conflicting rules.
 

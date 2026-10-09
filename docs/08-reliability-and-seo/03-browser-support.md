@@ -22,7 +22,7 @@ Content and core navigation MUST work with **HTML + CSS alone**. JavaScript (the
 * **`:has()` / Container Queries:** use as progressive enhancement; the base layout (via `theme.json` and standard CSS) is already usable without them. Prefer `@supports` guards where a missing feature would otherwise break layout.
 * **Cascade Layers (`@layer`):** supported broadly; keep critical base styles outside layers so an unsupporting engine still applies them.
 * **Interactivity API:** requires JS by definition — hence the non-JS fallback requirement above.
-* **Speculation Rules:** progressive by nature — unsupported browsers simply navigate normally. No fallback needed, no breakage.
+* **Speculation Rules:** Chromium-only (Chrome/Edge/Opera 121+). Safari and Firefox silently ignore it ([WordPress plugin notes](https://wordpress.org/plugins/speculation-rules/), [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API)) — those users navigate normally with no breakage, but get no prefetch speed-up. Set expectations accordingly: "near-instant" applies to Chromium users, not Safari/iOS. Progressive by nature, so no fallback code needed.
 * **AVIF/WebP:** serve via `<picture>`/`srcset` with a widely-supported fallback (WebP→JPEG/PNG) so no image fails to load.
 
 ## 5. Verification
