@@ -12,3 +12,19 @@ License: GNU General Public License v2 or later
 Text Domain: nexus-theme
 Domain Path: /languages
 */
+
+/* Critical base: accessibility skip link (unlayered top-level rule). */
+.skip-link {
+	position: absolute;
+	inset-block-start: -100%;
+	inset-inline-start: 0;
+	padding: 0.5rem 1rem;
+	background: var(--wp--preset--color--white);
+	color: var(--wp--preset--color--primary);
+}
+
+.skip-link:focus-visible {
+	inset-block-start: 0;
+	outline: 2px solid var(--wp--preset--color--primary);
+	outline-offset: 2px;
+}
