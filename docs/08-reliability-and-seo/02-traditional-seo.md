@@ -8,6 +8,7 @@
 ## 1. Discoverability Baseline
 * **XML Sitemap:** rely on WordPress core sitemaps (`wp-sitemap.xml`) or integrate cleanly with an SEO plugin if present. Do not hardcode a competing sitemap. Keep the GEO `llms.txt` separate from the XML sitemap (different audiences).
 * **robots.txt:** sane defaults — allow crawling of public content, disallow `wp-admin` (except `admin-ajax.php`), reference the sitemap. Must NOT block CSS/JS (Google needs them to render).
+* **AI crawler directives:** `robots.txt` is also where AI crawler access is controlled (unlike `llms.txt`, these directives are honoured by major providers). Expose an operator-configurable allow/block policy for `GPTBot`, `OAI-SearchBot`, `ClaudeBot`, `PerplexityBot`, and `Google-Extended`. Default: allow reputable AI crawlers for a citation-seeking public site; let the operator block per their business/privacy choice. Full rationale in `03-ai-and-seo/01-geo-llms-txt.md` §3.
 * **Canonical URLs:** every page emits a self-referential canonical. The `?format=md` endpoint sets its canonical to the HTML URL AND marks itself `noindex` to avoid duplicate-content issues (reconciles the note in `03-ai-and-seo/02-markdown-endpoints.md`).
 
 ## 2. On-Page Metadata

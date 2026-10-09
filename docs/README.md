@@ -15,7 +15,7 @@ The technical architecture abandons legacy WordPress themes in favor of:
 * **Native FSE Engine:** Styling and layout delegation driven by `theme.json` v3 design tokens, semantic HTML template parts, and block patterns.
 * **Modern CSS & Grid:** Direct utilization of native Grid blocks, negative margins, container queries, cascade layers (`@layer`), and the `:has()` selector.
 * **Zero-KB Initial JavaScript Footprint:** Frontend interactivity (e.g., 'Copy Quote', Infinite Scroll) is implemented strictly via the WordPress Interactivity API with full ARIA accessibility.
-* **Generative Engine Optimization (GEO):** Native machine-readable endpoints (`llms.txt`, `?format=md`) and JSON-LD schema graphs tailored for AI agents (ChatGPT, Gemini, Perplexity, Claude).
+* **Generative Engine Optimization (GEO):** Clean semantic answer-first content, entity + E-E-A-T JSON-LD graphs tailored for AI agents (ChatGPT, Gemini, Perplexity, Claude), and an operator-configurable AI-crawler access policy. Machine-readable endpoints (`llms.txt`, `?format=md`) are offered as optional, low-ROI extras (see `03-ai-and-seo/`), not core mechanisms.
 * **Local-to-Live DevOps:** Optimized for local development via WordPress Studio (WASM + SQLite) with automated GitHub Actions CI/CD deployment pipelines.
 * **Bilingual & Localization Ready:** Native gettext domain scoping with built-in English (`en_US`) and Hindi (`hi_IN`) translation catalogs, alongside complete RTL adaptation.
 
@@ -50,8 +50,10 @@ Each technical domain is maintained in an isolated sub-document. Use the links b
 * **Modern CSS Architecture:** Bypasses legacy frameworks in favor of Container Queries, Cascade Layers (`@layer`), and the `:has()` pseudo-class for complex layout state management.
 
 ### C. Generative Engine Optimization (GEO) & AI Discoverability
-* **Automated `llms.txt`:** Serves a plain-text markdown catalog mapping site hierarchy to AI crawlers.
-* **Structured Data Graph & Answer-First:** Injects rich JSON-LD graph entities (`Organization`, `WebSite`, `FAQPage`, `Quotation`, `Article`, `BlogPosting`) and utilizes "Answer-First" block patterns placing concise factual summaries at the top.
+* **Citation drivers (priority):** clean semantic answer-first HTML, consistent entity + E-E-A-T signals, good Core Web Vitals, and an operator-configurable AI-crawler access policy via `robots.txt` (`GPTBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`).
+* **Structured Data Graph:** Injects currently-supported JSON-LD entities (`Organization`, `WebSite`, `Article`/`BlogPosting` with authorship, `Breadcrumb`, `Product`, `Review`, `Quotation`). FAQPage/HowTo are no longer Google rich results (retired May 2026) and are emitted only as optional AEO support.
+* **Answer-First patterns:** concise factual summaries placed at the top of the viewport.
+* **`llms.txt` (optional, low-ROI):** offered as an opt-in catalog, not a core discoverability mechanism — 2026 data shows AI crawlers largely do not fetch it. See `03-ai-and-seo/01-geo-llms-txt.md`.
 
 ### D. Advanced WordPress Core Feature Integrations
 * **Block Bindings API:** Connects post metadata and custom fields directly to core blocks (`core/paragraph`, `core/heading`, `core/image`).
