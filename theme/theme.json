@@ -9,6 +9,10 @@
       "wideSize": "1280px"
     },
     "color": {
+      "custom": false,
+      "defaultPalette": false,
+      "defaultGradients": false,
+      "link": true,
       "palette": [
         { "slug": "primary", "color": "#2563eb", "name": "Primary Blue" },
         { "slug": "accent", "color": "#f97316", "name": "Accent Orange" },
@@ -16,6 +20,198 @@
         { "slug": "light", "color": "#f8fafc", "name": "Light Surface" },
         { "slug": "white", "color": "#ffffff", "name": "Pure White" }
       ]
+    },
+    "typography": {
+      "fluid": true,
+      "fontStyle": true,
+      "fontWeight": true,
+      "lineHeight": true,
+      "letterSpacing": true,
+      "textDecoration": true,
+      "textTransform": true,
+      "dropCap": false,
+      "fontSizes": [
+        {
+          "slug": "small",
+          "name": "Small",
+          "size": "0.875rem",
+          "fluid": { "min": "0.8125rem", "max": "0.9375rem" }
+        },
+        {
+          "slug": "medium",
+          "name": "Medium",
+          "size": "1rem",
+          "fluid": { "min": "1rem", "max": "1.125rem" }
+        },
+        {
+          "slug": "large",
+          "name": "Large",
+          "size": "1.25rem",
+          "fluid": { "min": "1.125rem", "max": "1.375rem" }
+        },
+        {
+          "slug": "x-large",
+          "name": "Extra Large",
+          "size": "1.75rem",
+          "fluid": { "min": "1.5rem", "max": "1.875rem" }
+        },
+        {
+          "slug": "xx-large",
+          "name": "Extra Extra Large",
+          "size": "2.5rem",
+          "fluid": { "min": "2rem", "max": "2.75rem" }
+        }
+      ],
+      "fontFamilies": [
+        {
+          "fontFamily": "\"Inter\", system-ui, sans-serif",
+          "slug": "body",
+          "name": "Body",
+          "fontFace": [
+            {
+              "fontFamily": "Inter",
+              "fontWeight": "400 700",
+              "fontStyle": "normal",
+              "fontDisplay": "swap",
+              "src": ["file:./assets/fonts/inter-variable.woff2"]
+            }
+          ]
+        },
+        {
+          "fontFamily": "\"Sora\", system-ui, sans-serif",
+          "slug": "heading",
+          "name": "Heading",
+          "fontFace": [
+            {
+              "fontFamily": "Sora",
+              "fontWeight": "600 700",
+              "fontStyle": "normal",
+              "fontDisplay": "swap",
+              "src": ["file:./assets/fonts/sora-variable.woff2"]
+            }
+          ]
+        }
+      ]
+    },
+    "spacing": {
+      "units": ["px", "em", "rem", "vh", "vw", "%"],
+      "padding": true,
+      "margin": true,
+      "blockGap": true,
+      "customSpacingSize": true,
+      "spacingSizes": [
+        { "slug": "20", "name": "X-Small", "size": "0.5rem" },
+        { "slug": "30", "name": "Small", "size": "1rem" },
+        { "slug": "40", "name": "Medium", "size": "1.5rem" },
+        { "slug": "50", "name": "Large", "size": "2.5rem" },
+        { "slug": "60", "name": "X-Large", "size": "4rem" }
+      ]
     }
-  }
+  },
+  "styles": {
+    "color": {
+      "background": "var:preset|color|light",
+      "text": "var:preset|color|dark"
+    },
+    "typography": {
+      "fontFamily": "var:preset|font-family|body",
+      "fontSize": "var:preset|font-size|medium",
+      "lineHeight": "1.6"
+    },
+    "elements": {
+      "link": {
+        "color": { "text": "var:preset|color|primary" },
+        ":hover": {
+          "color": { "text": "var:preset|color|dark" }
+        },
+        "typography": { "textDecoration": "underline" }
+      },
+      "button": {
+        "color": {
+          "background": "var:preset|color|primary",
+          "text": "var:preset|color|white"
+        },
+        ":hover": {
+          "color": { "background": "var:preset|color|dark" }
+        },
+        ":focus": {
+          "color": { "background": "var:preset|color|dark" }
+        },
+        "spacing": {
+          "padding": {
+            "top": "var:preset|spacing|30",
+            "bottom": "var:preset|spacing|30",
+            "left": "var:preset|spacing|40",
+            "right": "var:preset|spacing|40"
+          }
+        },
+        "border": { "radius": "0.375rem" }
+      },
+      "h1": {
+        "typography": {
+          "fontFamily": "var:preset|font-family|heading",
+          "fontWeight": "700",
+          "lineHeight": "1.2",
+          "fontSize": "var:preset|font-size|xx-large"
+        }
+      },
+      "h2": {
+        "typography": {
+          "fontFamily": "var:preset|font-family|heading",
+          "fontWeight": "700",
+          "lineHeight": "1.2",
+          "fontSize": "var:preset|font-size|x-large"
+        }
+      },
+      "h3": {
+        "typography": {
+          "fontFamily": "var:preset|font-family|heading",
+          "fontWeight": "700",
+          "lineHeight": "1.2",
+          "fontSize": "var:preset|font-size|large"
+        }
+      },
+      "h4": {
+        "typography": {
+          "fontFamily": "var:preset|font-family|heading",
+          "fontWeight": "700",
+          "lineHeight": "1.2",
+          "fontSize": "var:preset|font-size|medium"
+        }
+      },
+      "h5": {
+        "typography": {
+          "fontFamily": "var:preset|font-family|heading",
+          "fontWeight": "700",
+          "lineHeight": "1.2",
+          "fontSize": "var:preset|font-size|medium"
+        }
+      },
+      "h6": {
+        "typography": {
+          "fontFamily": "var:preset|font-family|heading",
+          "fontWeight": "700",
+          "lineHeight": "1.2",
+          "fontSize": "var:preset|font-size|small",
+          "textTransform": "uppercase"
+        }
+      }
+    },
+    "blocks": {
+      "core/heading": {
+        "typography": {
+          "fontFamily": "var:preset|font-family|heading",
+          "lineHeight": "1.2"
+        }
+      }
+    }
+  },
+  "templateParts": [
+    { "name": "header", "title": "Header", "area": "header" },
+    { "name": "footer", "title": "Footer", "area": "footer" },
+    { "name": "footer-landing", "title": "Footer (Landing)", "area": "footer" }
+  ],
+  "customTemplates": [
+    { "name": "blank", "title": "Blank / Landing", "postTypes": ["page"] }
+  ]
 }

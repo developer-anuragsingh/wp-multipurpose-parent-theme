@@ -10,6 +10,9 @@ vendor/
 !.vscode/settings.json
 !.vscode/extensions.json
 
+# Font binaries are not committed; only the directory placeholder is tracked
+theme/assets/fonts/*.woff2
+
 # Workflow worktrees and agent task artifacts (not part of the theme)
 .worktrees/
 .agents/
