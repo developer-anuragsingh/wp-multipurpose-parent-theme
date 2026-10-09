@@ -37,5 +37,11 @@ Example implementation for a dropdown button:
 </button>
 ```
 
-## 5. Security & Nonce Verification
-For any Interactivity API endpoints that mutate data (e.g., submitting a form, adding a product to the cart, or loading infinite scroll data), strict **Nonce Verification** (`wp_verify_nonce`) is mandatory to prevent Cross-Site Request Forgery (CSRF) attacks.
+## 5. Security
+Interactivity API server actions (submitting a form, adding a product to the cart, loading infinite-scroll data) are REST routes under the hood, so they MUST follow the full theme security model — not nonce verification alone. See `06-security-and-i18n/01-security-and-data.md` for the authoritative rules.
+
+Every data-mutating or non-public Interactivity API endpoint requires, in order:
+1. **Authorization:** an explicit `permission_callback` with a `current_user_can()` capability check. A nonce is NOT authorization.
+2. **Intent (CSRF):** the standard `wp_rest` nonce the API attaches via the `X-WP-Nonce` header — in addition to, never instead of, the capability check.
+3. **Input validation & sanitization:** validate and sanitize every argument through the route's `args` schema (`validate_callback` / `sanitize_callback`).
+4. **Output escaping:** escape any returned data at the point it is rendered to the DOM.

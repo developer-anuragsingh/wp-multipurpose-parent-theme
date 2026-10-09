@@ -16,6 +16,15 @@ You are an expert WordPress developer and System Architect. When writing or modi
   - **Interactivity API Endpoints:** Server-side actions reached through the Interactivity API Store (`wp_interactivity_state` / server directives) are REST routes under the hood and MUST follow the same REST rules above: explicit `permission_callback` with capability checks plus argument validation/sanitization.
 * **Prepared Statements:** Any unavoidable `$wpdb` query that includes dynamic values MUST use `$wpdb->prepare()`. Never interpolate variables directly into SQL.
 * **Zero-Trust Data:** All dynamic data, regardless of its source (database, API, or user input), must be secured before being output to the DOM. Authorize first, verify intent (nonce) second, sanitize on input, escape on output.
+* **Data Protection & Privacy Governance:** Secure code is not enough — user data must also be governed. The following are MANDATORY (full detail in `docs/06-security-and-i18n/03-data-protection.md`):
+  - **Classify & minimize:** treat names, emails, addresses, IP, and order/donation records as protected PII. Collect and store only what a feature genuinely needs.
+  - **Secrets:** NEVER hardcode or commit API keys, payment credentials, or tokens, and NEVER expose any server secret to client-side JS, data attributes, or Interactivity API state. Keep secrets in env vars / `wp-config.php` constants, out of `theme.json`.
+  - **Transport & at-rest:** assume HTTPS/TLS for all form, REST, and Interactivity traffic; never store secrets in plaintext (`wp_options`, meta, files); set `Secure`/`HttpOnly`/`SameSite` on any personal-data cookie.
+  - **PCI boundary:** the theme MUST NOT touch, store, or log raw cardholder data — delegate all payment capture to the WooCommerce payment blocks and a PCI-compliant gateway.
+  - **Logging hygiene:** NEVER log PII or full request payloads; `WP_DEBUG_DISPLAY` is off in production; never echo stack traces, SQL, or dumps to the response. Fail closed with a generic message.
+  - **Consent & rights:** consent-gate non-essential collection and third-party embeds; wire WordPress core privacy export/erasure hooks for any stored PII; define retention periods. GEO endpoints (`llms.txt`, `?format=md`) expose only already-public content.
+  - **Uploads:** validate type by content and size, block executable types, and route through `wp_handle_upload()` with capability checks.
+  - **Compliance:** design to the strictest applicable regime (GDPR, India DPDP Act, CCPA/CPRA).
 
 ## 3. Database & WP Studio Compatibility
 * **SQLite vs Production MySQL Engine Alert:** Local development operates on WordPress Studio (WASM + SQLite). When generating `$wpdb` queries or database interactions, you MUST ensure the code is compatible with both SQLite and production MySQL/MariaDB.
@@ -27,6 +36,7 @@ You are an expert WordPress developer and System Architect. When writing or modi
 * **Modern CSS (Strict Framework Ban):** Do NOT use heavy CSS frameworks like Bootstrap. Rely on `theme.json` Appearance Tools (margins, padding, typography, native grids) and modern CSS (Container Queries, `@layer`, `:has()`). Use Tailwind CSS only for isolated, highly complex custom blocks.
 * **Block Bindings API:** Connect custom fields (post meta) directly to core blocks (`core/paragraph`, `core/image`) to eliminate the overhead of rendering custom dynamic PHP blocks.
 * **Speculation Rules:** Implement the Speculation Rules API for background prefetching of internal links to ensure instant page loads.
+* **Form Validation — No JS Library, Two Layers:** Do NOT add Zod, Yup, or any JS validation/schema library — it breaks the Zero-KB JS baseline. Frontend validation is UX only: native HTML5 constraints first, then the Interactivity API for real-time inline feedback (validate on blur, re-validate on input after first error, debounce async checks), styled with CSS `:user-invalid` / `:has()`. Backend validation is the source of truth: the server MUST re-validate AND sanitize every field independently via the REST `args` schema and WordPress sanitizers, treating all input as hostile regardless of frontend checks. Errors must follow the a11y contract (`aria-live`, `aria-describedby`, `aria-invalid`, never color-only). Full detail in `docs/02-frontend-and-styles/05-forms-and-validation.md`.
 
 ## 5. Generative Engine Optimization (GEO) & SEO
 * **AI Machine Discoverability:** Support `llms.txt` catalogs and clean Markdown endpoints (`?format=md`) for AI crawlers.

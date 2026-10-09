@@ -48,6 +48,10 @@ This script executes instantly, checking:
 </script>
 ```
 
+> **CSP Collision — Mandatory:** This inline script conflicts with the strict Content Security Policy defined in `06-security-and-i18n/01-security-and-data.md` §8 (which forbids blanket `unsafe-inline`). It MUST be allow-listed explicitly, never by relaxing the whole policy. Emit a per-request CSP nonce and attach it (`<script nonce="...">` with `script-src 'nonce-...'`), or allow the script by its `'sha256-...'` hash. The script content is static, so a hash is the simplest robust option.
+
+> **Reduced Motion:** The toggle and any theme-transition animation must honour `prefers-reduced-motion: reduce` — see `02-frontend-and-styles/04-accessibility.md`.
+
 ## 4. The UI Toggle (WordPress Interactivity API)
 The actual user-facing toggle button (e.g., in the header) avoids heavy JS event listeners. It utilizes the **WordPress Interactivity API** to seamlessly switch states, update `localStorage`, and manage accessibility properties (ARIA) without reloading the page.
 
