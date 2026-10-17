@@ -12,7 +12,7 @@ This parent theme strictly enforces a **Zero-PHP Child Theme Architecture**. In 
 To create a niche-specific child theme (e.g., E-Commerce or Corporate), the directory should look like this:
 
 ```text
-wp-content/themes/nexus-corporate/
+wp-content/themes/atlas-corporate/
 ├── style.css            # Mandatory: Theme metadata and Template linkage
 ├── theme.json           # Optional: Overrides for colors, typography, and spacing
 ├── templates/           # Optional: Niche-specific HTML layout overrides
@@ -29,13 +29,13 @@ The child theme does not use `style.css` for writing CSS rules. It is exclusivel
 
 ```css
 /*
- Theme Name:   Nexus Corporate
+ Theme Name:   Atlas Corporate
  Theme URI:    [https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme)
- Description:  Corporate & Enterprise child theme for Nexus Parent.
+ Description:  Corporate & Enterprise child theme for Atlas Parent.
  Author:       Anurag Singh
  Template:     wp-multipurpose-parent-theme
  Version:      1.0.0
- Text Domain:  nexus-corporate
+ Text Domain:  atlas-corporate
 */
 ```
 

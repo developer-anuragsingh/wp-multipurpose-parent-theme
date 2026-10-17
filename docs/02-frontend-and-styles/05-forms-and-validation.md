@@ -31,7 +31,7 @@ When you need live, inline feedback beyond native constraints, use the Interacti
 * Directives: `data-wp-on--blur`, `data-wp-on--input`, and `data-wp-bind--aria-invalid` driving state.
 
 ```html
-<div data-wp-interactive="nexus-forms">
+<div data-wp-interactive="atlas-forms">
   <label for="email">Email</label>
   <input
     id="email" name="email" type="email" required
@@ -54,7 +54,7 @@ Error feedback MUST follow `02-frontend-and-styles/04-accessibility.md` §6:
 * `<label>` programmatically associated with every input (not placeholder-only).
 * Errors announced via an `aria-live` region and linked with `aria-describedby`; the field gets `aria-invalid="true"`.
 * Never signal an error by color alone — pair with text and/or icon.
-* Error text is translatable (`esc_html__( ..., 'nexus-theme' )`).
+* Error text is translatable (`esc_html__( ..., 'atlas-theme' )`).
 
 ## 4. Backend Layer (Security / Source of Truth)
 Every submission — form POST, AJAX, or Interactivity API store request — is re-validated server-side per `06-security-and-i18n/01-security-and-data.md`:

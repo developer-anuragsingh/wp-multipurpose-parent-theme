@@ -1,8 +1,8 @@
-# Gitleaks configuration for the Nexus WP parent theme.
+# Gitleaks configuration for the Atlas WP parent theme.
 # Extends the bundled default rule set and scopes it away from third-party
 # and generated paths so only theme-authored code is scanned.
 
-title = "Nexus theme gitleaks config"
+title = "Atlas theme gitleaks config"
 
 [extend]
 # Use all of gitleaks' built-in secret-detection rules as the baseline.

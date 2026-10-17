@@ -22,7 +22,7 @@ A change is "done" only when it passes every gate below. A command exiting witho
 ## 3. Tooling Setup
 * **`composer.json`** declares dev dependencies: `squizlabs/php_codesniffer`, `wp-coding-standards/wpcs`, `phpcompatibility/phpcompatibility-wp`, and wires a `composer lint` script.
 * **`package.json`** uses `@wordpress/scripts` for `lint-js` / `lint-style` and build steps (Interactivity API bundles, optional Tailwind).
-* **`.phpcs.xml.dist`** pins the ruleset (`WordPress-Extra`), the text domain (`nexus-theme`), the minimum WP/PHP versions, and the paths to scan.
+* **`.phpcs.xml.dist`** pins the ruleset (`WordPress-Extra`), the text domain (`atlas-theme`), the minimum WP/PHP versions, and the paths to scan.
 
 ## 4. CI (`.github/workflows/`)
 A `ci.yml` workflow runs on every push and pull request:

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="Nexus Theme">
-	<description>Coding standards for the Nexus WP multipurpose parent theme (WordPress + WordPress-Extra, PHP 8.1 compatibility).</description>
+<ruleset name="Atlas Theme">
+	<description>Coding standards for the Atlas WP multipurpose parent theme (WordPress + WordPress-Extra, PHP 8.1 compatibility).</description>
 
 	<!-- Scan the theme source only. -->
 	<file>theme/</file>
@@ -31,7 +31,7 @@
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array">
-				<element value="nexus-theme"/>
+				<element value="atlas-theme"/>
 			</property>
 		</properties>
 	</rule>
@@ -40,9 +40,9 @@
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array">
-				<element value="nexus"/>
-				<element value="Nexus"/>
-				<element value="NEXUS"/>
+				<element value="atlas"/>
+				<element value="Atlas"/>
+				<element value="ATLAS"/>
 			</property>
 		</properties>
 	</rule>

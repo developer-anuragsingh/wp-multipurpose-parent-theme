@@ -36,7 +36,7 @@ This script executes instantly, checking:
 <script>
   (function() {
     try {
-      var localTheme = localStorage.getItem('nexus-theme-mode');
+      var localTheme = localStorage.getItem('atlas-theme-mode');
       var sysTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
       if (localTheme === 'dark' || (!localTheme && sysTheme)) {
         document.documentElement.setAttribute('data-theme', 'dark');
@@ -57,7 +57,7 @@ The actual user-facing toggle button (e.g., in the header) avoids heavy JS event
 
 ```html
 <button 
-    data-wp-interactive="nexus-dark-mode"
+    data-wp-interactive="atlas-dark-mode"
     data-wp-on--click="actions.toggleTheme"
     data-wp-bind--aria-pressed="state.isDark"
     aria-label="Toggle Dark Mode">

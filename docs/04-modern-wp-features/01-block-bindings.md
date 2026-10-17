@@ -16,7 +16,7 @@ The Block Bindings API allows you to connect custom fields (or any arbitrary dat
 2. **Bind in HTML:** In your template parts or block patterns, add the `metadata` attribute to the core block markup.
 
 ```html
-<!-- wp:paragraph {"metadata":{"bindings":{"content":{"source":"nexus/custom-meta","args":{"key":"product_price"}}}}} -->
+<!-- wp:paragraph {"metadata":{"bindings":{"content":{"source":"atlas/custom-meta","args":{"key":"product_price"}}}}} -->
 <p>Default Price Fallback</p>
 <!-- /wp:paragraph -->
 ```
@@ -36,10 +36,10 @@ To be editable in the Editor, a registered source provides:
 
 ```php
 register_block_bindings_source(
-	'nexus/custom-meta',
+	'atlas/custom-meta',
 	array(
-		'label'              => __( 'Nexus Custom Meta', 'nexus-theme' ),
-		'get_value_callback' => 'nexus_bindings_get_meta_value',
+		'label'              => __( 'Atlas Custom Meta', 'atlas-theme' ),
+		'get_value_callback' => 'atlas_bindings_get_meta_value',
 		'uses_context'       => array( 'postId' ),
 	)
 );

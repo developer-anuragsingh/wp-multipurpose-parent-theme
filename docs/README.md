@@ -65,7 +65,7 @@ Each technical domain is maintained in an isolated sub-document. Use the links b
 
 ```text
                                          ┌──────────────────────────┐
-                                         │   Nexus Parent Theme     │
+                                         │   Atlas Parent Theme     │
                                          │ (FSE Engine & Core API)  │
                                          └─────────────┬────────────┘
      ┌───────────────────┬───────────────────┬─────────┴─────────┬───────────────────┬───────────────────┐

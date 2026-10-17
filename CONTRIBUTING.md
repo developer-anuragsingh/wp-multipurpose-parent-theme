@@ -1,4 +1,4 @@
-# Contributing & Local Setup — Nexus WP Parent Theme
+# Contributing & Local Setup — Atlas WP Parent Theme
 
 A step-by-step guide to get a new developer from a fresh clone to a working, lint-clean
 local environment. It reflects this project's actual tooling and conventions — not a
@@ -94,10 +94,10 @@ Make WordPress see the theme, then activate it in the Site Editor:
 
 - **Symlink** the theme into your WordPress install (adjust paths):
   ```bash
-  ln -s "$(pwd)/theme" /path/to/wordpress/wp-content/themes/nexus-theme
+  ln -s "$(pwd)/theme" /path/to/wordpress/wp-content/themes/atlas-theme
   ```
   (Or copy `theme/` there, or point Studio at this folder.)
-- In WordPress: **Appearance → Themes → activate "Nexus Multipurpose"**.
+- In WordPress: **Appearance → Themes → activate "Atlas Multipurpose"**.
 - Edit globally via **Appearance → Editor** (the Site Editor) — this replaces the classic
   Customizer and Menus screens. Navigation uses the Navigation block (`wp_navigation`), not
   `Appearance → Menus`.

@@ -35,17 +35,17 @@ Markup lives in `templates/` + `parts/`, design tokens in `theme.json`, behaviou
 ## 3. Strings & Constants
 Centralize **repeated or semantic** strings; do not blindly constant-ify every literal.
 
-* **MUST be constants / class constants:** meta keys, option names, hook/action/filter names, nonce actions, custom post type & taxonomy slugs, REST namespaces (e.g. `nexus/v1`), transient/cache keys, capability strings. A typo in a repeated magic string is a silent bug; a constant makes it a hard error.
+* **MUST be constants / class constants:** meta keys, option names, hook/action/filter names, nonce actions, custom post type & taxonomy slugs, REST namespaces (e.g. `atlas/v1`), transient/cache keys, capability strings. A typo in a repeated magic string is a silent bug; a constant makes it a hard error.
 * **MUST stay literal (never constants):**
-  - **User-facing strings** — these go through gettext (`esc_html__( 'Read More', 'nexus-theme' )`). Putting them in a constant breaks translation extraction (see `06-security-and-i18n/02-devops-and-i18n.md`).
-  - **The text domain** `'nexus-theme'` — always a literal string argument so extraction tools can parse it.
+  - **User-facing strings** — these go through gettext (`esc_html__( 'Read More', 'atlas-theme' )`). Putting them in a constant breaks translation extraction (see `06-security-and-i18n/02-devops-and-i18n.md`).
+  - **The text domain** `'atlas-theme'` — always a literal string argument so extraction tools can parse it.
 * **Leave alone (KISS):** a trivial, single-use local string with no shared meaning. Forcing it into a constant hurts readability without benefit.
 
 ## 4. WordPress Naming & Organization
-* **Prefix everything global** with `nexus_` / `NEXUS_` / `Nexus\` (functions, constants, hooks, option keys, class namespace) to avoid collisions with core and plugins.
+* **Prefix everything global** with `atlas_` / `ATLAS_` / `Atlas\` (functions, constants, hooks, option keys, class namespace) to avoid collisions with core and plugins.
 * **Casing:** `snake_case` for functions/variables/hooks, `PascalCase` for classes, `UPPER_SNAKE_CASE` for constants — matching WordPress Coding Standards.
-* **File organization in `inc/`:** one concern per file/subfolder — e.g. `inc/bindings/`, `inc/rest/`, `inc/security/`, `inc/seo/`. Autoload the `Nexus\` namespace from `inc/` via the theme's own hand-rolled autoloader (declared in `functions.php`) using **WordPress class-file naming** — a class maps to `class-{lowercased-hyphenated}.php` (e.g. `Nexus\Setup` → `inc/class-setup.php`; sub-namespaces → subdirectories). This is NOT Composer PSR-4: Composer is dev-only tooling here and no `vendor/autoload.php` ships with the theme (agent-rules §4 bans runtime deps). The naming satisfies the enforced `WordPress-Extra` ruleset. Prefer this over a wall of manual `require`.
-* **Enqueue standards:** register/enqueue assets on the correct hook, versioned with `NEXUS_THEME_VERSION`, loaded conditionally (only where used) to protect the JS/CSS budget.
+* **File organization in `inc/`:** one concern per file/subfolder — e.g. `inc/bindings/`, `inc/rest/`, `inc/security/`, `inc/seo/`. Autoload the `Atlas\` namespace from `inc/` via the theme's own hand-rolled autoloader (declared in `functions.php`) using **WordPress class-file naming** — a class maps to `class-{lowercased-hyphenated}.php` (e.g. `Atlas\Setup` → `inc/class-setup.php`; sub-namespaces → subdirectories). This is NOT Composer PSR-4: Composer is dev-only tooling here and no `vendor/autoload.php` ships with the theme (agent-rules §4 bans runtime deps). The naming satisfies the enforced `WordPress-Extra` ruleset. Prefer this over a wall of manual `require`.
+* **Enqueue standards:** register/enqueue assets on the correct hook, versioned with `ATLAS_THEME_VERSION`, loaded conditionally (only where used) to protect the JS/CSS budget.
 
 ## 5. CSS Standards
 * Organize specificity with Cascade Layers (`@layer`) in a documented order; keep critical base styles outside layers for progressive enhancement (`08-reliability-and-seo/03-browser-support.md`).
@@ -84,7 +84,7 @@ Centralize **repeated or semantic** strings; do not blindly constant-ify every l
 - [ ] No duplicated knowledge; reusable logic/markup/strings centralized (DRY).
 - [ ] SOLID applied to `inc/` OOP; concerns separated across markup/tokens/logic.
 - [ ] Semantic/repeated strings are constants; user-facing strings stay in gettext.
-- [ ] `nexus_`-prefixed, correctly-cased, organized under `inc/` with autoloading.
+- [ ] `atlas_`-prefixed, correctly-cased, organized under `inc/` with autoloading.
 - [ ] Debounce async-only; throttle scroll/resize; local checks instant.
 - [ ] PHPDoc/JSDoc present; comments say why.
 - [ ] Conventional commit; PR passes CI + review; hooks not bypassed.

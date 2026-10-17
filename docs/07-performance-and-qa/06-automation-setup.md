@@ -21,7 +21,7 @@ npm install        # @wordpress/scripts, husky, lint-staged (also installs the g
 ## 2. What Each Gate Does
 | Gate | Entry point | Config | Enforces |
 | :--- | :--- | :--- | :--- |
-| **PHP standards** | `composer lint` (`phpcs`) | `.phpcs.xml.dist` | `WordPress` + `WordPress-Extra` ruleset, text domain `nexus-theme`, `nexus`/`Nexus`/`NEXUS` prefixes, min WP 6.8 |
+| **PHP standards** | `composer lint` (`phpcs`) | `.phpcs.xml.dist` | `WordPress` + `WordPress-Extra` ruleset, text domain `atlas-theme`, `atlas`/`Atlas`/`ATLAS` prefixes, min WP 6.8 |
 | **PHP compatibility** | `composer lint` (`phpcs`) | `.phpcs.xml.dist` | `PHPCompatibilityWP` against `testVersion` `8.1-` |
 | **PHP auto-fix** | `composer lint:fix` (`phpcbf`) | `.phpcs.xml.dist` | Applies the auto-fixable subset of the above |
 | **JS lint** | `npm run lint:js` | `@wordpress/scripts` defaults | `wp-scripts lint-js` over `theme/src/js` |

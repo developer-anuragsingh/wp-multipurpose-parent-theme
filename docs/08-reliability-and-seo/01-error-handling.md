@@ -20,7 +20,7 @@ Every dynamic feature must define what happens when its data is missing or the m
 * **Third-party / network calls:** wrap in timeouts and try/catch; on failure show cached or placeholder content, never a hard crash.
 
 ## 4. User-Facing Error Messaging
-* Generic, friendly, translatable (`esc_html__( ..., 'nexus-theme' )`) messages — never raw exception text, SQL, or file paths.
+* Generic, friendly, translatable (`esc_html__( ..., 'atlas-theme' )`) messages — never raw exception text, SQL, or file paths.
 * Forms surface validation errors inline per the a11y contract (`02-frontend-and-styles/05-forms-and-validation.md`), and a submission failure shows a retry-able message, not a blank page.
 
 ## 5. Developer-Facing Diagnostics

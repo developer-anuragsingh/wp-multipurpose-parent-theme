@@ -12,7 +12,7 @@ Form spam protection is covered in `02-frontend-and-styles/05-forms-and-validati
 
 ## 3. Endpoint Rate Limiting
 * Every theme-authored write/compute endpoint (form submit, infinite-scroll loader, donation, llms.txt builder) should enforce a per-IP / per-user rate limit using a transient- or object-cache-backed counter, returning `429 Too Many Requests` with `Retry-After` when exceeded.
-* Make limits filterable (e.g. `nexus_rate_limit_contact_form`) so operators adjust without editing theme code.
+* Make limits filterable (e.g. `atlas_rate_limit_contact_form`) so operators adjust without editing theme code.
 * Rate-limit by authenticated user ID when available, falling back to IP (respecting proxy headers only when the host is trusted).
 
 ## 4. Brute-Force & Credential Abuse

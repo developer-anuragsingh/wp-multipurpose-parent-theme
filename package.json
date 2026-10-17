@@ -1,7 +1,7 @@
 {
-  "name": "nexus-wp-multipurpose-parent-theme",
+  "name": "atlas-wp-multipurpose-parent-theme",
   "version": "1.0.0",
-  "description": "Dev tooling for the Nexus FSE parent theme: @wordpress/scripts lint/build plus husky + lint-staged pre-commit gates.",
+  "description": "Dev tooling for the Atlas FSE parent theme: @wordpress/scripts lint/build plus husky + lint-staged pre-commit gates.",
   "license": "GPL-2.0-or-later",
   "private": true,
   "scripts": {

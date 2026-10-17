@@ -3,7 +3,7 @@ inclusion: fileMatch
 fileMatchPattern: '**/*.{php,js,css,json,html}'
 ---
 
-# Nexus Theme — Detailed Specification (loaded when editing theme code)
+# Atlas Theme — Detailed Specification (loaded when editing theme code)
 
 When working on theme source files, follow the deep-dive specifications below in
 addition to the always-on core rules (`agent-rules.md`). These docs are the

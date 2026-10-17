@@ -9,7 +9,7 @@ The theme claims "instant" loads and sub-second FCP. Those claims only hold unde
 ## 2. Caching Layers (what the theme must respect)
 * **Page cache / full-page cache** (host, Varnish, or a plugin): most front-end pages are anonymous and fully cacheable. The theme must NOT output user-specific data (names, cart totals, nonces) into markup that a page cache will serve to everyone.
 * **Object cache** (Redis/Memcached): expensive lookups (Block Bindings meta reads, `llms.txt` directory building) should use the object cache via the Transients API or `wp_cache_*`.
-* **Browser cache / CDN:** static assets (CSS, JS, fonts, images) are versioned (`NEXUS_THEME_VERSION`) so they can be cached long-term and busted on release.
+* **Browser cache / CDN:** static assets (CSS, JS, fonts, images) are versioned (`ATLAS_THEME_VERSION`) so they can be cached long-term and busted on release.
 
 ## 3. Theme Responsibilities
 * **Fragment caching:** cache the output of expensive, reusable fragments (e.g. the generated `llms.txt`, a computed JSON-LD graph) in a transient with a sensible TTL and a clear invalidation hook (on `save_post`, `switch_theme`, etc.).

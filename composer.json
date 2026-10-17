@@ -1,6 +1,6 @@
 {
-  "name": "nexus/wp-multipurpose-parent-theme",
-  "description": "Dev tooling for the Nexus FSE parent theme: PHP_CodeSniffer with WordPress Coding Standards and PHPCompatibilityWP (PHP 8.1).",
+  "name": "atlas/wp-multipurpose-parent-theme",
+  "description": "Dev tooling for the Atlas FSE parent theme: PHP_CodeSniffer with WordPress Coding Standards and PHPCompatibilityWP (PHP 8.1).",
   "type": "wordpress-theme",
   "license": "GPL-2.0-or-later",
   "require": {},

@@ -1,4 +1,4 @@
-# AI Agent Instructions: Nexus WP Parent Theme
+# AI Agent Instructions: Atlas WP Parent Theme
 
 You are an expert WordPress developer and System Architect. When writing or modifying code for this project, you MUST adhere to the following rules to guarantee production-ready code quality, top-tier security, and optimum performance.
 
@@ -48,13 +48,13 @@ You are an expert WordPress developer and System Architect. When writing or modi
 ## 6. Internationalization (i18n) — Mandatory
 * **Translate Every User-Facing String:** This theme is built for distribution, so NO hardcoded human-readable string may reach the UI. Wrap all strings in the appropriate function — `__()`, `_e()`, `esc_html__()`, `esc_html_e()`, `esc_attr__()`, `esc_attr_e()`, `_n()` for plurals, and `_x()` for disambiguation.
 * **Combine Escaping With Translation:** Prefer the escaping variants (`esc_html__()`, `esc_attr_e()`) so a single call both translates and escapes at the point of output.
-* **Consistent Text Domain:** Always pass the `nexus-theme` text domain literally as a string (never a variable or constant) so string extraction tools can parse it.
+* **Consistent Text Domain:** Always pass the `atlas-theme` text domain literally as a string (never a variable or constant) so string extraction tools can parse it.
 * **No Interpolated Translations:** Use `printf()` / `sprintf()` with placeholders (`%s`, `%d`) and translator comments (`/* translators: ... */`) instead of concatenating variables into translated strings.
 
 ## 7. Coding Standards & Principles
 * **Principles:** Apply KISS (simplest solution that works), DRY (centralize duplicated knowledge), YAGNI (no speculative features), and SOLID — SOLID scoped to the OOP PHP in `inc/` only, NOT to HTML templates / `theme.json` / patterns. Keep concerns separated: markup in `templates/`+`parts/`, tokens in `theme.json`, behaviour in `inc/` and the Interactivity store.
-* **Strings & Constants:** Centralize repeated or semantic strings (meta keys, option names, hook/nonce actions, post-type/taxonomy slugs, REST namespaces, cache keys, capability strings) as constants — a typo in a magic string must become a hard error, not a silent bug. EXCEPTIONS: user-facing strings always go through gettext (`esc_html__( ..., 'nexus-theme' )`), never constants, and the text domain stays a literal. Do NOT force trivial single-use strings into constants (KISS).
-* **Naming & structure:** Prefix all globals `nexus_` / `NEXUS_` / `Nexus\`; `snake_case` functions/hooks, `PascalCase` classes, `UPPER_SNAKE_CASE` constants; one concern per file under `inc/`. Autoload the `Nexus\` namespace from `inc/` via the theme's hand-rolled autoloader using **WordPress class-file naming** (`class-{lowercased-hyphenated}.php`, e.g. `Nexus\Setup` → `inc/class-setup.php`) — this satisfies the enforced `WordPress-Extra` PHPCS ruleset, which is NOT strict PSR-4. Small single-responsibility functions with guard clauses; no dead/commented-out code.
+* **Strings & Constants:** Centralize repeated or semantic strings (meta keys, option names, hook/nonce actions, post-type/taxonomy slugs, REST namespaces, cache keys, capability strings) as constants — a typo in a magic string must become a hard error, not a silent bug. EXCEPTIONS: user-facing strings always go through gettext (`esc_html__( ..., 'atlas-theme' )`), never constants, and the text domain stays a literal. Do NOT force trivial single-use strings into constants (KISS).
+* **Naming & structure:** Prefix all globals `atlas_` / `ATLAS_` / `Atlas\`; `snake_case` functions/hooks, `PascalCase` classes, `UPPER_SNAKE_CASE` constants; one concern per file under `inc/`. Autoload the `Atlas\` namespace from `inc/` via the theme's hand-rolled autoloader using **WordPress class-file naming** (`class-{lowercased-hyphenated}.php`, e.g. `Atlas\Setup` → `inc/class-setup.php`) — this satisfies the enforced `WordPress-Extra` PHPCS ruleset, which is NOT strict PSR-4. Small single-responsibility functions with guard clauses; no dead/commented-out code.
 * **Debounce vs. throttle:** Debounce async/expensive checks only (local checks stay instant); throttle continuous events (scroll/resize).
 * **Docs & Git:** PHPDoc/JSDoc on every function (explain *why*); Conventional Commits; small reviewed PRs; never bypass pre-commit hooks. Full detail in `docs/07-performance-and-qa/05-coding-standards.md`.
 

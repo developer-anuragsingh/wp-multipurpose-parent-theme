@@ -1,4 +1,4 @@
-// Nexus theme — team-shared format-on-save + lint settings.
+// Atlas theme — team-shared format-on-save + lint settings.
 // Requires the recommended extensions (see extensions.json). Mirrors the
 // project's PHPCS/.phpcs.xml.dist and the @wordpress/scripts lint config.
 {

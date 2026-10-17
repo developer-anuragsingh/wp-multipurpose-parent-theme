@@ -7,7 +7,7 @@
 As a distributed parent theme with child themes layered on top, updates must not silently break downstream sites. A predictable versioning and recovery story is part of being production-ready.
 
 ## 2. Semantic Versioning
-The theme follows SemVer (`MAJOR.MINOR.PATCH`), kept in sync across `style.css` (`Version:`) and `NEXUS_THEME_VERSION`:
+The theme follows SemVer (`MAJOR.MINOR.PATCH`), kept in sync across `style.css` (`Version:`) and `ATLAS_THEME_VERSION`:
 * **PATCH** — bug/security fixes, no API or markup contract change.
 * **MINOR** — new patterns/templates/features, backward compatible.
 * **MAJOR** — breaking changes: renamed/removed template parts, changed Block Bindings source names, altered `theme.json` token slugs, or pattern slug changes that child themes may override.
@@ -35,7 +35,7 @@ Child themes override by matching **slugs and paths** (template/part filenames, 
 * **Recovery mode:** rely on WordPress fatal-error protection / recovery mode so a broken update does not white-screen the live site; the operator receives the recovery email and can revert.
 
 ## 7. Verification Checklist
-- [ ] `style.css` version and `NEXUS_THEME_VERSION` match.
+- [ ] `style.css` version and `ATLAS_THEME_VERSION` match.
 - [ ] No child-overridable slug renamed/removed within a MAJOR version.
 - [ ] Deprecations kept for one MINOR cycle with documented replacement.
 - [ ] `CHANGELOG.md` updated; MAJOR releases include migration notes.
