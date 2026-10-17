@@ -7,8 +7,8 @@
   "scripts": {
     "lint:js": "wp-scripts lint-js theme/src/js",
     "lint:css": "wp-scripts lint-style \"theme/src/css/**/*.css\"",
-    "build": "wp-scripts build",
-    "start": "wp-scripts start",
+    "build": "wp-scripts build --experimental-modules",
+    "start": "wp-scripts start --experimental-modules",
     "prepare": "husky"
   },
   "devDependencies": {

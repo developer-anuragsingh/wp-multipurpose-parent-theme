@@ -49,3 +49,4 @@ spl_autoload_register(
 );
 
 Atlas\Setup::init();
+Atlas\Assets::init();

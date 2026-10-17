@@ -8,6 +8,24 @@
 
 	<!-- wp:site-title {"level":0} /-->
 
-	<!-- wp:navigation {"layout":{"type":"flex","justifyContent":"right"}} /-->
+	<!-- wp:html -->
+	<!-- data-breakpoint value (48rem) mirrors Atlas\Assets::DRAWER_BREAKPOINT, the single source also used for the CSS @media query. -->
+	<div class="atlas-nav" data-wp-interactive="atlas/navigation" data-wp-context='{ "isOpen": false, "isDrawer": false }' data-breakpoint="48rem" data-wp-init="callbacks.init" data-wp-on--keydown="actions.handleKeydown">
+		<button type="button" class="atlas-nav__toggle" hidden data-wp-on--click="actions.toggle" data-wp-bind--aria-expanded="state.ariaExpanded" aria-controls="atlas-nav-panel" aria-label="Toggle navigation menu">
+			<span class="atlas-nav__icon atlas-nav__icon-open" aria-hidden="true">&#9776;</span>
+			<span class="atlas-nav__icon atlas-nav__icon-close" aria-hidden="true">&#10005;</span>
+		</button>
+		<div class="atlas-nav__panel" id="atlas-nav-panel" tabindex="-1" aria-label="Primary navigation" data-wp-bind--role="state.dialogRole" data-wp-bind--aria-modal="state.ariaModal" data-wp-bind--hidden="state.drawerHidden" data-wp-watch="callbacks.watchOpen">
+			<!-- wp:navigation {"overlayMenu":"never","layout":{"type":"flex","justifyContent":"right"}} /-->
+		</div>
+	</div>
+	<!-- /wp:html -->
+
+	<!-- wp:html -->
+	<button type="button" class="atlas-theme-toggle" hidden data-wp-interactive="atlas/theme-mode" data-wp-init="callbacks.init" data-wp-on--click="actions.toggleTheme" data-wp-bind--aria-pressed="state.ariaPressed" data-wp-bind--aria-label="state.toggleLabel" aria-label="Toggle colour theme">
+		<span class="atlas-theme-toggle__icon atlas-theme-toggle__sun" aria-hidden="true">&#9728;</span>
+		<span class="atlas-theme-toggle__icon atlas-theme-toggle__moon" aria-hidden="true">&#9790;</span>
+	</button>
+	<!-- /wp:html -->
 </div>
 <!-- /wp:group -->
