@@ -13,3 +13,5 @@ vendor/
 # Workflow worktrees and agent task artifacts (not part of the theme)
 .worktrees/
 .agents/
+# Python virtualenv (local Nova Act SDK install)
+.venv/
