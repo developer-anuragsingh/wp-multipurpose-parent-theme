@@ -13,6 +13,11 @@ Traditional environments (LocalWP, XAMPP, Docker) are heavy and require database
 > * **Studio features change.** Specific conveniences (preview URL duration, one-click sync) are product features of a fast-moving tool, not guarantees — treat exact numbers/behaviours as "subject to change" and confirm against current Studio docs.
 > * Studio is a convenience, not a requirement: the theme must also develop and run on any standard MySQL-backed WordPress 6.8+ environment.
 
+**Local setup:** to preview the theme in Studio, symlink the repo's `theme/` into the
+Studio site's `wp-content/themes/atlas-theme` — use `scripts/link-to-studio.sh <studio-site-path>`.
+Full step-by-step (create site, link, activate, troubleshoot) is in `CONTRIBUTING.md` §5.
+This is machine-local and intentionally not committed (paths differ per machine).
+
 ## 2. Deployment Pipeline (CI/CD)
 The deployment workflow depends strictly on the hosting environment:
 * **Studio Sync:** For live sites hosted on WordPress.com or Pressable, the theme utilizes one-click "Studio Sync" to push local files directly to production[cite: 4].

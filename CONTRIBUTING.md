@@ -88,16 +88,59 @@ exist. The command-line gates (below) and CI still work regardless.
 
 ---
 
-## 5. Activate the Theme
+## 5. Local Preview with WordPress Studio (symlink)
 
-Make WordPress see the theme, then activate it in the Site Editor:
+The shippable theme lives in this repo's `theme/` subdirectory, but WordPress loads
+themes from `<wp-install>/wp-content/themes/`. Instead of copying files back and forth,
+**symlink** `theme/` into your local WordPress install. A symlink makes the site read
+the repo's `theme/` directly — so you edit in git and the running site reflects changes
+instantly (just refresh), with no copy or sync step.
 
-- **Symlink** the theme into your WordPress install (adjust paths):
-  ```bash
-  ln -s "$(pwd)/theme" /path/to/wordpress/wp-content/themes/atlas-theme
-  ```
-  (Or copy `theme/` there, or point Studio at this folder.)
-- In WordPress: **Appearance → Themes → activate "Atlas Multipurpose"**.
+> **Why symlink, not copy:** a copy drifts the moment you edit the repo and must be
+> re-copied every change. A symlink is a single source of truth — the site and the repo
+> point at the same files. This is machine-local setup; it is NOT committed (the absolute
+> paths differ per machine), which is why we use a doc + script instead.
+
+### 5.1 Create a Studio site
+1. Install **[Studio by WordPress.com](https://developer.wordpress.com/studio/)** and open it.
+2. **Add site** → name it (e.g. `atlas-dev`) → create. Studio spins up a full local
+   WordPress (WASM + SQLite).
+3. Note the site's **Local path** (shown in the Studio app under the site's settings —
+   the folder that contains `wp-load.php`, `wp-admin/`, `wp-content/`).
+
+### 5.2 Link the theme (helper script — recommended)
+From the repo root, pass your Studio site's Local path:
+
+```bash
+scripts/link-to-studio.sh /absolute/path/to/your-studio-site
+```
+
+The script validates the target is a real WordPress install, links `theme/` as
+`wp-content/themes/atlas-theme` (the slug MUST equal the `atlas-theme` text domain),
+safely replaces an existing symlink of the same name, and verifies WordPress can read
+the theme header. Re-run it any time (e.g. after switching machines).
+
+**Manual equivalent** (if you prefer, adjust both paths):
+```bash
+ln -s "$(pwd)/theme" "/absolute/path/to/your-studio-site/wp-content/themes/atlas-theme"
+```
+
+### 5.3 Activate & preview
+- In the Studio site: **WP Admin → Appearance → Themes → activate "Atlas Multipurpose"**.
+- Edit globally via **Appearance → Editor** (Site Editor). Templates, parts, `theme.json`
+  styles, and the Inter/Sora fonts should all load. Navigation uses the Navigation block
+  (`wp_navigation`), not the classic Menus screen.
+
+### 5.4 Troubleshooting
+| Symptom | Fix |
+| :--- | :--- |
+| Script says "does not look like a WordPress install" | You passed the wrong path. Use the exact **Local path** from the Studio app (must contain `wp-load.php`). |
+| Theme missing after a rename/slug change | The folder slug changed (e.g. an old `nexus-theme` link). Re-run the script to create the `atlas-theme` link, then re-activate in WP Admin. |
+| Script refuses: "exists and is NOT a symlink" | A real folder already occupies `wp-content/themes/atlas-theme`. Move it aside, then re-run. |
+| Fonts/styles not applying | Confirm the link resolves (`ls -l wp-content/themes/atlas-theme`) and that `theme/assets/fonts/*.woff2` exist. |
+
+> **SQLite is dev-only** (Studio). Production runs MySQL/MariaDB — never assume SQLite
+> behaviour in code. See `docs/06-security-and-i18n/02-devops-and-i18n.md`.
 - Edit globally via **Appearance → Editor** (the Site Editor) — this replaces the classic
   Customizer and Menus screens. Navigation uses the Navigation block (`wp_navigation`), not
   `Appearance → Menus`.
