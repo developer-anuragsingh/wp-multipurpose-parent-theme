@@ -1,0 +1,508 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Create the archive empty-state pattern file": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257665451
+      },
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257675036
+      },
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257792613
+      }
+    ],
+    "1.2 Wire the archive empty-state pattern into `archive.html`": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257665536
+      },
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257803420
+      },
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257854510
+      }
+    ],
+    "2.1 Create the search no-results pattern file": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257665565
+      },
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257676464
+      },
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257793774
+      }
+    ],
+    "2.2 Wire the search no-results pattern into `search.html`": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257665600
+      },
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257804319
+      },
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257855631
+      }
+    ],
+    "3.1 Enhance `404.html`": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257665633
+      },
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257677246
+      },
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257794740
+      }
+    ],
+    "4.1 Create `Atlas\\UI_States` skeleton with pattern registration": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257665667
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257997162
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792258285164
+      }
+    ],
+    "5. Phase 1 checkpoint": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257665700
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792258293926
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792258376583
+      }
+    ],
+    "6.1 Register the nonce-verified REST route": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257665726
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792258385575
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792258551107
+      }
+    ],
+    "7.1 Create the build entry and seed store state": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257665759
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792258558359
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792337706685
+      }
+    ],
+    "8.1 Create `parts/notifications.html`": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257665809
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792258386484
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792258552003
+      }
+    ],
+    "8.2 Wire the notifications part into header, footer, and theme.json": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257665841
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792258559384
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792337707623
+      }
+    ],
+    "9.1 Implement `rest-client.js`": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257665869
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792337713370
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792338213713
+      }
+    ],
+    "10.1 Implement `loading.js`": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257665899
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792338218015
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792340075618
+      }
+    ],
+    "11.1 Implement `offline.js`": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257665923
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792338219171
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792340076558
+      }
+    ],
+    "11.2 Implement `slow-request.js`": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257665950
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792338220134
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792340077939
+      }
+    ],
+    "12.1 Implement `failure.js`": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257665980
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792338221364
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792340078694
+      }
+    ],
+    "13. Phase 2 checkpoint": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257666006
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792340083617
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792341753726
+      }
+    ],
+    "14.1 Implement `button.js`": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257666032
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792341761554
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792343606762
+      }
+    ],
+    "15.1 Implement `form.js`": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257666110
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792341762697
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792343607907
+      }
+    ],
+    "16.1 Implement `comment-feedback.js`": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257666140
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792341763861
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792343609083
+      }
+    ],
+    "17.1 Implement `session-modal.js`": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257666166
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792343609953
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792344554393
+      }
+    ],
+    "18.1 Author `src/css/ui-states.css`": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257666196
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792341764832
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792344559948
+      }
+    ],
+    "19. Final checkpoint": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257666226
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792344560908
+      },
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792345089600
+      }
+    ],
+    "3. Phase 1 — Enhanced 404 template": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257794817
+      }
+    ],
+    "1. Phase 1 — Archive empty-state block pattern": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257854588
+      }
+    ],
+    "2. Phase 1 — Search no-results block pattern": [
+      {
+        "executionId": "9f013a75-454e-4198-b8ae-6abe465cbdcd",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792257855685
+      }
+    ],
+    "4. Phase 1 — Pattern registration and smoke checks": [
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792258285201
+      }
+    ],
+    "6. Phase 2 — REST endpoint (single async contract)": [
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792258551153
+      }
+    ],
+    "7. Phase 2 — Interactivity state seeding and asset enqueue": [
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792337706715
+      }
+    ],
+    "8. Phase 2 — Notifications template part": [
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792337707655
+      }
+    ],
+    "9. Phase 2 — Shared REST client store module": [
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792338213743
+      }
+    ],
+    "10. Phase 2 — Loading / skeleton store module": [
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792340075648
+      }
+    ],
+    "11. Phase 2 — Offline and slow-request store modules": [
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792340077975
+      }
+    ],
+    "12. Phase 2 — Failure / maintenance store module": [
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792340078722
+      }
+    ],
+    "14. Phase 3 — Button store module and activation guard": [
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792343606841
+      }
+    ],
+    "15. Phase 3 — Form store module": [
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792343607937
+      }
+    ],
+    "16. Phase 3 — Comment feedback store module": [
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792343609150
+      }
+    ],
+    "17. Phase 3 — Session-expired modal store module": [
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792344554462
+      }
+    ],
+    "18. Phase 3 — UI-states stylesheet": [
+      {
+        "executionId": "6af731c9-9da5-41aa-92ee-e825d7e38a9d",
+        "chatSessionId": "sess_028dd768-1c96-4be0-b766-744a5347af71",
+        "timestamp": 1792344560001
+      }
+    ]
+  }
+}
