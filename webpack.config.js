@@ -1,14 +1,19 @@
 /**
- * Atlas Phase 2 build config.
+ * Atlas build config.
  *
- * Builds the three Interactivity API stores from theme/src/js as native script
+ * Builds the Interactivity API stores from theme/src/js as native script
  * MODULES (ESM output, `@wordpress/interactivity` recorded as a module
  * dependency in each .asset.php) into theme/build. Run via
  * `wp-scripts build --experimental-modules`, which makes the default
  * @wordpress/scripts config export an array `[ scriptConfig, moduleConfig ]`;
  * we keep only the module config and point its entry/output at our custom
- * source layout. No CSS entry: theme/src/css/interactivity.css is a plain
- * hand-authored file enqueued directly, outside this pipeline.
+ * source layout.
+ *
+ * The Phase 2 stores (navigation, theme-mode, copy) are plain JS modules;
+ * theme/src/css/interactivity.css is a hand-authored file enqueued directly,
+ * outside this pipeline. The `ui-states` entry additionally imports its own
+ * stylesheet (theme/src/css/ui-states.css), so wp-scripts emits
+ * build/ui-states.css alongside build/ui-states.js from that single entry.
  */
 
 const defaults = require( '@wordpress/scripts/config/webpack.config' );
@@ -18,6 +23,7 @@ const entry = {
 	navigation: path.resolve( __dirname, 'theme/src/js/navigation.js' ),
 	'theme-mode': path.resolve( __dirname, 'theme/src/js/theme-mode.js' ),
 	copy: path.resolve( __dirname, 'theme/src/js/copy.js' ),
+	'ui-states': path.resolve( __dirname, 'theme/src/js/ui-states.js' ),
 };
 
 const outputPath = path.resolve( __dirname, 'theme/build' );

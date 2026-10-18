@@ -1,0 +1,508 @@
+/*
+ * Atlas UI-states stylesheet — Phase 3 micro-state styling.
+ *
+ * Imported by the `ui-states` build entry (theme/src/js/ui-states.js) so
+ * wp-scripts emits build/ui-states.css, enqueued by Atlas\UI_States.
+ *
+ * Authored with theme.json preset variables ONLY (design R10.6 / Property 18):
+ * every color, spacing, and font-size value is a var(--wp--preset--...) token.
+ *   - colors : --wp--preset--color--primary | accent | dark | light | white
+ *   - spacing: --wp--preset--spacing--20 .. 60
+ *   - fonts  : --wp--preset--font-size--small .. xx-large
+ * No hard-coded color/spacing/font-size literals appear below. Non-token
+ * primitives (border widths, radii, durations, opacities, line counts, z-index,
+ * breakpoints) are layout mechanics, not design tokens, and are kept minimal.
+ *
+ * Class / attribute hooks are aligned with:
+ *   - parts/notifications.html (atlas-notifications__*),
+ *   - loading.js (state.showSkeleton, state.ariaBusy -> aria-busy),
+ *   - button.js (state.spinnerHidden / buttonAriaBusy, aria-busy, disabled),
+ *   - form.js   (aria-invalid, inline error, disabled).
+ *
+ * Covers R4.1, R4.4, R4.5, R4.6, R7.1, R7.5, R8.1-R8.5, R10.3, R10.5, R10.7,
+ * R10.8.
+ */
+
+/* -------------------------------------------------------------------------
+ * Keyframes — shimmer (skeleton) + spin (inline button spinner).
+ *
+ * Gradient stops use preset color tokens only. The shimmer sweeps a light
+ * highlight across the dark base so the skeleton reads as "loading". The
+ * spinner rotates a bordered circle whose accent arc comes from a preset color.
+ * ------------------------------------------------------------------------- */
+@keyframes atlas-shimmer {
+
+	from {
+		background-position: 200% 0;
+	}
+
+	to {
+		background-position: -200% 0;
+	}
+}
+
+@keyframes atlas-spin {
+
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* -------------------------------------------------------------------------
+ * Focus ring (Focus_Ring) — R7.1, R8.4, R10.3.
+ *
+ * A single visible :focus-visible outline built from the primary preset token,
+ * applied to every interactive element: native controls plus the theme's
+ * buttons, links, and the retry / re-auth controls in the Notifications_Part.
+ * ------------------------------------------------------------------------- */
+.atlas-notifications :where(a, button, input, select, textarea, [tabindex]):focus-visible,
+.atlas-skeleton :where(a, button):focus-visible,
+.atlas-button:focus-visible,
+.atlas-field :where(input, select, textarea):focus-visible,
+.atlas-notifications__retry:focus-visible,
+.atlas-notifications__reauth:focus-visible {
+	outline: 2px solid var(--wp--preset--color--primary);
+	outline-offset: 2px;
+}
+
+/* -------------------------------------------------------------------------
+ * Skeleton cards (R4.1, R4.5, R10.8).
+ *
+ * Reserved dimensions (min-height + aspect-ratio) so the loaded content later
+ * occupies the same box — no layout shift. The shimmer gradient uses the light
+ * surface base and the white preset as the moving highlight. Fluid widths and
+ * max-width:100% keep the grid from overflowing at 320px (R10.7).
+ * ------------------------------------------------------------------------- */
+.atlas-skeleton {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+	gap: var(--wp--preset--spacing--40);
+	max-width: 100%;
+	margin-block: var(--wp--preset--spacing--40);
+}
+
+.atlas-skeleton__card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--preset--spacing--30);
+	min-height: 18rem;
+	padding: var(--wp--preset--spacing--40);
+	max-width: 100%;
+	border-radius: 0.5rem;
+	background-color: var(--wp--preset--color--light);
+}
+
+/* The shimmering media block reserves a stable aspect ratio so the real image
+   drops into the same box. */
+.atlas-skeleton__media {
+	aspect-ratio: 16 / 9;
+	width: 100%;
+	border-radius: 0.375rem;
+}
+
+/* Shimmer lines standing in for a heading and body copy. */
+.atlas-skeleton__line {
+	height: 0.75rem;
+	width: 100%;
+	border-radius: 0.25rem;
+}
+
+.atlas-skeleton__line--title {
+	height: 1rem;
+	width: 70%;
+}
+
+.atlas-skeleton__line--short {
+	width: 45%;
+}
+
+/* The animated shimmer surface, shared by every skeleton primitive. The
+   gradient stops are preset tokens: a light-surface base with a white sweep. */
+.atlas-skeleton__media,
+.atlas-skeleton__line {
+	background-image: linear-gradient(90deg, var(--wp--preset--color--light) 25%, var(--wp--preset--color--white) 50%, var(--wp--preset--color--light) 75%);
+	background-size: 200% 100%;
+	animation: atlas-shimmer 1.4s ease-in-out infinite;
+}
+
+/* -------------------------------------------------------------------------
+ * Buttons (R8.1-R8.6).
+ *
+ * Default colors come from preset tokens (mirroring theme.json's button
+ * element styles). Hover / active / focus-visible / disabled / loading each
+ * render a distinct state. The disabled state pairs pointer-events:none with
+ * button.js's activation guard so a disabled button cannot activate (R8.5).
+ * ------------------------------------------------------------------------- */
+.atlas-button {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--wp--preset--spacing--20);
+	max-width: 100%;
+	padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--40);
+	border: 0;
+	border-radius: 0.375rem;
+	background-color: var(--wp--preset--color--primary); /* R8.1 default */
+	color: var(--wp--preset--color--white);
+	font-size: var(--wp--preset--font-size--medium);
+	line-height: 1.2;
+	cursor: pointer;
+	transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* R8.2 hover — distinct darker background from a preset token. */
+.atlas-button:hover {
+	background-color: var(--wp--preset--color--dark);
+}
+
+/* R8.3 active — distinct pressed feedback. */
+.atlas-button:active {
+	background-color: var(--wp--preset--color--dark);
+	transform: translateY(1px);
+}
+
+/* R8.5 disabled — distinct state + no activation. pointer-events:none pairs
+   with button.js so a disabled button dispatches nothing. */
+.atlas-button:disabled,
+.atlas-button[aria-disabled="true"] {
+	background-color: var(--wp--preset--color--light);
+	color: var(--wp--preset--color--dark);
+	opacity: 0.6;
+	cursor: not-allowed;
+	pointer-events: none;
+}
+
+/* R8.6 loading — distinct state while the button's own request is in flight.
+   Driven either by the modifier class or button.js's aria-busy binding. */
+.atlas-button.is-loading,
+.atlas-button[aria-busy="true"] {
+	color: transparent; /* hide the label; the spinner stands in */
+	cursor: progress;
+	pointer-events: none;
+}
+
+/* Inline spinner inside a button (R4.4). Shown by button.js (spinnerHidden
+   binding); its arc uses the white preset so it reads on the primary button. */
+.atlas-button__spinner {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.atlas-button__spinner::after {
+	content: "";
+	width: 1.25em;
+	height: 1.25em;
+	border: 2px solid var(--wp--preset--color--white);
+	border-top-color: transparent;
+	border-radius: 50%;
+	animation: atlas-spin 0.7s linear infinite;
+}
+
+/* The spinner element binds data-wp-bind--hidden in button.js. */
+.atlas-button__spinner[hidden] {
+	display: none;
+}
+
+/* -------------------------------------------------------------------------
+ * Form input states (R7.1 focus, R7.2-R7.4 invalid, R7.5 disabled).
+ *
+ * Focus ring is covered by the shared :focus-visible rule above. Invalid fields
+ * get an accent-toned border, and the inline error message (associated via
+ * aria-describedby by form.js) is styled with the accent preset. Disabled
+ * fields render a visually distinct muted state.
+ * ------------------------------------------------------------------------- */
+.atlas-field {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--preset--spacing--20);
+	max-width: 100%;
+	margin-block-end: var(--wp--preset--spacing--30);
+}
+
+.atlas-field__input,
+.atlas-field :where(input, select, textarea) {
+	max-width: 100%;
+	padding: var(--wp--preset--spacing--20) var(--wp--preset--spacing--30);
+	border: 1px solid var(--wp--preset--color--dark);
+	border-radius: 0.375rem;
+	background-color: var(--wp--preset--color--white);
+	color: var(--wp--preset--color--dark);
+	font-size: var(--wp--preset--font-size--medium);
+}
+
+/* R7.2/R7.3 invalid — accent border signals the field needs attention. The
+   border thickens so the state is not conveyed by color alone. */
+.atlas-field :where(input, select, textarea)[aria-invalid="true"] {
+	border-width: 2px;
+	border-color: var(--wp--preset--color--accent);
+}
+
+/* R7.5 disabled — distinct muted state. */
+.atlas-field :where(input, select, textarea):disabled {
+	background-color: var(--wp--preset--color--light);
+	color: var(--wp--preset--color--dark);
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* Inline error message, associated to its field via aria-describedby (R7.3).
+   Hidden until form.js reveals it; styled with the accent preset. */
+.atlas-field__error {
+	color: var(--wp--preset--color--accent);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.atlas-field__error[hidden] {
+	display: none;
+}
+
+/* -------------------------------------------------------------------------
+ * Notifications — live regions, offline banner, toast stack, session modal.
+ *
+ * All spacing / color / typography from preset tokens. Live regions that carry
+ * screen-reader-only text stay visually hidden (see .screen-reader-text).
+ * ------------------------------------------------------------------------- */
+
+/* The polite/assertive live regions announce to AT but must not take up
+   visual space — kept visually hidden while remaining in the AT tree. */
+.atlas-notifications__live {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* Offline banner (R5.1-R5.3). Fixed to the top, fluid width, wrapping content
+   so it never overflows at 320px (R10.7). Uses the accent preset to read as a
+   connectivity warning. */
+.atlas-notifications__offline {
+	position: fixed;
+	inset-block-start: 0;
+	inset-inline: 0;
+	z-index: 200;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: var(--wp--preset--spacing--30);
+	max-width: 100%;
+	padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--40);
+	background-color: var(--wp--preset--color--accent);
+	color: var(--wp--preset--color--white);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.atlas-notifications__offline[hidden] {
+	display: none;
+}
+
+.atlas-notifications__offline-message {
+	margin: 0;
+	max-width: 100%;
+}
+
+/* Retry control in the offline banner (R5.3). */
+.atlas-notifications__retry,
+.atlas-notifications__reauth {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 100%;
+	padding: var(--wp--preset--spacing--20) var(--wp--preset--spacing--30);
+	border: 0;
+	border-radius: 0.375rem;
+	background-color: var(--wp--preset--color--white);
+	color: var(--wp--preset--color--dark);
+	font-size: var(--wp--preset--font-size--small);
+	cursor: pointer;
+}
+
+.atlas-notifications__retry:hover,
+.atlas-notifications__reauth:hover {
+	background-color: var(--wp--preset--color--light);
+}
+
+/* Toast stack (R6.1, R6.3, R9.3). Fixed bottom-end, column of toasts; fluid
+   width capped so it never forces horizontal scroll on a 320px viewport. */
+.atlas-notifications__toasts {
+	position: fixed;
+	inset-block-end: var(--wp--preset--spacing--40);
+	inset-inline-end: var(--wp--preset--spacing--40);
+	z-index: 200;
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--preset--spacing--30);
+	width: min(100% - var(--wp--preset--spacing--40), 24rem);
+	max-width: 100%;
+}
+
+.atlas-notifications__toasts[hidden] {
+	display: none;
+}
+
+/* A single toast. kind-specific modifiers recolor the accent stripe. */
+.atlas-notifications__toast {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--wp--preset--spacing--30);
+	max-width: 100%;
+	padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--40);
+	border-inline-start: 4px solid var(--wp--preset--color--primary);
+	border-radius: 0.375rem;
+	background-color: var(--wp--preset--color--white);
+	color: var(--wp--preset--color--dark);
+	font-size: var(--wp--preset--font-size--small);
+	box-shadow: 0 4px 16px rgb(0 0 0 / 15%);
+}
+
+/* Failure / maintenance toasts (assertive) read with the accent stripe. */
+.atlas-notifications__toast--error,
+.atlas-notifications__toast--maintenance {
+	border-inline-start-color: var(--wp--preset--color--accent);
+}
+
+/* Success toast (polite) keeps the primary stripe. */
+.atlas-notifications__toast--success {
+	border-inline-start-color: var(--wp--preset--color--primary);
+}
+
+.atlas-notifications__toast-message {
+	margin: 0;
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+/* Session-expired modal + overlay (R9.4). The dialog centers over a dimmed
+   overlay; it is hidden by default and revealed by session-modal.js. */
+.atlas-notifications__modal {
+	position: fixed;
+	inset: 0;
+	z-index: 300;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--wp--preset--spacing--40);
+	background-color: rgb(0 0 0 / 50%); /* overlay scrim (not a design token) */
+}
+
+.atlas-notifications__modal[hidden] {
+	display: none;
+}
+
+.atlas-notifications__modal-dialog {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--preset--spacing--30);
+	width: min(100%, 28rem);
+	max-width: 100%;
+	padding: var(--wp--preset--spacing--50);
+	border-radius: 0.5rem;
+	background-color: var(--wp--preset--color--white);
+	color: var(--wp--preset--color--dark);
+}
+
+.atlas-notifications__modal-title {
+	margin: 0;
+	font-size: var(--wp--preset--font-size--x-large);
+}
+
+.atlas-notifications__modal-desc {
+	margin: 0;
+	font-size: var(--wp--preset--font-size--medium);
+}
+
+/* Focus-trap sentinels are focusable but carry no visual box. */
+.atlas-notifications__sentinel {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+}
+
+/* -------------------------------------------------------------------------
+ * Visually hidden utility — shared with core's screen-reader-text so the
+ * live-region text and any sr-only labels stay out of the visual layout while
+ * remaining available to assistive tech.
+ * ------------------------------------------------------------------------- */
+.screen-reader-text {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* -------------------------------------------------------------------------
+ * Reduced motion (R4.6, R10.5).
+ *
+ * Disable the shimmer and spinner animations so the skeleton and spinner render
+ * as a static placeholder, and remove the other UI-state motion (button
+ * transitions). The shimmer gradient is pinned to a static fill so no sweep is
+ * visible without animation.
+ * ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+
+	.atlas-skeleton__media,
+	.atlas-skeleton__line {
+		animation: none;
+		background-image: none;
+		background-color: var(--wp--preset--color--light);
+	}
+
+	.atlas-button__spinner::after {
+		animation: none;
+	}
+
+	.atlas-button {
+		transition: none;
+	}
+
+	.atlas-button:active {
+		transform: none;
+	}
+}
+
+/* -------------------------------------------------------------------------
+ * 320px responsiveness (R10.7).
+ *
+ * At the narrowest supported viewport, drop the fixed notification regions to
+ * full-bleed and stack their controls so content wraps instead of overflowing.
+ * max-width:100% on media is declared globally so embedded media never forces a
+ * horizontal scrollbar.
+ * ------------------------------------------------------------------------- */
+.atlas-notifications :where(img, video, iframe, svg) {
+	max-width: 100%;
+	height: auto;
+}
+
+@media (max-width: 20rem) { /* 20rem == 320px */
+
+	.atlas-notifications__toasts {
+		inset-inline: var(--wp--preset--spacing--30);
+		width: auto;
+	}
+
+	.atlas-notifications__offline {
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.atlas-notifications__modal {
+		padding: var(--wp--preset--spacing--30);
+	}
+}

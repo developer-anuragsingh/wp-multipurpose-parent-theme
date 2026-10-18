@@ -1,0 +1,31 @@
+<!-- wp:html -->
+<div class="atlas-notifications" data-wp-interactive="atlas/ui-states" data-wp-init="callbacks.initNotifications">
+
+	<!-- Polite live region: non-urgent announcements (offline, slow-request, success). -->
+	<div class="atlas-notifications__live screen-reader-text" role="status" aria-live="polite" aria-atomic="true" data-wp-text="state.announce.polite"></div>
+
+	<!-- Assertive live region: urgent announcements (failure, maintenance). -->
+	<div class="atlas-notifications__live screen-reader-text" role="alert" aria-live="assertive" aria-atomic="true" data-wp-text="state.announce.assertive"></div>
+
+	<!-- Offline banner: hidden by default, progressively revealed when the browser goes offline. -->
+	<div class="atlas-notifications__offline" role="region" aria-label="Connection status" hidden data-wp-bind--hidden="state.offlineHidden">
+		<p class="atlas-notifications__offline-message">You are offline. Some actions may not work until your connection is restored.</p>
+		<button type="button" class="atlas-notifications__retry wp-element-button" data-wp-on--click="actions.retry">Retry</button>
+	</div>
+
+	<!-- Toast stack: the failure/success modules append toasts here. -->
+	<div class="atlas-notifications__toasts" aria-label="Notifications" data-wp-bind--hidden="state.toastsHidden"></div>
+
+	<!-- Session-expired re-authentication modal: hidden by default, focus-trapped when open. -->
+	<div class="atlas-notifications__modal" role="dialog" aria-modal="true" aria-labelledby="atlas-session-modal-title" aria-describedby="atlas-session-modal-desc" hidden data-wp-bind--hidden="state.sessionModalHidden" data-wp-on--keydown="actions.handleModalKeydown">
+		<div class="atlas-notifications__modal-dialog" tabindex="-1" data-wp-watch="callbacks.watchSessionModal">
+			<span class="atlas-notifications__sentinel" tabindex="0" data-wp-on--focus="actions.focusLast" aria-hidden="true"></span>
+			<h2 class="atlas-notifications__modal-title" id="atlas-session-modal-title">Session expired</h2>
+			<p class="atlas-notifications__modal-desc" id="atlas-session-modal-desc">Your session has expired. Please sign in again to continue where you left off.</p>
+			<button type="button" class="atlas-notifications__reauth wp-element-button" data-wp-on--click="actions.reauthenticate">Sign in again</button>
+			<span class="atlas-notifications__sentinel" tabindex="0" data-wp-on--focus="actions.focusFirst" aria-hidden="true"></span>
+		</div>
+	</div>
+
+</div>
+<!-- /wp:html -->
