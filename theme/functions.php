@@ -52,3 +52,4 @@ Atlas\Setup::init();
 Atlas\Assets::init();
 Atlas\UI_States::init();
 Atlas\Bindings::init();
+Atlas\Contact_Form::init();

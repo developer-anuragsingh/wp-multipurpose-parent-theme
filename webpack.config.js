@@ -24,6 +24,7 @@ const entry = {
 	'theme-mode': path.resolve( __dirname, 'theme/src/js/theme-mode.js' ),
 	copy: path.resolve( __dirname, 'theme/src/js/copy.js' ),
 	'ui-states': path.resolve( __dirname, 'theme/src/js/ui-states.js' ),
+	'contact-form': path.resolve( __dirname, 'theme/src/js/contact-form.js' ),
 };
 
 const outputPath = path.resolve( __dirname, 'theme/build' );
