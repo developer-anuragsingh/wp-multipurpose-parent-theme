@@ -51,3 +51,4 @@ spl_autoload_register(
 Atlas\Setup::init();
 Atlas\Assets::init();
 Atlas\UI_States::init();
+Atlas\Bindings::init();
