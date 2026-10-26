@@ -237,7 +237,9 @@ class Contact_Form {
 			return $result;
 		}
 
-		if ( self::REST_NAMESPACE . self::REST_ROUTE !== $request->get_route() ) {
+		// WP_REST_Request::get_route() returns the matched route WITH a leading
+		// slash (e.g. '/atlas/v1/contact'); normalize both sides before compare.
+		if ( self::REST_NAMESPACE . self::REST_ROUTE !== ltrim( (string) $request->get_route(), '/' ) ) {
 			return $result;
 		}
 
