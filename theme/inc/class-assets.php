@@ -87,6 +87,7 @@ class Assets {
 		add_action( 'init', array( self::class, 'register_block_styles' ) );
 		add_action( 'wp_enqueue_scripts', array( self::class, 'register_assets' ) );
 		add_action( 'wp_head', array( self::class, 'print_theme_mode_script' ), 0 );
+		add_filter( 'render_block_core/quote', array( self::class, 'render_copy_controls' ), 10, 2 );
 	}
 
 	/**
@@ -106,6 +107,68 @@ class Assets {
 				'label' => __( 'Copyable', 'atlas-theme' ),
 			)
 		);
+	}
+
+	/**
+	 * Inject the copy-to-clipboard controls into a Copyable core/quote.
+	 *
+	 * Runs on render_block_core/quote (front end). Only quotes carrying the
+	 * Copyable marker get the controls; all other quotes pass through
+	 * untouched. The injected markup is the DOM contract the atlas/copy
+	 * Interactivity store (build/copy.js) binds to: an interactive wrapper with
+	 * per-instance context, a button that ships hidden (revealed on hydration
+	 * only when the Clipboard API is usable), and a visually-hidden polite
+	 * aria-live region. User-facing labels come from gettext (literal
+	 * 'atlas-theme') and are seeded into context as JSON so the JS needs no i18n
+	 * runtime. Controls are inserted just before the closing </blockquote> so
+	 * the store's `ref.closest('.wp-block-quote')` text lookup still works.
+	 *
+	 * @param string $block_content The rendered block HTML.
+	 * @param array  $block         The parsed block (name, attrs, innerBlocks).
+	 * @return string The block HTML, with copy controls when Copyable.
+	 */
+	public static function render_copy_controls( string $block_content, array $block ): string {
+		if ( is_admin() ) {
+			return $block_content;
+		}
+
+		$class_name = isset( $block['attrs']['className'] ) ? (string) $block['attrs']['className'] : '';
+		if ( ! str_contains( $class_name, self::COPY_MARKER ) ) {
+			return $block_content;
+		}
+
+		$context = wp_json_encode(
+			array(
+				'copied'      => false,
+				'labelCopy'   => __( 'Copy quote', 'atlas-theme' ),
+				'labelCopied' => __( 'Copied!', 'atlas-theme' ),
+			)
+		);
+
+		if ( false === $context ) {
+			return $block_content;
+		}
+
+		$controls = sprintf(
+			'<div class="atlas-copy" data-wp-interactive="atlas/copy" data-wp-context=\'%1$s\' data-wp-init="callbacks.init">' .
+				'<button type="button" class="atlas-copy__button" hidden data-wp-on--click="actions.copy" data-wp-bind--aria-label="state.triggerLabel" data-wp-class--is-copied="state.isCopied">' .
+					'<span class="atlas-copy__icon" aria-hidden="true" data-wp-text="state.iconGlyph"></span>' .
+					'<span class="atlas-copy__label" data-wp-text="state.visibleLabel">%2$s</span>' .
+				'</button>' .
+				'<span class="atlas-copy__status" data-wp-bind--aria-live="state.ariaLive" data-wp-text="state.statusText"></span>' .
+			'</div>',
+			esc_attr( $context ),
+			esc_html__( 'Copy quote', 'atlas-theme' )
+		);
+
+		// Insert before the final closing </blockquote> so the controls sit
+		// inside .wp-block-quote (the store reads quote text via closest()).
+		$pos = strripos( $block_content, '</blockquote>' );
+		if ( false === $pos ) {
+			return $block_content . $controls;
+		}
+
+		return substr( $block_content, 0, $pos ) . $controls . substr( $block_content, $pos );
 	}
 
 	/**

@@ -23,7 +23,8 @@ const { state } = store( 'atlas/copy', {
 		canCopy: !! ( navigator.clipboard && window.isSecureContext ),
 
 		/**
-		 * Stable accessible name for the copy button. Never flips on success.
+		 * Stable accessible name for the copy button. Never flips on success,
+		 * so screen readers are not re-announced from the button itself.
 		 *
 		 * @return {string} Pre-seeded gettext "Copy quote" label.
 		 */
@@ -31,8 +32,37 @@ const { state } = store( 'atlas/copy', {
 			return getContext().labelCopy;
 		},
 		/**
-		 * Live-region text: "Copied!" while copied, else empty. The only
-		 * channel that announces success, so the button name stays stable.
+		 * Visible button text. Flips to the "Copied!" label for the copied
+		 * window so sighted users get clear, immediate feedback, then reverts.
+		 * The accessible name (triggerLabel) stays stable regardless.
+		 *
+		 * @return {string} The current visible button label.
+		 */
+		get visibleLabel() {
+			const context = getContext();
+			return context.copied ? context.labelCopied : context.labelCopy;
+		},
+		/**
+		 * Whether the button is in its copied state (for visual styling hook).
+		 *
+		 * @return {boolean} True during the copied window.
+		 */
+		get isCopied() {
+			return !! getContext().copied;
+		},
+		/**
+		 * Decorative glyph shown in the button: a checkmark once copied, a
+		 * clipboard before. Marked aria-hidden in markup so it is purely
+		 * visual and never announced.
+		 *
+		 * @return {string} The current glyph character.
+		 */
+		get iconGlyph() {
+			return getContext().copied ? '\u2713' : '\u29C9';
+		},
+		/**
+		 * Live-region text: "Copied!" while copied, else empty. Announces
+		 * success exactly once to assistive tech, independent of the button.
 		 *
 		 * @return {string} The current status text.
 		 */
@@ -71,7 +101,17 @@ const { state } = store( 'atlas/copy', {
 			let text = context.text;
 			if ( ! text ) {
 				const quote = ref.closest( '.wp-block-quote' );
-				text = quote ? quote.textContent.trim() : '';
+				if ( quote ) {
+					// Clone the quote and strip the injected copy controls so
+					// the button/status labels ("Copy quote", "Copied!") never
+					// leak into the copied text — only the real quote content
+					// and citation are copied.
+					const clone = quote.cloneNode( true );
+					clone
+						.querySelectorAll( '.atlas-copy' )
+						.forEach( ( node ) => node.remove() );
+					text = clone.textContent.trim().replace( /\s+/g, ' ' );
+				}
 			}
 			if ( ! text ) {
 				return;
