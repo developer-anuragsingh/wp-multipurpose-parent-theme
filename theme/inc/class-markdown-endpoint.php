@@ -406,9 +406,9 @@ class Markdown_Endpoint {
 	private static function inline_markdown( string $html ): string {
 		$html = preg_replace_callback(
 			'/<a\b[^>]*\shref=("|\')(.*?)\1[^>]*>(.*?)<\/a>/is',
-			static function ( $match ) {
-				$url  = esc_url_raw( html_entity_decode( $match[2], ENT_QUOTES, 'UTF-8' ) );
-				$text = self::plain_text( $match[3] );
+			static function ( $matches ) {
+				$url  = esc_url_raw( html_entity_decode( $matches[2], ENT_QUOTES, 'UTF-8' ) );
+				$text = self::plain_text( $matches[3] );
 
 				if ( '' === $url ) {
 					return $text;

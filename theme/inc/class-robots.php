@@ -103,12 +103,12 @@ class Robots {
 	 * .js. Finally it appends the AI-crawler blocks built from the (filterable)
 	 * policy and returns the combined string.
 	 *
-	 * @param string $output The robots.txt content assembled so far by core.
-	 * @param mixed  $public The blog_public option (1 = indexable, 0 = discouraged).
+	 * @param string $output    The robots.txt content assembled so far by core.
+	 * @param mixed  $is_public The blog_public option (1 = indexable, 0 = discouraged).
 	 * @return string The robots.txt content with the Atlas policy appended.
 	 */
-	public static function filter_robots_txt( string $output, $public ): string {
-		if ( ! $public ) {
+	public static function filter_robots_txt( string $output, $is_public ): string {
+		if ( ! $is_public ) {
 			return $output;
 		}
 

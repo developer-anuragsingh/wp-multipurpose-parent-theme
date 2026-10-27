@@ -53,5 +53,18 @@
 				<element value="ATLAS"/>
 			</property>
 		</properties>
+		<!-- Hook names are passed as class constants (e.g. self::FILTER_ENABLED =
+		     'atlas_...') per coding-standards §7 (semantic strings as constants).
+		     The sniff cannot resolve the constant's value, so it cannot see the
+		     'atlas_' prefix and false-positives on every dynamic hook name. The
+		     constants ARE correctly prefixed, so this sub-sniff is excluded. -->
+		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound"/>
+	</rule>
+
+	<!-- base64_encode() is used only to encode random_bytes() into a CSP nonce
+	     (Atlas\Assets::get_csp_nonce) — a legitimate, non-obfuscation use. The
+	     "discouraged function" warning does not apply here, so it is excluded. -->
+	<rule ref="WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode">
+		<severity>0</severity>
 	</rule>
 </ruleset>
