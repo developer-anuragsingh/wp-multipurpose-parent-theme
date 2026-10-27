@@ -157,9 +157,9 @@ class Bindings {
 	 * esc_url for url, esc_attr for alt, esc_html for anything else — so the
 	 * callback never returns null and never returns an unescaped string.
 	 *
-	 * @param array                 $source_args    Arguments passed from the block's binding (e.g. 'key').
-	 * @param \WP_Block             $block_instance The block instance consuming the binding.
-	 * @param string                $attribute_name The bound attribute (content, url, alt, ...).
+	 * @param array     $source_args    Arguments passed from the block's binding (e.g. 'key').
+	 * @param \WP_Block $block_instance The block instance consuming the binding.
+	 * @param string    $attribute_name The bound attribute (content, url, alt, ...).
 	 * @return string The escaped meta value, or '' when the post or meta is missing.
 	 */
 	public static function get_meta_value( array $source_args, $block_instance, string $attribute_name ): string {

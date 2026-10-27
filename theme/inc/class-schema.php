@@ -83,42 +83,42 @@ class Schema {
 	const FILTER_GRAPH = 'atlas_schema_graph';
 
 	/**
-	 * schema.org @type for the brand entity node.
+	 * The schema.org @type for the brand entity node.
 	 *
 	 * @var string
 	 */
 	const TYPE_ORGANIZATION = 'Organization';
 
 	/**
-	 * schema.org @type for the site node.
+	 * The schema.org @type for the site node.
 	 *
 	 * @var string
 	 */
 	const TYPE_WEBSITE = 'WebSite';
 
 	/**
-	 * schema.org @type for the single-post article node.
+	 * The schema.org @type for the single-post article node.
 	 *
 	 * @var string
 	 */
 	const TYPE_ARTICLE = 'BlogPosting';
 
 	/**
-	 * schema.org @type for the breadcrumb trail node.
+	 * The schema.org @type for the breadcrumb trail node.
 	 *
 	 * @var string
 	 */
 	const TYPE_BREADCRUMB = 'BreadcrumbList';
 
 	/**
-	 * schema.org @type for a person (article author).
+	 * The schema.org @type for a person (article author).
 	 *
 	 * @var string
 	 */
 	const TYPE_PERSON = 'Person';
 
 	/**
-	 * schema.org @type for a single breadcrumb entry.
+	 * The schema.org @type for a single breadcrumb entry.
 	 *
 	 * @var string
 	 */
@@ -187,7 +187,7 @@ class Schema {
 		// HTML escaping is applied (esc_html would corrupt the JSON).
 		$json = str_replace( '</', '<\/', $json );
 
-		echo "<script type=\"application/ld+json\">" . $json . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON is machine-generated via wp_json_encode and "</" neutralised; esc_* would corrupt it.
+		echo '<script type="application/ld+json">' . $json . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON is machine-generated via wp_json_encode and "</" neutralised; esc_* would corrupt it.
 	}
 
 	/**

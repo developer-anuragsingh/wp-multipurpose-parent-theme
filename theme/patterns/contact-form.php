@@ -30,14 +30,14 @@ $atlas_contact_action = esc_url( rest_url( 'atlas/v1/contact' ) );
 $atlas_contact_ts     = esc_attr( (string) time() );
 
 // Per-instance ids so multiple forms on one page never collide.
-$atlas_contact_uid     = wp_unique_id( 'atlas-contact-' );
-$atlas_name_id         = $atlas_contact_uid . '-name';
-$atlas_name_error_id   = $atlas_contact_uid . '-name-error';
-$atlas_email_id        = $atlas_contact_uid . '-email';
-$atlas_email_error_id  = $atlas_contact_uid . '-email-error';
-$atlas_message_id      = $atlas_contact_uid . '-message';
-$atlas_message_err_id  = $atlas_contact_uid . '-message-error';
-$atlas_status_id       = $atlas_contact_uid . '-status';
+$atlas_contact_uid    = wp_unique_id( 'atlas-contact-' );
+$atlas_name_id        = $atlas_contact_uid . '-name';
+$atlas_name_error_id  = $atlas_contact_uid . '-name-error';
+$atlas_email_id       = $atlas_contact_uid . '-email';
+$atlas_email_error_id = $atlas_contact_uid . '-email-error';
+$atlas_message_id     = $atlas_contact_uid . '-message';
+$atlas_message_err_id = $atlas_contact_uid . '-message-error';
+$atlas_status_id      = $atlas_contact_uid . '-status';
 
 // Per-instance Interactivity context: submit state + per-field validity.
 $atlas_contact_context = wp_json_encode(

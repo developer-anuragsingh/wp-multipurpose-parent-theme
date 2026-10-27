@@ -150,7 +150,7 @@ class Markdown_Endpoint {
 		header( 'Link: <' . esc_url_raw( (string) get_permalink( $post_id ) ) . '>; rel="canonical"' );
 		header( 'X-Robots-Tag: noindex' );
 
-		echo $markdown; // phpcs:ignore WordPress.Security.EscapingOutput.OutputNotEscaped -- Machine Markdown body; URLs sanitised with esc_url_raw and text decoded to plain text in blocks_to_markdown().
+		echo $markdown; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Machine Markdown body; URLs sanitised with esc_url_raw and text decoded to plain text in blocks_to_markdown().
 		exit;
 	}
 
@@ -459,9 +459,9 @@ class Markdown_Endpoint {
 	/**
 	 * Concatenate a block's innerHTML / innerContent fragments.
 	 *
-	 * parse_blocks() splits a block's HTML across innerContent (with nulls where
-	 * inner blocks sit); joining the string fragments yields the block's own
-	 * markup. Falls back to innerHTML when present.
+	 * The parse_blocks() output splits a block's HTML across innerContent (with
+	 * nulls where inner blocks sit); joining the string fragments yields the
+	 * block's own markup. Falls back to innerHTML when present.
 	 *
 	 * @param array $block A parsed block array.
 	 * @return string The block's own HTML.

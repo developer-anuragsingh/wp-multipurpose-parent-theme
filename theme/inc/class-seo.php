@@ -245,16 +245,24 @@ class Seo {
 				continue;
 			}
 
-			$is_url       = in_array( $key, array( 'og:url', 'og:image' ), true );
-			$content      = $is_url ? esc_url( $value ) : esc_attr( $value );
-			$attr_name    = 0 === strpos( $key, 'og:' ) ? 'property' : 'name';
-			$escaped_name = esc_attr( $key );
+			$is_url    = in_array( $key, array( 'og:url', 'og:image' ), true );
+			$attr_name = 0 === strpos( $key, 'og:' ) ? 'property' : 'name';
 
-			if ( '' === $content ) {
-				continue;
+			if ( $is_url ) {
+				printf(
+					'<meta %1$s="%2$s" content="%3$s">' . "\n",
+					esc_attr( $attr_name ),
+					esc_attr( $key ),
+					esc_url( $value )
+				);
+			} else {
+				printf(
+					'<meta %1$s="%2$s" content="%3$s">' . "\n",
+					esc_attr( $attr_name ),
+					esc_attr( $key ),
+					esc_attr( $value )
+				);
 			}
-
-			echo '<meta ' . esc_attr( $attr_name ) . '="' . $escaped_name . '" content="' . $content . '">' . "\n";
 		}
 	}
 

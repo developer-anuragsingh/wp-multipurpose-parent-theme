@@ -135,7 +135,7 @@ class Llms_Txt {
 		}
 
 		// Read-only public GET: sanitise on input, compare path only (ignore query).
-		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? (string) wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
+		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 		$path        = wp_parse_url( $request_uri, PHP_URL_PATH );
 
 		if ( ! is_string( $path ) || '' === $path ) {
@@ -158,7 +158,7 @@ class Llms_Txt {
 		header( 'Content-Type: text/plain; charset=utf-8' );
 		header( 'X-Robots-Tag: noindex' );
 
-		echo $catalog; // phpcs:ignore WordPress.Security.EscapingOutput.OutputNotEscaped -- Machine text/plain body; URLs sanitised with esc_url_raw and text reduced to plain text in build_catalog().
+		echo $catalog; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Machine text/plain body; URLs sanitised with esc_url_raw and text reduced to plain text in build_catalog().
 		exit;
 	}
 
