@@ -9,6 +9,7 @@
     "lint:css": "wp-scripts lint-style \"theme/src/css/**/*.css\"",
     "build": "wp-scripts build --experimental-modules",
     "start": "wp-scripts start --experimental-modules",
+    "test": "node --test 'tests/js/**/*.test.js'",
     "prepare": "husky"
   },
   "devDependencies": {
