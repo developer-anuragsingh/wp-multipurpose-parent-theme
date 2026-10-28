@@ -6,3 +6,5 @@ Production-ready Full-Site Editing (FSE) parent theme engineered with native Wor
 👉 **New here? Start with [`CONTRIBUTING.md`](./CONTRIBUTING.md)** — step-by-step local setup for developers.
 
 👉 **[View Master Plan (`docs/README.md`)](./docs/README.md)** — full technical documentation matrix.
+
+👉 **[View Changelog (`CHANGELOG.md`)](./CHANGELOG.md)** — track completed features and release history.
