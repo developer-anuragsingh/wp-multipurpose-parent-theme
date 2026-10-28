@@ -76,6 +76,13 @@ class Assets {
 	private static $csp_nonce = null;
 
 	/**
+	 * Track whether the initial content image has been prioritized for LCP.
+	 *
+	 * @var bool
+	 */
+	private static $lcp_optimized = false;
+
+	/**
 	 * Register the Phase 2 WordPress hooks.
 	 *
 	 * Called once from functions.php immediately after Atlas\Setup::init().
@@ -87,7 +94,9 @@ class Assets {
 		add_action( 'init', array( self::class, 'register_block_styles' ) );
 		add_action( 'wp_enqueue_scripts', array( self::class, 'register_assets' ) );
 		add_action( 'wp_head', array( self::class, 'print_theme_mode_script' ), 0 );
+		add_action( 'wp_head', array( self::class, 'preload_critical_fonts' ), 1 );
 		add_filter( 'render_block_core/quote', array( self::class, 'render_copy_controls' ), 10, 2 );
+		add_filter( 'wp_content_img_tag', array( self::class, 'optimize_content_images' ), 10, 2 );
 	}
 
 	/**
@@ -350,5 +359,83 @@ JS;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Preload the critical body font in the document head.
+	 *
+	 * Hooked to wp_head at priority 1 so it loads immediately after the theme
+	 * mode script, warming the primary variable font cache before stylesheet
+	 * evaluation to improve FCP and eliminate layout shift (CLS).
+	 *
+	 * @return void
+	 */
+	public static function preload_critical_fonts(): void {
+		if ( is_admin() ) {
+			return;
+		}
+
+		$default_fonts = array(
+			ATLAS_THEME_URI . '/assets/fonts/inter-variable.woff2',
+		);
+
+		/**
+		 * Filter the critical font URLs preloaded in <head>.
+		 *
+		 * @param string[] $fonts Array of font asset URLs to preload.
+		 */
+		$fonts = (array) apply_filters( 'atlas_critical_fonts_preload', $default_fonts );
+
+		foreach ( $fonts as $font_url ) {
+			if ( is_string( $font_url ) && '' !== $font_url ) {
+				printf(
+					'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
+					esc_url( $font_url )
+				);
+			}
+		}
+	}
+
+	/**
+	 * Prioritize the initial content image for LCP performance.
+	 *
+	 * Hooked to wp_content_img_tag. Ensures the first above-the-fold content
+	 * image receives fetchpriority="high" and removes loading="lazy" to reduce
+	 * Largest Contentful Paint (LCP) time per the performance budget.
+	 *
+	 * @param string $filtered_image Complete img HTML tag.
+	 * @param string $context        Context of the image (e.g. the_content).
+	 * @return string Optimized img HTML tag.
+	 */
+	public static function optimize_content_images( string $filtered_image, string $context ): string {
+		if ( is_admin() || self::$lcp_optimized ) {
+			return $filtered_image;
+		}
+
+		// Only optimize in standard page/post content contexts.
+		if ( ! in_array( $context, array( 'the_content', 'the_excerpt' ), true ) ) {
+			return $filtered_image;
+		}
+
+		/**
+		 * Filter whether to apply automated LCP image optimization.
+		 *
+		 * @param bool $enable Whether to prioritize the first content image.
+		 */
+		if ( ! (bool) apply_filters( 'atlas_lcp_image_optimization', true ) ) {
+			return $filtered_image;
+		}
+
+		self::$lcp_optimized = true;
+
+		// Ensure loading="lazy" is not applied to the LCP image.
+		$filtered_image = preg_replace( '/\s+loading=["\']lazy["\']/i', ' loading="eager"', $filtered_image );
+
+		// Inject fetchpriority="high" if not already present.
+		if ( ! str_contains( $filtered_image, 'fetchpriority=' ) ) {
+			$filtered_image = preg_replace( '/<img\s+/i', '<img fetchpriority="high" ', $filtered_image, 1 );
+		}
+
+		return $filtered_image;
 	}
 }

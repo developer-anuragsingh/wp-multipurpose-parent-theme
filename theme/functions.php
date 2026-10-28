@@ -58,3 +58,4 @@ Atlas\Seo::init();
 Atlas\Robots::init();
 Atlas\Markdown_Endpoint::init();
 Atlas\Llms_Txt::init();
+Atlas\Speculation_Rules::init();
