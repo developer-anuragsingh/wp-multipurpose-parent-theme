@@ -12,6 +12,7 @@ require_once __DIR__ . '/test-speculation-rules.php';
 require_once __DIR__ . '/test-robots.php';
 require_once __DIR__ . '/test-bindings.php';
 require_once __DIR__ . '/test-caching.php';
+require_once __DIR__ . '/test-maintenance.php';
 
 echo "Running Atlas Theme Unit Tests...\n\n";
 
@@ -21,6 +22,7 @@ $suites = array(
 	'Block Bindings'     => Test_Bindings::run(),
 	'Contact Form'       => Test_Contact_Form::run(),
 	'Fragment Caching'   => Test_Caching::run(),
+	'503 Maintenance'    => Test_Maintenance::run(),
 );
 
 $total_tests = 0;

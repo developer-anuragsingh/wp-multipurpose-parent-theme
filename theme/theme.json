@@ -213,6 +213,7 @@
     { "name": "notifications", "title": "Notifications", "area": "uncategorized" }
   ],
   "customTemplates": [
-    { "name": "blank", "title": "Blank / Landing", "postTypes": ["page"] }
+    { "name": "blank", "title": "Blank / Landing", "postTypes": ["page"] },
+    { "name": "maintenance", "title": "Maintenance / 503", "postTypes": ["page"] }
   ]
 }

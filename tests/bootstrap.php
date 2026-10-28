@@ -25,6 +25,18 @@ if ( ! defined( 'ATLAS_THEME_VERSION' ) ) {
 	define( 'ATLAS_THEME_VERSION', '1.0.0' );
 }
 
+if ( ! function_exists( '__return_true' ) ) {
+	function __return_true() {
+		return true;
+	}
+}
+
+if ( ! function_exists( '__return_false' ) ) {
+	function __return_false() {
+		return false;
+	}
+}
+
 // Global filter/hook mocks.
 global $atlas_test_filters, $atlas_test_actions;
 $atlas_test_filters = array();
@@ -104,6 +116,12 @@ if ( ! function_exists( 'esc_html' ) ) {
 if ( ! function_exists( 'home_url' ) ) {
 	function home_url( $path = '' ) {
 		return 'https://example.com' . $path;
+	}
+}
+
+if ( ! function_exists( 'get_option' ) ) {
+	function get_option( $option, $default_value = false ) {
+		return $default_value;
 	}
 }
 

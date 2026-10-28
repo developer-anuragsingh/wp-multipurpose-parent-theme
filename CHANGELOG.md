@@ -33,6 +33,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **High-Performance Order Storage (HPOS):** Declared explicit compatibility with `custom_order_tables` and `cart_checkout_blocks` in `Atlas\Setup`.
 - **Product Gallery Supports:** Added `woocommerce`, `wc-product-gallery-zoom`, `wc-product-gallery-lightbox`, and `wc-product-gallery-slider` theme supports.
 
+#### Reliability & 503 Maintenance Mode
+- **503 Maintenance Mode Controller (`Atlas\Maintenance`):** Introduced a production-grade maintenance controller hooked into `template_redirect` (priority 0) with filter `atlas_maintenance_mode` or option `atlas_maintenance_mode`. Emits proper `HTTP/1.1 503 Service Unavailable`, `Retry-After: 3600`, and `noindex, nofollow, noarchive` headers. Bypasses requests for logged-in administrators with `manage_options` capability, and gracefully defers to WooCommerce native Coming Soon mode (`woocommerce_coming_soon`) when WooCommerce handles it.
+- **Maintenance FSE Template (`maintenance.html`):** Added a dedicated Full-Site Editing template under `theme/templates/maintenance.html` and registered it under `customTemplates` in `theme.json` for site editors.
+
 #### Performance & Core Web Vitals
 - **Server-Side Transient Caching:** Implemented 12-hour fragment caching for heavy server-rendered computations (`Atlas\Schema` JSON-LD graphs and `Atlas\Llms_Txt` catalogs) using WordPress Transients API (`set_transient`, `get_transient`), with automatic cache invalidation on `save_post`, `deleted_post`, and `switch_theme`.
 - **Speculation Rules API (`Atlas\Speculation_Rules`):** Tuned Core 6.8+ Speculative Loading to `prefetch` mode with `moderate` eagerness; excluded sensitive commerce and admin paths (`/cart/*`, `/checkout/*`, `/my-account/*`, `/*add-to-cart=*`); suppressed prefetching during 503 maintenance mode.
@@ -69,6 +73,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Accessible UI States:** Standardized async notification system (`parts/notifications.html`, `ui-states.css`) supporting offline banners, slow-request notices (8s), loading skeletons, and session expiration modals.
 
 ### Compliance & Quality Gates
-- **PHPCS:** 100% compliant with `WordPress` and `WordPress-Extra` rulesets (0 errors, 0 warnings across all 23 PHP files).
+- **PHPCS:** 100% compliant with `WordPress` and `WordPress-Extra` rulesets (0 errors, 0 warnings across all 24 PHP files).
 - **Linters:** ESLint and Stylelint pass with 0 errors.
 - **Accessibility:** Conforms to WCAG 2.2 Level AA guidelines.
