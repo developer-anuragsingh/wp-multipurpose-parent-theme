@@ -11,14 +11,16 @@ require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/test-speculation-rules.php';
 require_once __DIR__ . '/test-robots.php';
 require_once __DIR__ . '/test-bindings.php';
+require_once __DIR__ . '/test-caching.php';
 
 echo "Running Atlas Theme Unit Tests...\n\n";
 
 $suites = array(
-	'Speculation Rules' => Test_Speculation_Rules::run(),
+	'Speculation Rules'  => Test_Speculation_Rules::run(),
 	'Robots & AI Policy' => Test_Robots::run(),
-	'Block Bindings'    => Test_Bindings::run(),
-	'Contact Form'      => Test_Contact_Form::run(),
+	'Block Bindings'     => Test_Bindings::run(),
+	'Contact Form'       => Test_Contact_Form::run(),
+	'Fragment Caching'   => Test_Caching::run(),
 );
 
 $total_tests = 0;

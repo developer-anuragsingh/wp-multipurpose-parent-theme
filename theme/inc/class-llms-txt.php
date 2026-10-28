@@ -103,6 +103,20 @@ class Llms_Txt {
 	const DESCRIPTION_MAX = 160;
 
 	/**
+	 * Transient key for caching the compiled /llms.txt catalog.
+	 *
+	 * @var string
+	 */
+	const TRANSIENT_KEY = 'atlas_llms_txt_catalog';
+
+	/**
+	 * Cache TTL for the catalog transient in seconds (12 hours).
+	 *
+	 * @var int
+	 */
+	const TRANSIENT_TTL = 43200;
+
+	/**
 	 * Register the /llms.txt endpoint WordPress hooks.
 	 *
 	 * Called once from functions.php after Atlas\Markdown_Endpoint::init(). Hooks
@@ -114,6 +128,9 @@ class Llms_Txt {
 	 */
 	public static function init(): void {
 		add_action( 'template_redirect', array( self::class, 'maybe_render_llms_txt' ) );
+		add_action( 'save_post', array( self::class, 'invalidate_cache' ) );
+		add_action( 'deleted_post', array( self::class, 'invalidate_cache' ) );
+		add_action( 'switch_theme', array( self::class, 'invalidate_cache' ) );
 	}
 
 	/**
@@ -148,7 +165,15 @@ class Llms_Txt {
 			return;
 		}
 
-		$catalog = self::build_catalog();
+		$catalog = get_transient( self::TRANSIENT_KEY );
+
+		if ( ! is_string( $catalog ) || '' === $catalog ) {
+			$catalog = self::build_catalog();
+
+			if ( '' !== $catalog ) {
+				set_transient( self::TRANSIENT_KEY, $catalog, self::TRANSIENT_TTL );
+			}
+		}
 
 		if ( '' === $catalog ) {
 			return;
@@ -362,5 +387,16 @@ class Llms_Txt {
 		}
 
 		return $raw;
+	}
+
+	/**
+	 * Invalidate the /llms.txt transient cache when content changes.
+	 *
+	 * Hooked to save_post, deleted_post, and switch_theme.
+	 *
+	 * @return void
+	 */
+	public static function invalidate_cache(): void {
+		delete_transient( self::TRANSIENT_KEY );
 	}
 }

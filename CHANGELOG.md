@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Product Gallery Supports:** Added `woocommerce`, `wc-product-gallery-zoom`, `wc-product-gallery-lightbox`, and `wc-product-gallery-slider` theme supports.
 
 #### Performance & Core Web Vitals
+- **Server-Side Transient Caching:** Implemented 12-hour fragment caching for heavy server-rendered computations (`Atlas\Schema` JSON-LD graphs and `Atlas\Llms_Txt` catalogs) using WordPress Transients API (`set_transient`, `get_transient`), with automatic cache invalidation on `save_post`, `deleted_post`, and `switch_theme`.
 - **Speculation Rules API (`Atlas\Speculation_Rules`):** Tuned Core 6.8+ Speculative Loading to `prefetch` mode with `moderate` eagerness; excluded sensitive commerce and admin paths (`/cart/*`, `/checkout/*`, `/my-account/*`, `/*add-to-cart=*`); suppressed prefetching during 503 maintenance mode.
 - **Critical Font Preloading (`Atlas\Assets`):** Injected `<link rel="preload">` in `<head>` for `inter-variable.woff2` to optimize FCP and eliminate font-swap layout shift (CLS).
 - **LCP Hero Image Prioritization:** Automatically applies `fetchpriority="high"` and removes lazy-loading from the first above-the-fold content image via `wp_content_img_tag`.

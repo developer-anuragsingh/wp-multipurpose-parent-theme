@@ -125,6 +125,20 @@ class Schema {
 	const TYPE_LISTITEM = 'ListItem';
 
 	/**
+	 * Transient key prefix for cached JSON-LD graph nodes.
+	 *
+	 * @var string
+	 */
+	const TRANSIENT_PREFIX = 'atlas_schema_';
+
+	/**
+	 * Cache TTL for schema transients in seconds (12 hours).
+	 *
+	 * @var int
+	 */
+	const TRANSIENT_TTL = 43200;
+
+	/**
 	 * Register the JSON-LD WordPress hooks.
 	 *
 	 * Called once from functions.php. Hooks wp_head at priority 1 so the graph
@@ -135,6 +149,9 @@ class Schema {
 	 */
 	public static function init(): void {
 		add_action( 'wp_head', array( self::class, 'print_json_ld' ), 1 );
+		add_action( 'save_post', array( self::class, 'invalidate_cache' ), 10, 1 );
+		add_action( 'deleted_post', array( self::class, 'invalidate_cache' ), 10, 1 );
+		add_action( 'switch_theme', array( self::class, 'flush_cache' ) );
 	}
 
 	/**
@@ -203,6 +220,15 @@ class Schema {
 	 * @return array<int, array> The list of JSON-LD nodes (possibly empty).
 	 */
 	private static function build_nodes(): array {
+		$cache_key = self::get_cache_key();
+
+		if ( '' !== $cache_key ) {
+			$cached = get_transient( $cache_key );
+			if ( is_array( $cached ) ) {
+				return $cached;
+			}
+		}
+
 		$nodes = array();
 
 		if ( is_front_page() || is_home() ) {
@@ -231,7 +257,57 @@ class Schema {
 			$nodes[] = $breadcrumb;
 		}
 
+		if ( '' !== $cache_key && ! empty( $nodes ) ) {
+			set_transient( $cache_key, $nodes, self::TRANSIENT_TTL );
+		}
+
 		return $nodes;
+	}
+
+	/**
+	 * Compute the transient cache key for the current request context.
+	 *
+	 * @return string Transient key, or empty string if context should not be cached.
+	 */
+	private static function get_cache_key(): string {
+		if ( is_front_page() || is_home() ) {
+			return self::TRANSIENT_PREFIX . 'front';
+		}
+
+		if ( is_singular( 'post' ) ) {
+			$post_id = get_the_ID();
+			if ( $post_id ) {
+				return self::TRANSIENT_PREFIX . 'post_' . (int) $post_id;
+			}
+		}
+
+		return '';
+	}
+
+	/**
+	 * Invalidate schema transients when content changes.
+	 *
+	 * Hooked to save_post and deleted_post. Clears the specific post cache and
+	 * the front-page schema cache so updates take effect immediately.
+	 *
+	 * @param int $post_id Post ID being saved or deleted.
+	 * @return void
+	 */
+	public static function invalidate_cache( $post_id = 0 ): void {
+		$clean_id = (int) $post_id;
+		if ( $clean_id > 0 ) {
+			delete_transient( self::TRANSIENT_PREFIX . 'post_' . $clean_id );
+		}
+		delete_transient( self::TRANSIENT_PREFIX . 'front' );
+	}
+
+	/**
+	 * Flush schema transients on theme switch.
+	 *
+	 * @return void
+	 */
+	public static function flush_cache(): void {
+		delete_transient( self::TRANSIENT_PREFIX . 'front' );
 	}
 
 	/**

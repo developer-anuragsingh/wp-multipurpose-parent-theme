@@ -119,6 +119,32 @@ if ( ! function_exists( 'current_user_can' ) ) {
 	}
 }
 
+global $atlas_test_transients;
+$atlas_test_transients = array();
+
+if ( ! function_exists( 'get_transient' ) ) {
+	function get_transient( $transient ) {
+		global $atlas_test_transients;
+		return $atlas_test_transients[ $transient ] ?? false;
+	}
+}
+
+if ( ! function_exists( 'set_transient' ) ) {
+	function set_transient( $transient, $value, $expiration = 0 ) {
+		global $atlas_test_transients;
+		$atlas_test_transients[ $transient ] = $value;
+		return true;
+	}
+}
+
+if ( ! function_exists( 'delete_transient' ) ) {
+	function delete_transient( $transient ) {
+		global $atlas_test_transients;
+		unset( $atlas_test_transients[ $transient ] );
+		return true;
+	}
+}
+
 // Register the theme autoloader.
 spl_autoload_register(
 	function ( $class_name ) {
