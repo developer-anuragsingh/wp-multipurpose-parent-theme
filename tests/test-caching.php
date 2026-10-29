@@ -31,18 +31,24 @@ class Test_Caching {
 			'passed' => false === get_transient( 'atlas_schema_front' ),
 		);
 
-		// Test 2: Llms_Txt transient key and invalidation.
+		// Test 2: Llms_Txt transient keys and invalidation.
 		$results[] = array(
 			'name'   => 'Llms_Txt defines TRANSIENT_KEY',
 			'passed' => 'atlas_llms_txt_catalog' === Atlas\Llms_Txt::TRANSIENT_KEY,
 		);
 
+		$results[] = array(
+			'name'   => 'Llms_Txt defines TRANSIENT_KEY_FULL',
+			'passed' => 'atlas_llms_txt_full_catalog' === Atlas\Llms_Txt::TRANSIENT_KEY_FULL,
+		);
+
 		set_transient( Atlas\Llms_Txt::TRANSIENT_KEY, 'catalog content', 3600 );
+		set_transient( Atlas\Llms_Txt::TRANSIENT_KEY_FULL, 'full catalog content', 3600 );
 		Atlas\Llms_Txt::invalidate_cache();
 
 		$results[] = array(
-			'name'   => 'Llms_Txt invalidate_cache clears catalog transient',
-			'passed' => false === get_transient( Atlas\Llms_Txt::TRANSIENT_KEY ),
+			'name'   => 'Llms_Txt invalidate_cache clears both concise and full catalog transients',
+			'passed' => false === get_transient( Atlas\Llms_Txt::TRANSIENT_KEY ) && false === get_transient( Atlas\Llms_Txt::TRANSIENT_KEY_FULL ),
 		);
 
 		return $results;

@@ -221,6 +221,165 @@ if ( ! function_exists( 'delete_transient' ) ) {
 	}
 }
 
+global $atlas_test_posts, $atlas_test_bloginfo, $atlas_test_status_header;
+$atlas_test_posts         = array();
+$atlas_test_status_header = 200;
+$atlas_test_bloginfo      = array(
+	'name'        => 'Atlas Test Site',
+	'description' => 'Fast, accessible, multipurpose parent theme.',
+);
+
+if ( ! function_exists( 'get_bloginfo' ) ) {
+	function get_bloginfo( $show = 'name' ) {
+		global $atlas_test_bloginfo;
+		return $atlas_test_bloginfo[ $show ] ?? '';
+	}
+}
+
+if ( ! function_exists( 'wp_parse_url' ) ) {
+	function wp_parse_url( $url, $component = -1 ) {
+		return parse_url( $url, $component );
+	}
+}
+
+if ( ! function_exists( 'untrailingslashit' ) ) {
+	function untrailingslashit( $string ) {
+		return rtrim( (string) $string, '/\\' );
+	}
+}
+
+if ( ! function_exists( 'wp_strip_all_tags' ) ) {
+	function wp_strip_all_tags( $string, $remove_breaks = false ) {
+		$string = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', (string) $string );
+		$string = strip_tags( $string );
+		if ( $remove_breaks ) {
+			$string = preg_replace( '/[\r\n\t ]+/', ' ', $string );
+		}
+		return trim( $string );
+	}
+}
+
+if ( ! function_exists( 'get_posts' ) ) {
+	function get_posts( $args = null ) {
+		global $atlas_test_posts;
+		$results = array();
+		$limit   = isset( $args['posts_per_page'] ) ? (int) $args['posts_per_page'] : 50;
+		$count   = 0;
+		foreach ( $atlas_test_posts as $post ) {
+			if ( $count >= $limit ) {
+				break;
+			}
+			$results[] = (object) $post;
+			$count++;
+		}
+		return $results;
+	}
+}
+
+if ( ! function_exists( 'get_post' ) ) {
+	function get_post( $post = null ) {
+		global $atlas_test_posts;
+		$id = is_object( $post ) ? ( $post->ID ?? 0 ) : (int) $post;
+		return isset( $atlas_test_posts[ $id ] ) ? (object) $atlas_test_posts[ $id ] : null;
+	}
+}
+
+if ( ! function_exists( 'get_the_title' ) ) {
+	function get_the_title( $post = 0 ) {
+		$p = get_post( $post );
+		return $p ? ( $p->post_title ?? '' ) : '';
+	}
+}
+
+if ( ! function_exists( 'get_permalink' ) ) {
+	function get_permalink( $post = 0 ) {
+		$p = get_post( $post );
+		return $p ? ( 'https://example.com/' . ( $p->post_name ?? 'page' ) . '/' ) : 'https://example.com/';
+	}
+}
+
+if ( ! function_exists( 'get_the_excerpt' ) ) {
+	function get_the_excerpt( $post = 0 ) {
+		$p = get_post( $post );
+		return $p ? ( $p->post_excerpt ?? '' ) : '';
+	}
+}
+
+if ( ! function_exists( 'get_post_status' ) ) {
+	function get_post_status( $post = 0 ) {
+		$p = get_post( $post );
+		return $p ? ( $p->post_status ?? 'publish' ) : false;
+	}
+}
+
+if ( ! function_exists( 'get_post_type' ) ) {
+	function get_post_type( $post = 0 ) {
+		$p = get_post( $post );
+		return $p ? ( $p->post_type ?? 'page' ) : false;
+	}
+}
+
+if ( ! function_exists( 'is_post_type_viewable' ) ) {
+	function is_post_type_viewable( $post_type ) {
+		return in_array( $post_type, array( 'page', 'post' ), true );
+	}
+}
+
+if ( ! function_exists( 'post_password_required' ) ) {
+	function post_password_required( $post = null ) {
+		$p = get_post( $post );
+		return ! empty( $p->post_password );
+	}
+}
+
+if ( ! function_exists( 'parse_blocks' ) ) {
+	function parse_blocks( $content ) {
+		if ( empty( $content ) ) {
+			return array();
+		}
+		if ( preg_match_all( '/<!-- wp:([a-z0-9\/-]+)(?:\s+(\{.*?\}))?\s*-->(.*?)<!-- \/wp:\1 -->/s', $content, $matches, PREG_SET_ORDER ) ) {
+			$blocks = array();
+			foreach ( $matches as $match ) {
+				$block_name = $match[1];
+				if ( false === strpos( $block_name, '/' ) ) {
+					$block_name = 'core/' . $block_name;
+				}
+				$attrs    = ! empty( $match[2] ) ? json_decode( $match[2], true ) : array();
+				$blocks[] = array(
+					'blockName'    => $block_name,
+					'attrs'        => is_array( $attrs ) ? $attrs : array(),
+					'innerHTML'    => $match[3],
+					'innerContent' => array( $match[3] ),
+					'innerBlocks'  => array(),
+				);
+			}
+			return $blocks;
+		}
+		return array(
+			array(
+				'blockName'    => 'core/paragraph',
+				'attrs'        => array(),
+				'innerHTML'    => $content,
+				'innerContent' => array( $content ),
+				'innerBlocks'  => array(),
+			),
+		);
+	}
+}
+
+if ( ! function_exists( 'status_header' ) ) {
+	function status_header( $code, $description = '' ) {
+		global $atlas_test_status_header;
+		$atlas_test_status_header = (int) $code;
+	}
+}
+
+if ( ! function_exists( 'render_block' ) ) {
+	function render_block( $parsed_block ) {
+		return $parsed_block['innerHTML'] ?? '';
+	}
+}
+
 // Register the theme autoloader.
 spl_autoload_register(
 	function ( $class_name ) {

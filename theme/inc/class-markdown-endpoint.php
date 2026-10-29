@@ -171,7 +171,7 @@ class Markdown_Endpoint {
 	 * @param string $title        The plain post title for the H1.
 	 * @return string The Markdown document, or '' when nothing converts.
 	 */
-	private static function blocks_to_markdown( string $post_content, string $title ): string {
+	public static function blocks_to_markdown( string $post_content, string $title ): string {
 		$lines = array();
 
 		$title = self::plain_text( $title );

@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Planned
 - Dedicated visual regression baselines for remaining WooCommerce product archive and cart block states.
-- Optional `/llms-full.txt` full-content Markdown catalog expansion.
+- Interactive NGO Single-Click Donation Modal pattern (`atlas/donation-modal`).
 
 ---
 
@@ -60,7 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `theme-mode.spec.js`: Dark/light toggle, `data-theme` attribute mutation, and `localStorage` persistence across page reloads without flicker.
   - `copy-quote.spec.js`: Progressive hydration check, clipboard copy execution, visible label flip ("Copied!"), and accessible `role="status"` `aria-live` announcement.
   - `contact-form.spec.js`: Client-side required field validations, email format regex checking, honeypot anti-spam behavior, and error message cleanup.
-- **PHP Unit Test Suite:** Lightweight, database-free unit test environment (`tests/bootstrap.php`, `tests/run-tests.php`) covering Speculation Rules, Robots AI policies, Block Bindings, Contact Form security, Transient Caching, 503 Maintenance, Niche Patterns, Zero-PHP Child Theme architecture, and Archive Infinite Scroll (45 tests total).
+- **PHP Unit Test Suite:** Lightweight, database-free unit test environment (`tests/bootstrap.php`, `tests/run-tests.php`) covering Speculation Rules, Robots AI policies, Block Bindings, Contact Form security, Transient Caching, 503 Maintenance, Niche Patterns, Zero-PHP Child Theme architecture, Archive Infinite Scroll, and GEO & llms.txt catalogs (51 tests total across 10 suites).
 - **PHPUnit Configuration:** Standard `phpunit.xml.dist` configuration file.
 - **JavaScript Unit Tests:** Native Node.js test runner suite (`tests/js/ui-states.test.js`) validating REST client outcome classification and contact form client-side contracts.
 - **CI Workflow Integration:** Updated `.github/workflows/ci.yml` with automated Playwright Chromium E2E testing alongside PHPCS, PHPUnit, ESLint, Stylelint, and gitleaks scans on every push and pull request.
@@ -77,6 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **On-Page SEO Meta (`Atlas\Seo`):** Emits Open Graph, Twitter Cards, canonical links, and `noindex` directives on 404, search, and maintenance views.
 - **AI Crawler Management (`Atlas\Robots`):** Filter on virtual `robots_txt` exposing operator policy controls for named AI crawlers (`GPTBot`, `ClaudeBot`, `PerplexityBot`, etc.).
 - **Markdown & AI Endpoints:** Opt-in clean Markdown endpoint `?format=md` (`Atlas\Markdown_Endpoint`) and dynamic `/llms.txt` catalog (`Atlas\Llms_Txt`).
+- **Full-Content GEO Catalog (`/llms-full.txt`):** Added the `/llms-full.txt` expanded Markdown catalog in `Atlas\Llms_Txt` (`REQUEST_PATH_FULL = '/llms-full.txt'`) providing complete, token-efficient Markdown conversions of core published pages to feed AI context windows directly. Guarded by 12-hour transient caching (`TRANSIENT_KEY_FULL`), strict fail-closed validation, DoS memory limits (`MAX_FULL_PAGES = 10`), and filter hooks (`atlas_llms_txt_full_entries`, `atlas_llms_txt_full_max_pages`).
 
 #### Modern Core Features & Form Security
 - **Block Bindings API (`Atlas\Bindings`):** Registered `atlas/post-meta` source allowing inline editing of `atlas_subtitle` in WordPress 6.7+ Site Editor.
