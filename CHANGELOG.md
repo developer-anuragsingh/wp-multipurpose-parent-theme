@@ -7,6 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/compare/atlas-wp-multipurpose-parent-theme-v1.0.0...atlas-wp-multipurpose-parent-theme-v1.1.0) (2026-10-29)
+
+
+### Features
+
+* add Atlas\Robots virtual robots.txt AI-crawler policy ([7fb64dc](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/7fb64dc2a0c97c0639bbd9006d8b4cff89605a1d))
+* add Atlas\Seo on-page SEO meta (OG/Twitter, canonical, hreflang, noindex) ([b599dc9](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/b599dc9514fe15bef689927ef48c090db709f360))
+* add contact form with secured public REST route (Phase 3c) ([8c34510](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/8c34510c995436edb9cd6ae4151be30caf1f0e52))
+* add FSE presentation layer (skip-link CSS, parts, templates) ([9552a6f](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/9552a6ff1d0a78a0fd27ecf5a946ccd132bbcabd))
+* add Nexus\Setup bootstrap and hand-rolled autoloader ([c89779d](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/c89779dc5e7a12dbef66a1db9792e13304138177))
+* add Phase 2 frontend interactivity (nav drawer, dark mode, copy) ([9eaa61f](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/9eaa61fb37ef2bb39f8f4118d83e5e3683f4b7a3))
+* add Phase 3a section block patterns ([19b81be](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/19b81be58aa5b5ce6f480d631d68635a35ab8a09))
+* add self-hosted Inter + Sora fonts (OFL) and track them ([d6a8daf](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/d6a8daf6f96c1920497b55c04bccd99d28eaad86))
+* add server-side JSON-LD structured data (Atlas\Schema) ([50377ba](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/50377ba7e5f15ead3c18f7fa514e855d702ac0d2))
+* **bindings:** add atlas/post-meta block binding source + demo subtitle meta and pattern ([a75563b](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/a75563b7e03e2f7349b37f02bb0f5d2da7c0bb9d))
+* **child-theme:** add zero-PHP child theme starter and scaffolding script ([3e194d7](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/3e194d7c1e043ebbe5da6709b23d7d3170bd70e4))
+* **ci:** implement automated changelog and release-please workflow ([05d860d](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/05d860d095ab20fcae4760073f0a172945938767))
+* expand theme.json to v3 token/style foundation ([c3c14d4](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/c3c14d4352c92b03585dd935719806cc52ad3ec7))
+* **geo:** add opt-in ?format=md markdown endpoint ([c3ef9c5](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/c3ef9c5484167b763223ca43e2c619d7380aef32))
+* **geo:** add opt-in /llms.txt catalog endpoint ([27f9524](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/27f95241a9720672b81ab92c073bb720f113046a))
+* **i18n:** add front-end language switcher with cookie persistence and hreflang ([1201b26](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/1201b263a31e45ead1ea0441577e40f167c31cd0))
+* initialize repository with master plan, docs, and fse theme scaffold ([89bea2f](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/89bea2fb72ffe93dc9eae8d53ca04728bb6840c7))
+* **interactivity:** add archive infinite scroll with Interactivity API and accessible fallback ([217d1bf](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/217d1bffb29cec9e4e2325d5e12996249c3dcfd7))
+* **patterns:** add quotes masonry, NGO impact metrics, and editorial ToC patterns ([8fb2ef1](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/8fb2ef1c9d67f630ec2a04b52493b473abb0ff04))
+* **perf:** add speculation rules tuning, font preloading, LCP optimization, fallback OG card, and i18n catalogs ([619c68e](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/619c68e15866af567f66236419391a7cfb703a37))
+* **perf:** add transient caching and invalidation for schema and llms-txt ([83af582](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/83af58240620245d1f119ac7fba8e451926b992d))
+* **reliability:** add 503 maintenance mode controller and template ([fef8c43](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/fef8c436151ce4b5cfa1aeb60b61816328bffe43))
+* **security:** add hosting-agnostic client IP resolution and 503 cache protection ([b0a4538](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/b0a4538e5ff0d9c0e13128d9cf9f3a9c86a24ab3))
+* **seo:** add /llms-full.txt full-content Markdown catalog with transient caching ([6c8f6dd](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/6c8f6dd21e5421e0d8e4cc9ea1c1b03fbe69b6ef))
+* **test:** add PHP and JS unit test suites with CI workflow integration ([49c9950](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/49c9950cedb56b181b830a29e88fe96cffa824bd))
+* **test:** add Playwright E2E and visual regression test suite ([43fba6c](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/43fba6c0d8efa01628784b675dc04615add95ce2))
+* **ui-states:** accessible UI states across archive, search, 404 and async flows ([21c25ea](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/21c25ea944234c13956ae1683c5eddabebaff8a9))
+* **woocommerce:** add FSE block templates and declare HPOS compatibility ([cbb86c2](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/cbb86c276f135ffeb99fd8485656683c3c04d164))
+
+
+### Bug Fixes
+
+* **copy:** render copy controls with clean text + visible feedback; fix phpcs gate ([a9f217a](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/a9f217ae999ddf8770ddb0962502b79a3859da8c))
+* correct lint-staged version range and php task in package.json ([b1b5db8](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/b1b5db8e0dd8d13ebbec2b7ecf8236b3aadb903f))
+* emit Retry-After header on contact-form 429 ([f3ff77c](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/f3ff77c5f3e9037f5b4fa723341b0cfcf0ac9765))
+* **navigation:** hide mobile drawer toggle on desktop viewports ([e97176d](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/e97176db6eb46686fd1317d2d9e1abba48292069))
+* **phpcs:** resolve CI PHPCS errors across GEO/SEO + bindings classes ([b343235](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/b3432357c523b4fe7f7e6a29edc59bcebc84cc5b))
+* use WordPress class-file naming for inc/ autoloader ([7e97702](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme/commit/7e97702f4407ab551e94e890dafea83eca4ef8c8))
+
 ## [Unreleased]
 
 ### Added

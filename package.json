@@ -1,6 +1,6 @@
 {
   "name": "atlas-wp-multipurpose-parent-theme",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Dev tooling for the Atlas FSE parent theme: @wordpress/scripts lint/build plus husky + lint-staged pre-commit gates.",
   "license": "GPL-2.0-or-later",
   "private": true,
