@@ -10,11 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Desktop Navigation Regression Tests:** Expanded Playwright E2E suite in `tests/e2e/navigation.spec.js` asserting that `.atlas-nav__toggle` remains hidden on desktop viewports while `#atlas-nav-panel` renders inline, and verifying full open/close toggle button interaction on mobile viewports.
 - **Universal Reverse-Proxy Client IP Resolution (`atlas_client_ip`):** Added `FILTER_CLIENT_IP` (`atlas_client_ip`) filter and `FILTER_RATE_LIMIT` (`atlas_contact_form_rate_limit`) constant in `Atlas\Contact_Form` allowing operators behind trusted reverse proxies, CDNs, or load balancers (AWS ALB, Cloudflare, Fastly, Nginx, Varnish) to safely provide validated client IPs for rate limiting without vendor lock-in.
 - **Hosting-Agnostic Security & Zero Trust Architecture Guide:** Added `docs/06-security-and-i18n/04-hosting-agnostic-security-and-zero-trust.md` detailing reverse-proxy real IP restoration, edge caching nonce management, CSP script hashing, and optional Zero Trust Network Access (ZTNA) / WAF recipes.
 - **Unit Test Suite Expansion:** Added test coverage for `FILTER_CLIENT_IP`, `FILTER_RATE_LIMIT`, and `nocache_headers()` emission during 503 maintenance mode interception (bringing total suite to 54 passing tests).
 
 ### Fixed
+- **Desktop Navigation Drawer Toggle Bug:** Fixed `.atlas-nav__toggle` base style from `display: inline-flex` to `display: none` in `theme/src/css/interactivity.css`. Prevented the mobile hamburger/sandwich toggle button from showing unconditionally on desktop viewports above the 48rem breakpoint upon client-side hydration.
 - **503 Maintenance Mode Cache Poisoning Prevention:** Issued `nocache_headers()` and wrapped header emission with `headers_sent()` checks in `Atlas\Maintenance::maybe_intercept()` to prevent CDNs, reverse proxies, and browser caches from retaining 503 error responses after maintenance mode concludes.
 
 ### Planned

@@ -36,10 +36,10 @@
  * Navigation drawer.
  * ------------------------------------------------------------------------- */
 
-/* The toggle button is JS-only: it ships hidden and the module reveals it on
-   hydration. The [hidden] attribute keeps it out of the no-JS layout. */
+/* The toggle button is mobile + JS-only: defaults to display: none on desktop
+   and pre-hydration, and reveals at mobile breakpoint once hydrated. */
 .atlas-nav__toggle {
-	display: inline-flex;
+	display: none;
 	align-items: center;
 	justify-content: center;
 	padding: 0.5rem;

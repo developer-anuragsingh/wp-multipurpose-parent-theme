@@ -6,7 +6,7 @@ test.describe( 'Atlas Mobile Navigation Drawer E2E', () => {
 		await page.goto( '/interactive' );
 	} );
 
-	test( 'desktop displays inline navigation without drawer collapse', async ( {
+	test( 'desktop displays inline navigation without drawer collapse and hides toggle', async ( {
 		page,
 		isMobile,
 	} ) => {
@@ -15,6 +15,10 @@ test.describe( 'Atlas Mobile Navigation Drawer E2E', () => {
 		}
 		const navPanel = page.locator( '#atlas-nav-panel' );
 		await expect( navPanel ).toBeVisible();
+
+		// The sandwich toggle button must be hidden on desktop (never visible on wide screens)
+		const toggle = page.locator( '.atlas-nav__toggle' );
+		await expect( toggle ).toBeHidden();
 	} );
 
 	test( 'mobile drawer toggle opens panel and manages aria-expanded', async ( {
@@ -37,5 +41,11 @@ test.describe( 'Atlas Mobile Navigation Drawer E2E', () => {
 		await page.keyboard.press( 'Escape' );
 		await expect( toggle ).toHaveAttribute( 'aria-expanded', 'false' );
 		await expect( toggle ).toBeFocused();
+
+		// Clicking toggle opens and clicking again closes
+		await toggle.click();
+		await expect( toggle ).toHaveAttribute( 'aria-expanded', 'true' );
+		await toggle.click();
+		await expect( toggle ).toHaveAttribute( 'aria-expanded', 'false' );
 	} );
 } );
