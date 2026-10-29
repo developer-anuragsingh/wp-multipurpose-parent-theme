@@ -25,6 +25,7 @@ const entry = {
 	copy: path.resolve( __dirname, 'theme/src/js/copy.js' ),
 	'ui-states': path.resolve( __dirname, 'theme/src/js/ui-states.js' ),
 	'contact-form': path.resolve( __dirname, 'theme/src/js/contact-form.js' ),
+	'infinite-scroll': path.resolve( __dirname, 'theme/src/js/infinite-scroll.js' ),
 };
 
 const outputPath = path.resolve( __dirname, 'theme/build' );

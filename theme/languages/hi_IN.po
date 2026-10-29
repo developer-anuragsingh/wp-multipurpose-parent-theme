@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Atlas Theme 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/atlas-theme/issues\n"
-"POT-Creation-Date: 2026-10-29 10:36+0530\n"
+"POT-Creation-Date: 2026-10-29 10:53+0530\n"
 "PO-Revision-Date: 2026-10-28 12:10+0530\n"
 "Last-Translator: Atlas Team <admin@example.com>\n"
 "Language-Team: Hindi <hi_IN@li.org>\n"
@@ -98,6 +98,27 @@ msgstr "कृपया एक मान्य ईमेल पता दर्�
 #: theme/inc/class-contact-form.php:651
 msgid "Please enter a message of at least 10 characters."
 msgstr "कृपया कम से कम 10 वर्णों का संदेश दर्ज करें।"
+
+#: theme/inc/class-infinite-scroll.php:120
+msgid "Loading more posts…"
+msgstr "अधिक पोस्ट लोड हो रही हैं…"
+
+#: theme/inc/class-infinite-scroll.php:121
+#: theme/inc/class-infinite-scroll.php:141
+msgid "Load more posts"
+msgstr "और पोस्ट लोड करें"
+
+#: theme/inc/class-infinite-scroll.php:122
+msgid "More posts loaded."
+msgstr "अधिक पोस्ट लोड हो गईं।"
+
+#: theme/inc/class-infinite-scroll.php:123
+msgid "All posts loaded."
+msgstr "सभी पोस्ट लोड हो चुकी हैं।"
+
+#: theme/inc/class-infinite-scroll.php:124
+msgid "Error loading posts."
+msgstr "पोस्ट लोड करने में त्रुटि हुई।"
 
 #: theme/inc/class-schema.php:460
 msgid "Home"
@@ -349,8 +370,8 @@ msgid ""
 "Every contribution powers transparent, verifiable change. Here is how our "
 "collective effort creates measurable progress."
 msgstr ""
-"प्रत्येक योगदान पारदर्शी, सत्यापन योग्य बदलाव को शक्ति देता है। यहाँ बताया गया है कि हमारा "
-"सामूहिक प्रयास कैसे मापने योग्य प्रगति बनाता है।"
+"प्रत्येक योगदान पारदर्शी, सत्यापन योग्य बदलाव को शक्ति देता है। यहाँ बताया गया है कि "
+"हमारा सामूहिक प्रयास कैसे मापने योग्य प्रगति बनाता है।"
 
 #: theme/patterns/impact-metrics.php:46
 msgid "Families Supported"
@@ -361,7 +382,8 @@ msgid ""
 "Direct humanitarian aid and clean water infrastructure delivered across 18 "
 "operational communities."
 msgstr ""
-"18 परिचालन समुदायों में प्रत्यक्ष मानवीय सहायता और स्वच्छ जल बुनियादी ढाँचा वितरित किया गया।"
+"18 परिचालन समुदायों में प्रत्यक्ष मानवीय सहायता और स्वच्छ जल बुनियादी ढाँचा वितरित किया "
+"गया।"
 
 #: theme/patterns/impact-metrics.php:62
 msgid "Direct Mission Funding"
@@ -383,7 +405,8 @@ msgid ""
 "Passionate volunteers providing grassroots educational guidance and regional "
 "disaster readiness."
 msgstr ""
-"जमीनी स्तर पर शैक्षिक मार्गदर्शन और क्षेत्रीय आपदा तत्परता प्रदान करने वाले समर्पित स्वयंसेवक।"
+"जमीनी स्तर पर शैक्षिक मार्गदर्शन और क्षेत्रीय आपदा तत्परता प्रदान करने वाले समर्पित "
+"स्वयंसेवक।"
 
 #: theme/patterns/impact-metrics.php:94
 msgid "Public Auditing"
@@ -394,7 +417,8 @@ msgid ""
 "Independently audited yearly financials, available for open inspection with "
 "zero obscured allocations."
 msgstr ""
-"स्वतंत्र रूप से जाँचे गए वार्षिक वित्तीय विवरण, बिना किसी अस्पष्ट आवंटन के खुली जाँच के लिए उपलब्ध।"
+"स्वतंत्र रूप से जाँचे गए वार्षिक वित्तीय विवरण, बिना किसी अस्पष्ट आवंटन के खुली जाँच के लिए "
+"उपलब्ध।"
 
 #: theme/patterns/impact-metrics.php:108
 msgid "Support Our Mission"
@@ -499,8 +523,7 @@ msgstr "विचार एवं दृष्टिकोण"
 msgid ""
 "Curated wisdom from pioneers in software design, engineering, and continuous "
 "learning."
-msgstr ""
-"सॉफ़्टवेयर डिज़ाइन, इंजीनियरिंग और निरंतर सीखने के मार्गदर्शकों के चुनिंदा विचार।"
+msgstr "सॉफ़्टवेयर डिज़ाइन, इंजीनियरिंग और निरंतर सीखने के मार्गदर्शकों के चुनिंदा विचार।"
 
 #: theme/patterns/quotes-masonry.php:38
 msgid "Simplicity is prerequisite for reliability."
@@ -514,8 +537,7 @@ msgstr "एड्सगर डब्ल्यू. डिज्क्स्ट्
 msgid ""
 "The most dangerous phrase in the language is, \"We've always done it this "
 "way.\""
-msgstr ""
-"भाषा का सबसे ख़तरनाक वाक्य है, \"हमने इसे हमेशा इसी तरह किया है।\""
+msgstr "भाषा का सबसे ख़तरनाक वाक्य है, \"हमने इसे हमेशा इसी तरह किया है।\""
 
 #: theme/patterns/quotes-masonry.php:46
 msgid "Grace Hopper"
@@ -526,7 +548,8 @@ msgid ""
 "Perfection is achieved, not when there is nothing more to add, but when "
 "there is nothing left to take away."
 msgstr ""
-"उत्कृष्टता तब प्राप्त नहीं होती जब कुछ जोड़ने के लिए न बचे, बल्कि तब होती है जब हटाने के लिए कुछ न बचे।"
+"उत्कृष्टता तब प्राप्त नहीं होती जब कुछ जोड़ने के लिए न बचे, बल्कि तब होती है जब हटाने के "
+"लिए कुछ न बचे।"
 
 #: theme/patterns/quotes-masonry.php:53
 msgid "Antoine de Saint-Exupéry"
@@ -553,7 +576,8 @@ msgid ""
 "Premature optimization is the root of all evil (or at least most of it) in "
 "programming."
 msgstr ""
-"प्रोग्रामिंग में समय से पहले ऑप्टिमाइज़ेशन करना सभी बुराइयों (या कम से कम उनमें से अधिकांश) की जड़ है।"
+"प्रोग्रामिंग में समय से पहले ऑप्टिमाइज़ेशन करना सभी बुराइयों (या कम से कम उनमें से अधिकांश) "
+"की जड़ है।"
 
 #: theme/patterns/quotes-masonry.php:74
 msgid "Donald E. Knuth"

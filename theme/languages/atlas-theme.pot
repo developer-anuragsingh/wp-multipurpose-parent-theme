@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Atlas Theme 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/atlas-theme/issues\n"
-"POT-Creation-Date: 2026-10-29 10:36+0530\n"
+"POT-Creation-Date: 2026-10-29 10:53+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -93,6 +93,27 @@ msgstr ""
 
 #: theme/inc/class-contact-form.php:651
 msgid "Please enter a message of at least 10 characters."
+msgstr ""
+
+#: theme/inc/class-infinite-scroll.php:120
+msgid "Loading more posts…"
+msgstr ""
+
+#: theme/inc/class-infinite-scroll.php:121
+#: theme/inc/class-infinite-scroll.php:141
+msgid "Load more posts"
+msgstr ""
+
+#: theme/inc/class-infinite-scroll.php:122
+msgid "More posts loaded."
+msgstr ""
+
+#: theme/inc/class-infinite-scroll.php:123
+msgid "All posts loaded."
+msgstr ""
+
+#: theme/inc/class-infinite-scroll.php:124
+msgid "Error loading posts."
 msgstr ""
 
 #: theme/inc/class-schema.php:460

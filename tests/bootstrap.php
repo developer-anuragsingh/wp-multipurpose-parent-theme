@@ -101,6 +101,12 @@ if ( ! function_exists( 'esc_url' ) ) {
 	}
 }
 
+if ( ! function_exists( 'esc_url_raw' ) ) {
+	function esc_url_raw( $url ) {
+		return filter_var( $url, FILTER_SANITIZE_URL ) ?: '';
+	}
+}
+
 if ( ! function_exists( 'esc_attr' ) ) {
 	function esc_attr( $text ) {
 		return htmlspecialchars( (string) $text, ENT_QUOTES, 'UTF-8' );

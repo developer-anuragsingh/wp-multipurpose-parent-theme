@@ -52,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Editorial Blog Table of Contents (`atlas/editorial-toc`):** Article reading companion featuring estimated reading time, verification badges, and a structured `<nav>` Table of Contents with deep anchor links for human navigation and GEO parsing.
 
 #### Automated Testing & CI/CD Pipeline
-- **PHP Unit Test Suite:** Lightweight, database-free unit test environment (`tests/bootstrap.php`, `tests/run-tests.php`) covering Speculation Rules, Robots AI policies, Block Bindings, Contact Form security, Transient Caching, 503 Maintenance, Niche Patterns, and Zero-PHP Child Theme architecture (37 tests total).
+- **PHP Unit Test Suite:** Lightweight, database-free unit test environment (`tests/bootstrap.php`, `tests/run-tests.php`) covering Speculation Rules, Robots AI policies, Block Bindings, Contact Form security, Transient Caching, 503 Maintenance, Niche Patterns, Zero-PHP Child Theme architecture, and Archive Infinite Scroll (45 tests total).
 - **PHPUnit Configuration:** Standard `phpunit.xml.dist` configuration file.
 - **JavaScript Unit Tests:** Native Node.js test runner suite (`tests/js/ui-states.test.js`) validating REST client outcome classification and contact form client-side contracts.
 - **CI Workflow Integration:** Updated `.github/workflows/ci.yml` to automatically execute `composer test` and `npm test` on every push and pull request.
@@ -77,10 +77,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Foundation & Frontend Interactivity
 - **FSE Architecture:** Full-Site Editing foundation driven by `theme.json` v3 design tokens, fluid typography (Inter + Sora), and zero-bloat template parts.
+- **Archive Infinite Scroll (`Atlas\Infinite_Scroll`):** Progressive enhancement infinite scroll for WordPress archive and query blocks powered by the `@wordpress/interactivity` API (`atlas/infinite-scroll`). Preserves server-rendered `core/query-pagination` for crawlability and non-JS clients, while hydrating automated `IntersectionObserver` loading and manual load-more triggers with polite live ARIA announcements and `prefers-reduced-motion` compliance.
 - **Interactivity API:** Zero-KB initial JS baseline powering accessible mobile navigation drawer, flicker-free dark/light mode toggle with per-request CSP nonce, and click-to-copy quote blocks.
 - **Accessible UI States:** Standardized async notification system (`parts/notifications.html`, `ui-states.css`) supporting offline banners, slow-request notices (8s), loading skeletons, and session expiration modals.
 
 ### Compliance & Quality Gates
-- **PHPCS:** 100% compliant with `WordPress` and `WordPress-Extra` rulesets (0 errors, 0 warnings across all 27 PHP files).
+- **PHPCS:** 100% compliant with `WordPress` and `WordPress-Extra` rulesets (0 errors, 0 warnings across all 28 PHP files).
 - **Linters:** ESLint and Stylelint pass with 0 errors.
 - **Accessibility:** Conforms to WCAG 2.2 Level AA guidelines.

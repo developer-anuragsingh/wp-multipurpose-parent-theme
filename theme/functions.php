@@ -60,3 +60,4 @@ Atlas\Markdown_Endpoint::init();
 Atlas\Llms_Txt::init();
 Atlas\Speculation_Rules::init();
 Atlas\Maintenance::init();
+Atlas\Infinite_Scroll::init();

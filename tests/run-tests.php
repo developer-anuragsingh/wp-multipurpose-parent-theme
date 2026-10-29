@@ -15,6 +15,7 @@ require_once __DIR__ . '/test-caching.php';
 require_once __DIR__ . '/test-maintenance.php';
 require_once __DIR__ . '/test-patterns.php';
 require_once __DIR__ . '/test-child-theme.php';
+require_once __DIR__ . '/test-infinite-scroll.php';
 
 echo "Running Atlas Theme Unit Tests...\n\n";
 
@@ -27,6 +28,7 @@ $suites = array(
 	'503 Maintenance'    => Test_Maintenance::run(),
 	'Niche Patterns'     => Test_Patterns::run(),
 	'Zero-PHP Child'     => Test_Child_Theme::run(),
+	'Infinite Scroll'    => Test_Infinite_Scroll::run(),
 );
 
 $total_tests = 0;
