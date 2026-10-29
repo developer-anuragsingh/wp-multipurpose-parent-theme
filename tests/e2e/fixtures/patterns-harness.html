@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Atlas Block Patterns Visual Regression Harness</title>
+
+	<style>
+		:root {
+			--wp--preset--color--primary: #1e3a8a;
+			--wp--preset--color--secondary: #0f766e;
+			--wp--preset--color--dark: #0f172a;
+			--wp--preset--color--light: #f8fafc;
+			--wp--preset--color--white: #ffffff;
+			--wp--preset--color--accent: #f59e0b;
+			--wp--preset--spacing--20: 0.5rem;
+			--wp--preset--spacing--30: 0.75rem;
+			--wp--preset--spacing--40: 1rem;
+			--wp--preset--spacing--50: 1.5rem;
+			--wp--preset--spacing--60: 2rem;
+			--wp--preset--font-size--small: 0.875rem;
+			--wp--preset--font-size--medium: 1rem;
+			--wp--preset--font-size--large: 1.25rem;
+			--wp--preset--font-size--x-large: 1.5rem;
+			--wp--preset--font-size--xx-large: 2rem;
+		}
+
+		body {
+			margin: 0;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+			background-color: var(--wp--preset--color--white);
+			color: var(--wp--preset--color--dark);
+			-webkit-font-smoothing: antialiased;
+		}
+
+		.has-light-background-color { background-color: var(--wp--preset--color--light); }
+		.has-white-background-color { background-color: var(--wp--preset--color--white); }
+		.has-dark-background-color { background-color: var(--wp--preset--color--dark); }
+		.has-accent-color { color: var(--wp--preset--color--accent); }
+		.has-white-color { color: var(--wp--preset--color--white); }
+		.has-dark-color { color: var(--wp--preset--color--dark); }
+		.has-border-color { border-color: #e2e8f0; }
+		.has-light-border-color { border-color: #e2e8f0; }
+		.has-xx-large-font-size { font-size: var(--wp--preset--font-size--xx-large); margin: 0; }
+		.has-large-font-size { font-size: var(--wp--preset--font-size--large); }
+		.has-medium-font-size { font-size: var(--wp--preset--font-size--medium); margin: 0; }
+		.has-small-font-size { font-size: var(--wp--preset--font-size--small); margin: 0; }
+
+		.wp-block-button__link {
+			display: inline-block;
+			padding: 0.75rem 1.5rem;
+			border-radius: 0.375rem;
+			text-decoration: none;
+			font-weight: 600;
+			cursor: pointer;
+		}
+		.has-primary-background-color { background-color: var(--wp--preset--color--primary); color: #fff; }
+		.is-style-outline .wp-block-button__link { border: 1px solid var(--wp--preset--color--primary); color: var(--wp--preset--color--primary); }
+	</style>
+
+	<link rel="stylesheet" href="/theme/src/css/interactivity.css">
+</head>
+<body>
+
+	<!-- 1. Hero Answer-First Pattern -->
+	<section id="pattern-hero" class="has-light-background-color" style="padding: 3rem 1.5rem; text-align: center;">
+		<h1 style="font-size: 2.25rem; margin-bottom: 1rem;">Build faster with a theme that answers first</h1>
+		<p class="has-large-font-size" style="max-width: 650px; margin: 0 auto 1.5rem;">Ship accessible, fast, answer-first pages. Every section is a composable block pattern styled entirely from your theme presets.</p>
+		<div style="display: flex; gap: 1rem; justify-content: center;">
+			<a class="wp-block-button__link has-primary-background-color" href="#">Get started</a>
+			<a class="wp-block-button__link is-style-outline" href="#">See how it works</a>
+		</div>
+	</section>
+
+	<!-- 2. NGO Impact Metrics Pattern -->
+	<section id="pattern-impact" style="padding: 3rem 1.5rem; max-width: 1000px; margin: 0 auto;" role="region" aria-label="Organizational Impact Metrics">
+		<div style="text-align: center; margin-bottom: 2rem;">
+			<h2 style="font-size: 1.75rem; margin-bottom: 0.5rem;">Real Impact, Driven by Community Trust</h2>
+			<p style="color: #64748b;">Every contribution powers transparent, verifiable change across 18 operational communities.</p>
+		</div>
+
+		<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+			<div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1.5rem; background: var(--wp--preset--color--light);">
+				<h3 class="has-accent-color has-xx-large-font-size">12,800+</h3>
+				<h4 class="has-medium-font-size" style="margin: 0.5rem 0;">Families Supported</h4>
+				<p class="has-small-font-size" style="color: #64748b;">Clean water and emergency food delivered across regions.</p>
+			</div>
+
+			<div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1.5rem; background: var(--wp--preset--color--light);">
+				<h3 class="has-accent-color has-xx-large-font-size">94%</h3>
+				<h4 class="has-medium-font-size" style="margin: 0.5rem 0;">Direct Mission Funding</h4>
+				<p class="has-small-font-size" style="color: #64748b;">94 cents of every dollar funds ground operations.</p>
+			</div>
+
+			<div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1.5rem; background: var(--wp--preset--color--light);">
+				<h3 class="has-accent-color has-xx-large-font-size">52,000+</h3>
+				<h4 class="has-medium-font-size" style="margin: 0.5rem 0;">Volunteer Hours</h4>
+				<p class="has-small-font-size" style="color: #64748b;">Grassroots advocates driving continuous education.</p>
+			</div>
+
+			<div style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1.5rem; background: var(--wp--preset--color--light);">
+				<h3 class="has-accent-color has-xx-large-font-size">100%</h3>
+				<h4 class="has-medium-font-size" style="margin: 0.5rem 0;">Public Auditing</h4>
+				<p class="has-small-font-size" style="color: #64748b;">Independently verified yearly financial statements.</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 3. Quotes Masonry Grid Pattern -->
+	<section id="pattern-quotes" style="padding: 3rem 1.5rem; background: var(--wp--preset--color--light);">
+		<div style="text-align: center; margin-bottom: 2rem;">
+			<h2 style="font-size: 1.75rem; margin-bottom: 0.5rem;">Insights & Perspective</h2>
+			<p style="color: #64748b;">Curated wisdom from pioneers in software design and reliability.</p>
+		</div>
+
+		<div class="atlas-masonry-grid" style="max-width: 1000px; margin: 0 auto;">
+			<blockquote class="wp-block-quote is-style-atlas-copyable" style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1.25rem; background: #fff; margin: 0;">
+				<p style="margin: 0 0 0.5rem; font-weight: 500;">Simplicity is prerequisite for reliability.</p>
+				<cite style="font-size: 0.875rem; color: #64748b;">Edsger W. Dijkstra</cite>
+			</blockquote>
+
+			<blockquote class="wp-block-quote is-style-atlas-copyable" style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1.25rem; background: #fff; margin: 0;">
+				<p style="margin: 0 0 0.5rem; font-weight: 500;">The most dangerous phrase in the language is, "We've always done it this way."</p>
+				<cite style="font-size: 0.875rem; color: #64748b;">Grace Hopper</cite>
+			</blockquote>
+
+			<blockquote class="wp-block-quote is-style-atlas-copyable" style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1.25rem; background: #fff; margin: 0;">
+				<p style="margin: 0 0 0.5rem; font-weight: 500;">Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away.</p>
+				<cite style="font-size: 0.875rem; color: #64748b;">Antoine de Saint-Exupéry</cite>
+			</blockquote>
+
+			<blockquote class="wp-block-quote is-style-atlas-copyable" style="border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1.25rem; background: #fff; margin: 0;">
+				<p style="margin: 0 0 0.5rem; font-weight: 500;">Talk is cheap. Show me the code.</p>
+				<cite style="font-size: 0.875rem; color: #64748b;">Linus Torvalds</cite>
+			</blockquote>
+		</div>
+	</section>
+
+</body>
+</html>

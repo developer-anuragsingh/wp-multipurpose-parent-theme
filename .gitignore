@@ -15,3 +15,9 @@ vendor/
 .agents/
 # Python virtualenv (local Nova Act SDK install)
 .venv/
+
+# Playwright test run results and reports
+test-results/
+playwright-report/
+blob-report/
+

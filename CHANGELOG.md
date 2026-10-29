@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Dedicated visual regression baselines for key WooCommerce and landing page patterns.
+- Dedicated visual regression baselines for remaining WooCommerce product archive and cart block states.
 - Optional `/llms-full.txt` full-content Markdown catalog expansion.
 
 ---
@@ -52,10 +52,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Editorial Blog Table of Contents (`atlas/editorial-toc`):** Article reading companion featuring estimated reading time, verification badges, and a structured `<nav>` Table of Contents with deep anchor links for human navigation and GEO parsing.
 
 #### Automated Testing & CI/CD Pipeline
+- **Playwright E2E & Visual Regression Suite:** Configured comprehensive end-to-end and visual regression testing (`playwright.config.js`, `tests/e2e/`) running across Desktop Chrome (1280x720) and Mobile Chrome (375x667) with `maxDiffPixelRatio: 0.05`.
+- **Lightweight Test Fixture Infrastructure:** Shipped a standalone native Node.js HTTP server (`tests/e2e/fixtures/server.js`) and `@wordpress/interactivity` mock runtime (`interactivity-runtime.js`) for reliable, hermetic test execution without external WordPress dependencies.
+- **Visual Regression Baselines:** Baseline pixel-comparison snapshots (`tests/e2e/visual-regression.spec.js`) for key block patterns: Answer-First Hero (`#pattern-hero`), NGO Impact Metrics (`#pattern-impact`), and Quotes Masonry Grid (`#pattern-quotes`).
+- **Interactive Component E2E Tests:**
+  - `navigation.spec.js`: Mobile drawer progressive toggle, `aria-expanded`, Escape key handler, focus trapping and restoration, desktop inline persistence.
+  - `theme-mode.spec.js`: Dark/light toggle, `data-theme` attribute mutation, and `localStorage` persistence across page reloads without flicker.
+  - `copy-quote.spec.js`: Progressive hydration check, clipboard copy execution, visible label flip ("Copied!"), and accessible `role="status"` `aria-live` announcement.
+  - `contact-form.spec.js`: Client-side required field validations, email format regex checking, honeypot anti-spam behavior, and error message cleanup.
 - **PHP Unit Test Suite:** Lightweight, database-free unit test environment (`tests/bootstrap.php`, `tests/run-tests.php`) covering Speculation Rules, Robots AI policies, Block Bindings, Contact Form security, Transient Caching, 503 Maintenance, Niche Patterns, Zero-PHP Child Theme architecture, and Archive Infinite Scroll (45 tests total).
 - **PHPUnit Configuration:** Standard `phpunit.xml.dist` configuration file.
 - **JavaScript Unit Tests:** Native Node.js test runner suite (`tests/js/ui-states.test.js`) validating REST client outcome classification and contact form client-side contracts.
-- **CI Workflow Integration:** Updated `.github/workflows/ci.yml` to automatically execute `composer test` and `npm test` on every push and pull request.
+- **CI Workflow Integration:** Updated `.github/workflows/ci.yml` with automated Playwright Chromium E2E testing alongside PHPCS, PHPUnit, ESLint, Stylelint, and gitleaks scans on every push and pull request.
 
 #### Localization & Internationalization (i18n)
 - **Translation Catalogs:** Extracted canonical `theme/languages/atlas-theme.pot` catalog using GNU gettext.

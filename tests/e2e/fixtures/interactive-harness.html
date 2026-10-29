@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Atlas Interactivity E2E Test Harness</title>
+
+	<!-- Design tokens matching theme.json v3 -->
+	<style>
+		:root {
+			--wp--preset--color--primary: #1e3a8a;
+			--wp--preset--color--secondary: #0f766e;
+			--wp--preset--color--dark: #0f172a;
+			--wp--preset--color--light: #f8fafc;
+			--wp--preset--color--white: #ffffff;
+			--wp--preset--color--accent: #f59e0b;
+			--wp--preset--spacing--20: 0.5rem;
+			--wp--preset--spacing--30: 0.75rem;
+			--wp--preset--spacing--40: 1rem;
+			--wp--preset--spacing--50: 1.5rem;
+			--wp--preset--spacing--60: 2rem;
+			--wp--preset--font-size--small: 0.875rem;
+			--wp--preset--font-size--medium: 1rem;
+			--wp--preset--font-size--large: 1.25rem;
+			--wp--preset--font-size--x-large: 1.5rem;
+			--wp--preset--font-size--xx-large: 2rem;
+		}
+
+		body {
+			margin: 0;
+			font-family: system-ui, -apple-system, sans-serif;
+			background-color: var(--wp--preset--color--light);
+			color: var(--wp--preset--color--dark);
+		}
+	</style>
+
+	<!-- Theme Stylesheets -->
+	<link rel="stylesheet" href="/theme/src/css/interactivity.css">
+	<link rel="stylesheet" href="/theme/src/css/ui-states.css">
+	<link rel="stylesheet" href="/theme/src/css/contact-form.css">
+
+	<!-- Import map for @wordpress/interactivity runtime -->
+	<script type="importmap">
+	{
+		"imports": {
+			"@wordpress/interactivity": "/interactivity-runtime.js"
+		}
+	}
+	</script>
+
+	<!-- Nonce head script for theme-mode -->
+	<script>
+		(function(){try{var m=localStorage.getItem('atlas-theme-mode');if(!m){m=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',m);}catch(e){}})();
+	</script>
+</head>
+<body>
+	<!-- 1. Header with Drawer and Theme Toggle (matching theme/parts/header.html) -->
+	<header class="wp-block-group" style="padding: 1rem; display: flex; justify-content: space-between; align-items: center; position: relative;">
+		<div class="site-title"><strong>Atlas Theme</strong></div>
+
+		<div class="atlas-nav" data-wp-interactive="atlas/navigation" data-wp-context='{ "isOpen": false, "isDrawer": false }' data-breakpoint="48rem" data-wp-init="callbacks.init" data-wp-on--keydown="actions.handleKeydown">
+			<button type="button" class="atlas-nav__toggle" hidden data-wp-on--click="actions.toggle" data-wp-bind--aria-expanded="state.ariaExpanded" aria-controls="atlas-nav-panel" aria-label="Toggle navigation menu">
+				<span class="atlas-nav__icon atlas-nav__icon-open" aria-hidden="true">&#9776;</span>
+				<span class="atlas-nav__icon atlas-nav__icon-close" aria-hidden="true">&#10005;</span>
+			</button>
+
+			<nav id="atlas-nav-panel" class="atlas-nav__panel" tabindex="-1" aria-label="Primary navigation" data-wp-bind--role="state.dialogRole" data-wp-bind--aria-modal="state.ariaModal" data-wp-bind--hidden="state.drawerHidden" data-wp-watch="callbacks.watchOpen">
+				<ul style="display: flex; gap: 1rem; list-style: none; margin: 0; padding: 0;">
+					<li><a href="#home">Home</a></li>
+					<li><a href="#services">Services</a></li>
+					<li><a href="#about">About</a></li>
+					<li><a href="#contact">Contact</a></li>
+				</ul>
+			</nav>
+		</div>
+
+		<button type="button" class="atlas-theme-toggle" hidden data-wp-interactive="atlas/theme-mode" data-wp-init="callbacks.init" data-wp-on--click="actions.toggleTheme" data-wp-bind--aria-pressed="state.ariaPressed" data-wp-bind--aria-label="state.toggleLabel" aria-label="Toggle colour theme">
+			<span class="atlas-theme-toggle__icon atlas-theme-toggle__sun" aria-hidden="true">&#9728;</span>
+			<span class="atlas-theme-toggle__icon atlas-theme-toggle__moon" aria-hidden="true">&#9790;</span>
+		</button>
+	</header>
+
+	<main style="padding: 2rem; max-width: 800px; margin: 0 auto;">
+		<!-- 2. Copyable Quote Section -->
+		<section>
+			<h2>Quotes Section</h2>
+			<blockquote class="wp-block-quote is-style-atlas-copyable" style="border-left: 4px solid var(--wp--preset--color--primary); padding-left: 1rem;">
+				<p>Simplicity is prerequisite for reliability.</p>
+				<cite>Edsger W. Dijkstra</cite>
+
+				<div class="atlas-copy" data-wp-interactive="atlas/copy" data-wp-context='{"copied":false,"labelCopy":"Copy quote","labelCopied":"Copied!"}' data-wp-init="callbacks.init">
+					<button type="button" class="atlas-copy__button" hidden data-wp-on--click="actions.copy" data-wp-bind--aria-label="state.triggerLabel" data-wp-class--is-copied="state.isCopied">
+						<span class="atlas-copy__icon" aria-hidden="true" data-wp-text="state.iconGlyph">&#10697;</span>
+						<span class="atlas-copy__label" data-wp-text="state.visibleLabel">Copy quote</span>
+					</button>
+					<span class="atlas-copy__status" role="status" aria-live="polite" data-wp-text="state.statusText"></span>
+				</div>
+			</blockquote>
+		</section>
+
+		<!-- 3. Contact Form Section -->
+		<section style="margin-top: 3rem;">
+			<h2>Contact Us</h2>
+			<form id="atlas-contact-form" class="atlas-contact-form" action="#" method="POST" novalidate>
+				<div class="atlas-field">
+					<label for="contact-name">Name <span aria-hidden="true">*</span></label>
+					<input type="text" id="contact-name" name="name" required>
+					<span class="atlas-field__error" id="name-error" role="alert"></span>
+				</div>
+
+				<div class="atlas-field" style="margin-top: 1rem;">
+					<label for="contact-email">Email <span aria-hidden="true">*</span></label>
+					<input type="email" id="contact-email" name="email" required>
+					<span class="atlas-field__error" id="email-error" role="alert"></span>
+				</div>
+
+				<div class="atlas-field" style="margin-top: 1rem;">
+					<label for="contact-message">Message <span aria-hidden="true">*</span></label>
+					<textarea id="contact-message" name="message" rows="4" required minlength="10"></textarea>
+					<span class="atlas-field__error" id="message-error" role="alert"></span>
+				</div>
+
+				<!-- Honeypot anti-spam field -->
+				<div class="atlas-contact-hp" style="display: none;" aria-hidden="true">
+					<label for="website-hp">Leave this empty</label>
+					<input type="text" id="website-hp" name="atlas_hp" tabindex="-1" autocomplete="off">
+				</div>
+
+				<button type="submit" class="atlas-contact-form__submit" style="margin-top: 1rem; padding: 0.5rem 1rem;">Send message</button>
+			</form>
+		</section>
+	</main>
+
+	<!-- Load built ESM script modules -->
+	<script type="module" src="/theme/build/navigation.js"></script>
+	<script type="module" src="/theme/build/theme-mode.js"></script>
+	<script type="module" src="/theme/build/copy.js"></script>
+
+	<!-- Contact form client-side validator -->
+	<script>
+		const form = document.getElementById('atlas-contact-form');
+		if (form) {
+			form.addEventListener('submit', (e) => {
+				e.preventDefault();
+				let hasError = false;
+
+				const nameInput = document.getElementById('contact-name');
+				const nameError = document.getElementById('name-error');
+				if (!nameInput.value.trim()) {
+					nameError.textContent = 'Please enter your name.';
+					hasError = true;
+				} else {
+					nameError.textContent = '';
+				}
+
+				const emailInput = document.getElementById('contact-email');
+				const emailError = document.getElementById('email-error');
+				const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+				if (!emailPattern.test(emailInput.value.trim())) {
+					emailError.textContent = 'Please enter a valid email address.';
+					hasError = true;
+				} else {
+					emailError.textContent = '';
+				}
+
+				const messageInput = document.getElementById('contact-message');
+				const messageError = document.getElementById('message-error');
+				if (messageInput.value.trim().length < 10) {
+					messageError.textContent = 'Please enter a message of at least 10 characters.';
+					hasError = true;
+				} else {
+					messageError.textContent = '';
+				}
+			});
+		}
+	</script>
+</body>
+</html>
