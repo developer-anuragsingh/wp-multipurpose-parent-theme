@@ -214,6 +214,34 @@
 }
 
 /* -------------------------------------------------------------------------
+ * Quotes & Status Niche — 0 KB JS Masonry Grid.
+ * ------------------------------------------------------------------------- */
+.atlas-masonry-grid {
+	container-type: inline-size;
+	column-count: 1;
+	column-gap: var(--wp--preset--spacing--40, 1.5rem);
+}
+
+@container (min-width: 38rem) {
+
+	.atlas-masonry-grid {
+		column-count: 2;
+	}
+}
+
+@container (min-width: 62rem) {
+
+	.atlas-masonry-grid {
+		column-count: 3;
+	}
+}
+
+.atlas-masonry-grid > * {
+	break-inside: avoid;
+	margin-block-end: var(--wp--preset--spacing--40, 1.5rem);
+}
+
+/* -------------------------------------------------------------------------
  * Reduced motion: JS never animates; drop CSS transitions to ~0.
  * ------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {

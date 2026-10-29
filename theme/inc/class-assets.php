@@ -146,6 +146,10 @@ class Assets {
 			return $block_content;
 		}
 
+		if ( function_exists( 'wp_enqueue_script_module' ) ) {
+			wp_enqueue_script_module( self::HANDLE_COPY );
+		}
+
 		$context = wp_json_encode(
 			array(
 				'copied'      => false,

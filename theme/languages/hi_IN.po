@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Atlas Theme 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/atlas-theme/issues\n"
-"POT-Creation-Date: 2026-10-28 12:04+0530\n"
+"POT-Creation-Date: 2026-10-29 10:36+0530\n"
 "PO-Revision-Date: 2026-10-28 12:10+0530\n"
 "Last-Translator: Atlas Team <admin@example.com>\n"
 "Language-Team: Hindi <hi_IN@li.org>\n"
@@ -16,44 +16,44 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: inc/class-schema.php:384
-msgid "Home"
-msgstr "होम"
-
-#: inc/class-assets.php:116
+#: theme/inc/class-assets.php:116
 msgid "Copyable"
 msgstr "कॉपी करने योग्य"
 
-#: inc/class-assets.php:152 inc/class-assets.php:170
+#: theme/inc/class-assets.php:156 theme/inc/class-assets.php:174
 msgid "Copy quote"
 msgstr "उद्धरण कॉपी करें"
 
-#: inc/class-assets.php:153
+#: theme/inc/class-assets.php:157
 msgid "Copied!"
 msgstr "कॉपी हो गया!"
 
-#: inc/class-assets.php:240
+#: theme/inc/class-assets.php:244
 msgid "Switch to light mode"
 msgstr "लाइट मोड पर स्विच करें"
 
-#: inc/class-assets.php:241
+#: theme/inc/class-assets.php:245
 msgid "Switch to dark mode"
 msgstr "डार्क मोड पर स्विच करें"
 
-#: inc/class-contact-form.php:288
+#: theme/inc/class-bindings.php:141
+msgid "Atlas Post Meta"
+msgstr "एटलस पोस्ट मेटा"
+
+#: theme/inc/class-contact-form.php:288
 msgid "Contact Form"
 msgstr "संपर्क फ़ॉर्म"
 
-#: inc/class-contact-form.php:511 inc/class-contact-form.php:647
+#: theme/inc/class-contact-form.php:511 theme/inc/class-contact-form.php:647
 msgid "Too many requests. Please try again later."
 msgstr "बहुत सारे अनुरोध। कृपया कुछ समय बाद पुनः प्रयास करें।"
 
-#: inc/class-contact-form.php:554
+#: theme/inc/class-contact-form.php:554
 #, php-format
 msgid "New contact message from %s"
 msgstr "%s से नया संपर्क संदेश"
 
-#: inc/class-contact-form.php:560
+#: theme/inc/class-contact-form.php:560
 #, php-format
 msgid ""
 "Name: %1$s\n"
@@ -68,365 +68,554 @@ msgstr ""
 "संदेश:\n"
 "%3$s"
 
-#: inc/class-contact-form.php:591 inc/class-contact-form.php:645
-#: patterns/contact-form.php:71
+#: theme/inc/class-contact-form.php:591 theme/inc/class-contact-form.php:645
+#: theme/patterns/contact-form.php:71
 msgid "Thanks — your message has been sent."
 msgstr "धन्यवाद — आपका संदेश भेज दिया गया है।"
 
-#: inc/class-contact-form.php:592 inc/class-contact-form.php:648
-#: patterns/contact-form.php:72
+#: theme/inc/class-contact-form.php:592 theme/inc/class-contact-form.php:648
+#: theme/patterns/contact-form.php:72
 msgid "Please check the form and try again."
 msgstr "कृपया फ़ॉर्म की जाँच करें और पुनः प्रयास करें।"
 
-#: inc/class-contact-form.php:593 inc/class-contact-form.php:646
-#: patterns/contact-form.php:73
+#: theme/inc/class-contact-form.php:593 theme/inc/class-contact-form.php:646
+#: theme/patterns/contact-form.php:73
 msgid "Something went wrong. Please try again later."
 msgstr "कुछ गलत हो गया। कृपया बाद में पुनः प्रयास करें।"
 
-#: inc/class-contact-form.php:644
+#: theme/inc/class-contact-form.php:644
 msgid "Sending your message…"
 msgstr "आपका संदेश भेजा जा रहा है…"
 
-#: inc/class-contact-form.php:649
+#: theme/inc/class-contact-form.php:649
 msgid "Please enter your name."
 msgstr "कृपया अपना नाम दर्ज करें।"
 
-#: inc/class-contact-form.php:650
+#: theme/inc/class-contact-form.php:650
 msgid "Please enter a valid email address."
 msgstr "कृपया एक मान्य ईमेल पता दर्ज करें।"
 
-#: inc/class-contact-form.php:651
+#: theme/inc/class-contact-form.php:651
 msgid "Please enter a message of at least 10 characters."
 msgstr "कृपया कम से कम 10 वर्णों का संदेश दर्ज करें।"
 
-#: inc/class-ui-states.php:148
+#: theme/inc/class-schema.php:460
+msgid "Home"
+msgstr "होम"
+
+#: theme/inc/class-ui-states.php:148
 msgid "Atlas"
 msgstr "एटलस"
 
-#: inc/class-ui-states.php:203
+#: theme/inc/class-ui-states.php:203
 msgid "You appear to be offline. Check your connection and try again."
 msgstr "आप ऑफ़लाइन प्रतीत होते हैं। अपने इंटरनेट कनेक्शन की जाँच करें और पुनः प्रयास करें।"
 
-#: inc/class-ui-states.php:204
+#: theme/inc/class-ui-states.php:204
 msgid "This is taking longer than usual. Please wait."
 msgstr "इसमें सामान्य से अधिक समय लग रहा है। कृपया प्रतीक्षा करें।"
 
-#: inc/class-ui-states.php:205
+#: theme/inc/class-ui-states.php:205
 msgid "Something went wrong. Please try again."
 msgstr "कुछ गलत हो गया। कृपया पुनः प्रयास करें।"
 
-#: inc/class-ui-states.php:206 inc/class-ui-states.php:320
+#: theme/inc/class-ui-states.php:206 theme/inc/class-ui-states.php:320
 msgid "The site is undergoing maintenance. Please try again shortly."
 msgstr "साइट पर रखरखाव कार्य चल रहा है। कृपया शीघ्र ही पुनः प्रयास करें।"
 
-#: inc/class-ui-states.php:207
+#: theme/inc/class-ui-states.php:207
 msgid "Done."
 msgstr "पूर्ण।"
 
-#: inc/class-ui-states.php:208
+#: theme/inc/class-ui-states.php:208
 msgid "Your session has expired. Please sign in again to continue."
 msgstr "आपका सत्र समाप्त हो गया है। जारी रखने के लिए कृपया पुनः साइन इन करें।"
 
-#: inc/class-ui-states.php:209
+#: theme/inc/class-ui-states.php:209
 msgid "Your comment has been posted."
 msgstr "आपकी टिप्पणी पोस्ट कर दी गई है।"
 
-#: inc/class-ui-states.php:210
+#: theme/inc/class-ui-states.php:210
 msgid "Your comment is awaiting moderation."
 msgstr "आपकी टिप्पणी समीक्षा के लिए प्रतीक्षारत है।"
 
-#: inc/class-ui-states.php:292
+#: theme/inc/class-ui-states.php:292
 msgid "Your session has expired. Please refresh and sign in again."
 msgstr "आपका सत्र समाप्त हो गया है। कृपया पृष्ठ रीफ्रेश करें और पुनः साइन इन करें।"
 
-#: inc/class-ui-states.php:330
+#: theme/inc/class-ui-states.php:330
 msgid "Request completed successfully."
 msgstr "अनुरोध सफलतापूर्वक पूरा हुआ।"
 
-#: inc/class-bindings.php:141
-msgid "Atlas Post Meta"
-msgstr "एटलस पोस्ट मेटा"
-
-#: patterns/stats-band.php:27
-msgid "Trusted by teams that ship"
-msgstr "उत्कृष्ट टीमों द्वारा विश्वसनीय"
-
-#: patterns/stats-band.php:39
-msgid "Uptime across deployments"
-msgstr "तैनाती में अपटाइम"
-
-#: patterns/stats-band.php:51
-msgid "JavaScript on the front end"
-msgstr "फ़्रंट-एंड पर जावास्क्रिप्ट"
-
-#: patterns/stats-band.php:63
-msgid "Composable section patterns"
-msgstr "संयोजनीय अनुभाग पैटर्न्स"
-
-#: patterns/stats-band.php:75
-msgid "WCAG contrast target"
-msgstr "WCAG कंट्रास्ट लक्ष्य"
-
-#: patterns/hero-answer-first.php:27
-msgid "Build faster with a theme that answers first"
-msgstr "आंसर-फ़र्स्ट थीम के साथ तेज़ी से निर्माण करें"
-
-#: patterns/hero-answer-first.php:31
-msgid ""
-"Ship accessible, fast, answer-first pages. Every section is a composable "
-"block pattern styled entirely from your theme presets."
-msgstr ""
-"सुलभ, तेज़ और आंसर-फ़र्स्ट पृष्ठ प्रकाशित करें। प्रत्येक अनुभाग एक संयोजनीय "
-"ब्लॉक पैटर्न है जो आपकी थीम प्रीसेट से स्टाइल किया गया है।"
-
-#: patterns/hero-answer-first.php:37 patterns/pricing-table.php:57
-msgid "Get started"
-msgstr "शुरू करें"
-
-#: patterns/hero-answer-first.php:41
-msgid "See how it works"
-msgstr "देखें यह कैसे काम करता है"
-
-#: patterns/testimonial.php:32
-msgid "Reviewer avatar"
-msgstr "समीक्षक का अवतार"
-
-#: patterns/testimonial.php:36
-msgid ""
-"This theme let us launch an accessible, answer-first site in days instead of "
-"weeks. The section patterns are a joy to work with."
-msgstr ""
-"इस थीम ने हमें हफ़्तों के बजाय दिनों में एक सुलभ, आंसर-फ़र्स्ट साइट लॉन्च करने "
-"में मदद की। इसके सेक्शन पैटर्न्स के साथ काम करना बेहद सहज है।"
-
-#: patterns/testimonial.php:40
-msgid "Jordan Rivera, Head of Web"
-msgstr "जॉर्डन रिवेरा, वेब प्रमुख"
-
-#: patterns/bound-subtitle.php:30
-msgid "Add a subtitle for this post"
-msgstr "इस पोस्ट के लिए एक उपशीर्षक जोड़ें"
-
-#: patterns/search-no-results.php:47
-msgid "No results found"
-msgstr "कोई परिणाम नहीं मिला"
-
-#: patterns/search-no-results.php:51
-msgid ""
-"We could not find anything matching your search. Try different keywords, or "
-"explore one of the suggested topics below."
-msgstr ""
-"आपकी खोज से मेल खाता कुछ भी नहीं मिला। अन्य कीवर्ड आज़माएँ, या नीचे दिए गए "
-"सुझावों में से किसी एक को देखें।"
-
-#: patterns/search-no-results.php:54
-msgid "Search"
-msgstr "खोजें"
-
-#: patterns/search-no-results.php:54
-msgid "Search again…"
-msgstr "पुनः खोजें…"
-
-#: patterns/search-no-results.php:58 patterns/search-no-results.php:62
-msgid "Suggested topics"
-msgstr "सुझाए गए विषय"
-
-#: patterns/key-takeaways.php:26
-msgid "Key takeaways"
-msgstr "मुख्य बिंदु"
-
-#: patterns/key-takeaways.php:32
-msgid "Every section is a reusable, inserter-visible block pattern."
-msgstr "प्रत्येक अनुभाग एक पुन: प्रयोज्य, इनसर्टर-दृश्यमान ब्लॉक पैटर्न है।"
-
-#: patterns/key-takeaways.php:36
-msgid ""
-"Styling comes entirely from theme.json presets — no inline hex or pixels."
-msgstr ""
-"स्टाइलिंग पूरी तरह theme.json प्रीसेट से आती है — कोई इनलाइन हेक्स या पिक्सेल नहीं।"
-
-#: patterns/key-takeaways.php:40
-msgid ""
-"Markup is answer-first and accessible, with a single logical heading outline."
-msgstr ""
-"मार्कअप आंसर-फ़र्स्ट और सुलभ है, जिसमें एक तार्किक शीर्षक रूपरेखा है।"
-
-#: patterns/archive-empty-state.php:25
+#: theme/patterns/archive-empty-state.php:25
 msgid "Nothing here yet"
 msgstr "यहाँ अभी कुछ नहीं है"
 
-#: patterns/archive-empty-state.php:29
+#: theme/patterns/archive-empty-state.php:29
 msgid ""
 "There are no posts in this archive right now. Head back to the home page to "
 "explore the latest content."
 msgstr ""
 "इस संग्रह में अभी कोई पोस्ट नहीं है। नवीनतम सामग्री देखने के लिए होम पेज पर वापस जाएँ।"
 
-#: patterns/archive-empty-state.php:35
+#: theme/patterns/archive-empty-state.php:35
 msgid "Back to home"
 msgstr "होम पर वापस जाएँ"
 
-#: patterns/faq.php:25
+#: theme/patterns/bound-subtitle.php:30
+msgid "Add a subtitle for this post"
+msgstr "इस पोस्ट के लिए एक उपशीर्षक जोड़ें"
+
+#: theme/patterns/contact-form.php:80
+msgid "Contact us"
+msgstr "हमसे संपर्क करें"
+
+#: theme/patterns/contact-form.php:113
+msgid "Name"
+msgstr "नाम"
+
+#: theme/patterns/contact-form.php:132
+msgid "Email"
+msgstr "ईमेल"
+
+#: theme/patterns/contact-form.php:151
+msgid "Message"
+msgstr "संदेश"
+
+#: theme/patterns/contact-form.php:171
+msgid "Leave this field empty"
+msgstr "इस फ़ील्ड को खाली छोड़ें"
+
+#: theme/patterns/contact-form.php:190
+msgid "Send message"
+msgstr "संदेश भेजें"
+
+#: theme/patterns/editorial-toc.php:24
+msgid "Article Overview and Table of Contents"
+msgstr "लेख अवलोकन एवं विषय-सूची"
+
+#: theme/patterns/editorial-toc.php:28
+msgid "Reading time:"
+msgstr "पढ़ने का समय:"
+
+#: theme/patterns/editorial-toc.php:28
+msgid "5 minutes"
+msgstr "5 मिनट"
+
+#: theme/patterns/editorial-toc.php:32
+msgid "Status:"
+msgstr "स्थिति:"
+
+#: theme/patterns/editorial-toc.php:32
+msgid "Fact-Checked & Verified"
+msgstr "तथ्य-जाँचित एवं सत्यापित"
+
+#: theme/patterns/editorial-toc.php:36
+msgid "Version:"
+msgstr "संस्करण:"
+
+#: theme/patterns/editorial-toc.php:36
+msgid "October 2026"
+msgstr "अक्टूबर 2026"
+
+#: theme/patterns/editorial-toc.php:48
+msgid "Table of Contents"
+msgstr "विषय-सूची"
+
+#: theme/patterns/editorial-toc.php:54
+msgid "1. Executive Summary & Findings"
+msgstr "1. कार्यकारी सारांश एवं निष्कर्ष"
+
+#: theme/patterns/editorial-toc.php:58
+msgid "2. Core Architecture & Design Tokens"
+msgstr "2. मूल आर्किटेक्चर एवं डिज़ाइन टोकन"
+
+#: theme/patterns/editorial-toc.php:62
+msgid "3. Interactivity API Contracts"
+msgstr "3. इंटरएक्टिविटी एपीआई अनुबंध"
+
+#: theme/patterns/editorial-toc.php:66
+msgid "4. Performance & Core Web Vitals"
+msgstr "4. परफ़ॉर्मेंस एवं कोर वेब वाइटल्स"
+
+#: theme/patterns/editorial-toc.php:70
+msgid "5. Conclusion & Implementation Notes"
+msgstr "5. निष्कर्ष एवं कार्यान्वयन नोट्स"
+
+#: theme/patterns/faq.php:25
 msgid "Frequently asked questions"
 msgstr "अक्सर पूछे जाने वाले प्रश्न"
 
-#: patterns/faq.php:29
+#: theme/patterns/faq.php:29
 msgid "How do I use these patterns?"
 msgstr "मैं इन पैटर्न्स का उपयोग कैसे करूँ?"
 
-#: patterns/faq.php:31
+#: theme/patterns/faq.php:31
 msgid ""
 "Open the block inserter, search the Atlas category, and drop any section "
 "into your page. Each pattern is fully editable after insertion."
 msgstr ""
-"ब्लॉक इनसर्टर खोलें, एटलस श्रेणी खोजें, और किसी भी अनुभाग को अपने पृष्ठ में जोड़ें। "
-"प्रत्येक पैटर्न सम्मिलित करने के बाद पूरी तरह संपादन योग्य है।"
+"ब्लॉक इनसर्टर खोलें, एटलस श्रेणी खोजें, और किसी भी अनुभाग को अपने पृष्ठ में जोड़ें। प्रत्येक "
+"पैटर्न सम्मिलित करने के बाद पूरी तरह संपादन योग्य है।"
 
-#: patterns/faq.php:37
+#: theme/patterns/faq.php:37
 msgid "Do the patterns require any JavaScript?"
 msgstr "क्या इन पैटर्न्स के लिए जावास्क्रिप्ट की आवश्यकता है?"
 
-#: patterns/faq.php:39
+#: theme/patterns/faq.php:39
 msgid ""
 "No. This FAQ uses the native details element, and every pattern relies only "
 "on block supports and theme presets, so pages stay fast and work without "
 "scripts."
 msgstr ""
-"नहीं। यह FAQ नेटिव details तत्व का उपयोग करता है, और प्रत्येक पैटर्न केवल ब्लॉक "
-"सपोर्ट और थीम प्रीसेट पर निर्भर करता है, इसलिए पृष्ठ तेज़ रहते हैं और बिना स्क्रिप्ट के काम करते हैं।"
+"नहीं। यह FAQ नेटिव details तत्व का उपयोग करता है, और प्रत्येक पैटर्न केवल ब्लॉक सपोर्ट "
+"और थीम प्रीसेट पर निर्भर करता है, इसलिए पृष्ठ तेज़ रहते हैं और बिना स्क्रिप्ट के काम करते हैं।"
 
-#: patterns/faq.php:45
+#: theme/patterns/faq.php:45
 msgid "Can I change the colours and spacing?"
 msgstr "क्या मैं रंग और स्पेसिंग बदल सकता हूँ?"
 
-#: patterns/faq.php:47
+#: theme/patterns/faq.php:47
 msgid ""
 "Yes. Colours, spacing, and typography all come from your theme presets, so "
 "adjusting the theme updates every pattern consistently."
 msgstr ""
-"हाँ। रंग, स्पेसिंग और टाइपोग्राफी सभी आपकी थीम प्रीसेट से आते हैं, इसलिए थीम को "
-"समायोजित करने से प्रत्येक पैटर्न सुसंगत रूप से अपडेट होता है।"
+"हाँ। रंग, स्पेसिंग और टाइपोग्राफी सभी आपकी थीम प्रीसेट से आते हैं, इसलिए थीम को समायोजित "
+"करने से प्रत्येक पैटर्न सुसंगत रूप से अपडेट होता है।"
 
-#: patterns/feature-grid.php:26
+#: theme/patterns/feature-grid.php:26
 msgid "Everything you need to ship"
 msgstr "आपको निर्माण करने के लिए आवश्यक सब कुछ"
 
-#: patterns/feature-grid.php:34
+#: theme/patterns/feature-grid.php:34
 msgid "Composable sections"
 msgstr "संयोजनीय अनुभाग"
 
-#: patterns/feature-grid.php:38
+#: theme/patterns/feature-grid.php:38
 msgid "Mix and match focused section patterns to assemble any page in minutes."
 msgstr "मिनटों में कोई भी पृष्ठ तैयार करने के लिए अनुभाग पैटर्न्स को मिलाएं और मिलान करें।"
 
-#: patterns/feature-grid.php:46
+#: theme/patterns/feature-grid.php:46
 msgid "Preset-driven styling"
 msgstr "प्रीसेट-संचालित स्टाइलिंग"
 
-#: patterns/feature-grid.php:50
+#: theme/patterns/feature-grid.php:50
 msgid ""
 "Colours, spacing, and type scale all flow from theme.json, so your brand "
 "stays consistent."
 msgstr ""
-"रंग, स्पेसिंग और टाइप स्केल सभी theme.json से संचालित होते हैं, जिससे आपका ब्रांड सुसंगत रहता है।"
+"रंग, स्पेसिंग और टाइप स्केल सभी theme.json से संचालित होते हैं, जिससे आपका ब्रांड सुसंगत "
+"रहता है।"
 
-#: patterns/feature-grid.php:58
+#: theme/patterns/feature-grid.php:58
 msgid "Accessible by default"
 msgstr "डिफ़ॉल्ट रूप से सुलभ"
 
-#: patterns/feature-grid.php:62
+#: theme/patterns/feature-grid.php:62
 msgid ""
 "Semantic markup, logical heading order, and AA-contrast colours are built in."
 msgstr "सिमेंटिक मार्कअप, तार्किक शीर्षक क्रम और AA-कंट्रास्ट रंग इसमें अंतर्निहित हैं।"
 
-#: patterns/contact-form.php:80
-msgid "Contact us"
-msgstr "हमसे संपर्क करें"
+#: theme/patterns/hero-answer-first.php:27
+msgid "Build faster with a theme that answers first"
+msgstr "आंसर-फ़र्स्ट थीम के साथ तेज़ी से निर्माण करें"
 
-#: patterns/contact-form.php:113
-msgid "Name"
-msgstr "नाम"
+#: theme/patterns/hero-answer-first.php:31
+msgid ""
+"Ship accessible, fast, answer-first pages. Every section is a composable "
+"block pattern styled entirely from your theme presets."
+msgstr ""
+"सुलभ, तेज़ और आंसर-फ़र्स्ट पृष्ठ प्रकाशित करें। प्रत्येक अनुभाग एक संयोजनीय ब्लॉक पैटर्न है जो "
+"आपकी थीम प्रीसेट से स्टाइल किया गया है।"
 
-#: patterns/contact-form.php:132
-msgid "Email"
-msgstr "ईमेल"
+#: theme/patterns/hero-answer-first.php:37 theme/patterns/pricing-table.php:57
+msgid "Get started"
+msgstr "शुरू करें"
 
-#: patterns/contact-form.php:151
-msgid "Message"
-msgstr "संदेश"
+#: theme/patterns/hero-answer-first.php:41
+msgid "See how it works"
+msgstr "देखें यह कैसे काम करता है"
 
-#: patterns/contact-form.php:171
-msgid "Leave this field empty"
-msgstr "इस फ़ील्ड को खाली छोड़ें"
+#: theme/patterns/impact-metrics.php:24
+msgid "Organizational Impact Metrics"
+msgstr "संगठनात्मक प्रभाव मेट्रिक्स"
 
-#: patterns/contact-form.php:190
-msgid "Send message"
-msgstr "संदेश भेजें"
+#: theme/patterns/impact-metrics.php:28
+msgid "Real Impact, Driven by Community Trust"
+msgstr "सामुदायिक विश्वास से संचालित वास्तविक प्रभाव"
 
-#: patterns/pricing-table.php:27
+#: theme/patterns/impact-metrics.php:32
+msgid ""
+"Every contribution powers transparent, verifiable change. Here is how our "
+"collective effort creates measurable progress."
+msgstr ""
+"प्रत्येक योगदान पारदर्शी, सत्यापन योग्य बदलाव को शक्ति देता है। यहाँ बताया गया है कि हमारा "
+"सामूहिक प्रयास कैसे मापने योग्य प्रगति बनाता है।"
+
+#: theme/patterns/impact-metrics.php:46
+msgid "Families Supported"
+msgstr "सहायता प्राप्त परिवार"
+
+#: theme/patterns/impact-metrics.php:50
+msgid ""
+"Direct humanitarian aid and clean water infrastructure delivered across 18 "
+"operational communities."
+msgstr ""
+"18 परिचालन समुदायों में प्रत्यक्ष मानवीय सहायता और स्वच्छ जल बुनियादी ढाँचा वितरित किया गया।"
+
+#: theme/patterns/impact-metrics.php:62
+msgid "Direct Mission Funding"
+msgstr "प्रत्यक्ष मिशन फंडिंग"
+
+#: theme/patterns/impact-metrics.php:66
+msgid ""
+"94 cents of every single dollar received is deployed directly into ground "
+"programs and community initiatives."
+msgstr ""
+"प्राप्त प्रत्येक डॉलर में से 94 सेंट सीधे जमीनी कार्यक्रमों और सामुदायिक पहलों में लगाए जाते हैं।"
+
+#: theme/patterns/impact-metrics.php:78
+msgid "Volunteer Hours"
+msgstr "स्वयंसेवक घंटे"
+
+#: theme/patterns/impact-metrics.php:82
+msgid ""
+"Passionate volunteers providing grassroots educational guidance and regional "
+"disaster readiness."
+msgstr ""
+"जमीनी स्तर पर शैक्षिक मार्गदर्शन और क्षेत्रीय आपदा तत्परता प्रदान करने वाले समर्पित स्वयंसेवक।"
+
+#: theme/patterns/impact-metrics.php:94
+msgid "Public Auditing"
+msgstr "सार्वजनिक ऑडिटिंग"
+
+#: theme/patterns/impact-metrics.php:98
+msgid ""
+"Independently audited yearly financials, available for open inspection with "
+"zero obscured allocations."
+msgstr ""
+"स्वतंत्र रूप से जाँचे गए वार्षिक वित्तीय विवरण, बिना किसी अस्पष्ट आवंटन के खुली जाँच के लिए उपलब्ध।"
+
+#: theme/patterns/impact-metrics.php:108
+msgid "Support Our Mission"
+msgstr "हमारे मिशन का समर्थन करें"
+
+#: theme/patterns/impact-metrics.php:112
+msgid "Download 2026 Audit Report"
+msgstr "2026 ऑडिट रिपोर्ट डाउनलोड करें"
+
+#: theme/patterns/key-takeaways.php:26
+msgid "Key takeaways"
+msgstr "मुख्य बिंदु"
+
+#: theme/patterns/key-takeaways.php:32
+msgid "Every section is a reusable, inserter-visible block pattern."
+msgstr "प्रत्येक अनुभाग एक पुन: प्रयोज्य, इनसर्टर-दृश्यमान ब्लॉक पैटर्न है।"
+
+#: theme/patterns/key-takeaways.php:36
+msgid ""
+"Styling comes entirely from theme.json presets — no inline hex or pixels."
+msgstr ""
+"स्टाइलिंग पूरी तरह theme.json प्रीसेट से आती है — कोई इनलाइन हेक्स या पिक्सेल नहीं।"
+
+#: theme/patterns/key-takeaways.php:40
+msgid ""
+"Markup is answer-first and accessible, with a single logical heading outline."
+msgstr "मार्कअप आंसर-फ़र्स्ट और सुलभ है, जिसमें एक तार्किक शीर्षक रूपरेखा है।"
+
+#: theme/patterns/pricing-table.php:27
 msgid "Simple, transparent pricing"
 msgstr "सरल, पारदर्शी मूल्य निर्धारण"
 
-#: patterns/pricing-table.php:35
+#: theme/patterns/pricing-table.php:35
 msgid "Starter"
 msgstr "स्टार्टर"
 
-#: patterns/pricing-table.php:39
+#: theme/patterns/pricing-table.php:39
 msgid "$0"
 msgstr "$0"
 
-#: patterns/pricing-table.php:45
+#: theme/patterns/pricing-table.php:45
 msgid "All core section patterns"
 msgstr "सभी मुख्य अनुभाग पैटर्न्स"
 
-#: patterns/pricing-table.php:49
+#: theme/patterns/pricing-table.php:49
 msgid "Community support"
 msgstr "सामुदायिक सहायता"
 
-#: patterns/pricing-table.php:67
+#: theme/patterns/pricing-table.php:67
 msgid "Pro (most popular)"
 msgstr "प्रो (सर्वाधिक लोकप्रिय)"
 
-#: patterns/pricing-table.php:71
+#: theme/patterns/pricing-table.php:71
 msgid "$19/mo"
 msgstr "$19/माह"
 
-#: patterns/pricing-table.php:77
+#: theme/patterns/pricing-table.php:77
 msgid "Everything in Starter"
 msgstr "स्टार्टर की सभी सुविधाएं"
 
-#: patterns/pricing-table.php:81
+#: theme/patterns/pricing-table.php:81
 msgid "Synced pattern overrides"
 msgstr "सिंक किए गए पैटर्न ओवरराइड"
 
-#: patterns/pricing-table.php:85
+#: theme/patterns/pricing-table.php:85
 msgid "Priority support"
 msgstr "प्राथमिकता सहायता"
 
-#: patterns/pricing-table.php:93
+#: theme/patterns/pricing-table.php:93
 msgid "Choose Pro"
 msgstr "प्रो चुनें"
 
-#: patterns/pricing-table.php:103
+#: theme/patterns/pricing-table.php:103
 msgid "Enterprise"
 msgstr "एंटरप्राइज"
 
-#: patterns/pricing-table.php:107
+#: theme/patterns/pricing-table.php:107
 msgid "Custom"
 msgstr "कस्टम"
 
-#: patterns/pricing-table.php:113
+#: theme/patterns/pricing-table.php:113
 msgid "Everything in Pro"
 msgstr "प्रो की सभी सुविधाएं"
 
-#: patterns/pricing-table.php:117
+#: theme/patterns/pricing-table.php:117
 msgid "Dedicated onboarding"
 msgstr "समर्पित ऑनबोर्डिंग"
 
-#: patterns/pricing-table.php:121
+#: theme/patterns/pricing-table.php:121
 msgid "SLA and account management"
 msgstr "SLA और खाता प्रबंधन"
 
-#: patterns/pricing-table.php:129
+#: theme/patterns/pricing-table.php:129
 msgid "Contact sales"
 msgstr "बिक्री टीम से संपर्क करें"
+
+#: theme/patterns/quotes-masonry.php:27
+msgid "Insights & Perspective"
+msgstr "विचार एवं दृष्टिकोण"
+
+#: theme/patterns/quotes-masonry.php:31
+msgid ""
+"Curated wisdom from pioneers in software design, engineering, and continuous "
+"learning."
+msgstr ""
+"सॉफ़्टवेयर डिज़ाइन, इंजीनियरिंग और निरंतर सीखने के मार्गदर्शकों के चुनिंदा विचार।"
+
+#: theme/patterns/quotes-masonry.php:38
+msgid "Simplicity is prerequisite for reliability."
+msgstr "सरलता विश्वसनीयता की पहली शर्त है।"
+
+#: theme/patterns/quotes-masonry.php:39
+msgid "Edsger W. Dijkstra"
+msgstr "एड्सगर डब्ल्यू. डिज्क्स्ट्रा"
+
+#: theme/patterns/quotes-masonry.php:45
+msgid ""
+"The most dangerous phrase in the language is, \"We've always done it this "
+"way.\""
+msgstr ""
+"भाषा का सबसे ख़तरनाक वाक्य है, \"हमने इसे हमेशा इसी तरह किया है।\""
+
+#: theme/patterns/quotes-masonry.php:46
+msgid "Grace Hopper"
+msgstr "ग्रेस हॉपर"
+
+#: theme/patterns/quotes-masonry.php:52
+msgid ""
+"Perfection is achieved, not when there is nothing more to add, but when "
+"there is nothing left to take away."
+msgstr ""
+"उत्कृष्टता तब प्राप्त नहीं होती जब कुछ जोड़ने के लिए न बचे, बल्कि तब होती है जब हटाने के लिए कुछ न बचे।"
+
+#: theme/patterns/quotes-masonry.php:53
+msgid "Antoine de Saint-Exupéry"
+msgstr "एंटोनी डी सेंट-एक्जिपेरी"
+
+#: theme/patterns/quotes-masonry.php:59
+msgid "Simple things should be simple, complex things should be possible."
+msgstr "सरल चीज़ें सरल होनी चाहिए, जटिल चीज़ें संभव होनी चाहिए।"
+
+#: theme/patterns/quotes-masonry.php:60
+msgid "Alan Kay"
+msgstr "एलन के"
+
+#: theme/patterns/quotes-masonry.php:66
+msgid "Talk is cheap. Show me the code."
+msgstr "बातें करना आसान है। मुझे कोड दिखाओ।"
+
+#: theme/patterns/quotes-masonry.php:67
+msgid "Linus Torvalds"
+msgstr "लिनुस टोरवाल्ड्स"
+
+#: theme/patterns/quotes-masonry.php:73
+msgid ""
+"Premature optimization is the root of all evil (or at least most of it) in "
+"programming."
+msgstr ""
+"प्रोग्रामिंग में समय से पहले ऑप्टिमाइज़ेशन करना सभी बुराइयों (या कम से कम उनमें से अधिकांश) की जड़ है।"
+
+#: theme/patterns/quotes-masonry.php:74
+msgid "Donald E. Knuth"
+msgstr "डोनाल्ड ई. नुथ"
+
+#: theme/patterns/search-no-results.php:47
+msgid "No results found"
+msgstr "कोई परिणाम नहीं मिला"
+
+#: theme/patterns/search-no-results.php:51
+msgid ""
+"We could not find anything matching your search. Try different keywords, or "
+"explore one of the suggested topics below."
+msgstr ""
+"आपकी खोज से मेल खाता कुछ भी नहीं मिला। अन्य कीवर्ड आज़माएँ, या नीचे दिए गए सुझावों में से "
+"किसी एक को देखें।"
+
+#: theme/patterns/search-no-results.php:54
+msgid "Search"
+msgstr "खोजें"
+
+#: theme/patterns/search-no-results.php:54
+msgid "Search again…"
+msgstr "पुनः खोजें…"
+
+#: theme/patterns/search-no-results.php:58
+#: theme/patterns/search-no-results.php:62
+msgid "Suggested topics"
+msgstr "सुझाए गए विषय"
+
+#: theme/patterns/stats-band.php:27
+msgid "Trusted by teams that ship"
+msgstr "उत्कृष्ट टीमों द्वारा विश्वसनीय"
+
+#: theme/patterns/stats-band.php:39
+msgid "Uptime across deployments"
+msgstr "तैनाती में अपटाइम"
+
+#: theme/patterns/stats-band.php:51
+msgid "JavaScript on the front end"
+msgstr "फ़्रंट-एंड पर जावास्क्रिप्ट"
+
+#: theme/patterns/stats-band.php:63
+msgid "Composable section patterns"
+msgstr "संयोजनीय अनुभाग पैटर्न्स"
+
+#: theme/patterns/stats-band.php:75
+msgid "WCAG contrast target"
+msgstr "WCAG कंट्रास्ट लक्ष्य"
+
+#: theme/patterns/testimonial.php:32
+msgid "Reviewer avatar"
+msgstr "समीक्षक का अवतार"
+
+#: theme/patterns/testimonial.php:36
+msgid ""
+"This theme let us launch an accessible, answer-first site in days instead of "
+"weeks. The section patterns are a joy to work with."
+msgstr ""
+"इस थीम ने हमें हफ़्तों के बजाय दिनों में एक सुलभ, आंसर-फ़र्स्ट साइट लॉन्च करने में मदद की। इसके "
+"सेक्शन पैटर्न्स के साथ काम करना बेहद सहज है।"
+
+#: theme/patterns/testimonial.php:40
+msgid "Jordan Rivera, Head of Web"
+msgstr "जॉर्डन रिवेरा, वेब प्रमुख"

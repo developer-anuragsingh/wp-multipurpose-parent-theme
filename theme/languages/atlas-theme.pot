@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Atlas Theme 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/atlas-theme/issues\n"
-"POT-Creation-Date: 2026-10-28 12:04+0530\n"
+"POT-Creation-Date: 2026-10-29 10:36+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,44 +17,44 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: inc/class-schema.php:384
-msgid "Home"
-msgstr ""
-
-#: inc/class-assets.php:116
+#: theme/inc/class-assets.php:116
 msgid "Copyable"
 msgstr ""
 
-#: inc/class-assets.php:152 inc/class-assets.php:170
+#: theme/inc/class-assets.php:156 theme/inc/class-assets.php:174
 msgid "Copy quote"
 msgstr ""
 
-#: inc/class-assets.php:153
+#: theme/inc/class-assets.php:157
 msgid "Copied!"
 msgstr ""
 
-#: inc/class-assets.php:240
+#: theme/inc/class-assets.php:244
 msgid "Switch to light mode"
 msgstr ""
 
-#: inc/class-assets.php:241
+#: theme/inc/class-assets.php:245
 msgid "Switch to dark mode"
 msgstr ""
 
-#: inc/class-contact-form.php:288
+#: theme/inc/class-bindings.php:141
+msgid "Atlas Post Meta"
+msgstr ""
+
+#: theme/inc/class-contact-form.php:288
 msgid "Contact Form"
 msgstr ""
 
-#: inc/class-contact-form.php:511 inc/class-contact-form.php:647
+#: theme/inc/class-contact-form.php:511 theme/inc/class-contact-form.php:647
 msgid "Too many requests. Please try again later."
 msgstr ""
 
-#: inc/class-contact-form.php:554
+#: theme/inc/class-contact-form.php:554
 #, php-format
 msgid "New contact message from %s"
 msgstr ""
 
-#: inc/class-contact-form.php:560
+#: theme/inc/class-contact-form.php:560
 #, php-format
 msgid ""
 "Name: %1$s\n"
@@ -64,349 +64,528 @@ msgid ""
 "%3$s"
 msgstr ""
 
-#: inc/class-contact-form.php:591 inc/class-contact-form.php:645
-#: patterns/contact-form.php:71
+#: theme/inc/class-contact-form.php:591 theme/inc/class-contact-form.php:645
+#: theme/patterns/contact-form.php:71
 msgid "Thanks — your message has been sent."
 msgstr ""
 
-#: inc/class-contact-form.php:592 inc/class-contact-form.php:648
-#: patterns/contact-form.php:72
+#: theme/inc/class-contact-form.php:592 theme/inc/class-contact-form.php:648
+#: theme/patterns/contact-form.php:72
 msgid "Please check the form and try again."
 msgstr ""
 
-#: inc/class-contact-form.php:593 inc/class-contact-form.php:646
-#: patterns/contact-form.php:73
+#: theme/inc/class-contact-form.php:593 theme/inc/class-contact-form.php:646
+#: theme/patterns/contact-form.php:73
 msgid "Something went wrong. Please try again later."
 msgstr ""
 
-#: inc/class-contact-form.php:644
+#: theme/inc/class-contact-form.php:644
 msgid "Sending your message…"
 msgstr ""
 
-#: inc/class-contact-form.php:649
+#: theme/inc/class-contact-form.php:649
 msgid "Please enter your name."
 msgstr ""
 
-#: inc/class-contact-form.php:650
+#: theme/inc/class-contact-form.php:650
 msgid "Please enter a valid email address."
 msgstr ""
 
-#: inc/class-contact-form.php:651
+#: theme/inc/class-contact-form.php:651
 msgid "Please enter a message of at least 10 characters."
 msgstr ""
 
-#: inc/class-ui-states.php:148
+#: theme/inc/class-schema.php:460
+msgid "Home"
+msgstr ""
+
+#: theme/inc/class-ui-states.php:148
 msgid "Atlas"
 msgstr ""
 
-#: inc/class-ui-states.php:203
+#: theme/inc/class-ui-states.php:203
 msgid "You appear to be offline. Check your connection and try again."
 msgstr ""
 
-#: inc/class-ui-states.php:204
+#: theme/inc/class-ui-states.php:204
 msgid "This is taking longer than usual. Please wait."
 msgstr ""
 
-#: inc/class-ui-states.php:205
+#: theme/inc/class-ui-states.php:205
 msgid "Something went wrong. Please try again."
 msgstr ""
 
-#: inc/class-ui-states.php:206 inc/class-ui-states.php:320
+#: theme/inc/class-ui-states.php:206 theme/inc/class-ui-states.php:320
 msgid "The site is undergoing maintenance. Please try again shortly."
 msgstr ""
 
-#: inc/class-ui-states.php:207
+#: theme/inc/class-ui-states.php:207
 msgid "Done."
 msgstr ""
 
-#: inc/class-ui-states.php:208
+#: theme/inc/class-ui-states.php:208
 msgid "Your session has expired. Please sign in again to continue."
 msgstr ""
 
-#: inc/class-ui-states.php:209
+#: theme/inc/class-ui-states.php:209
 msgid "Your comment has been posted."
 msgstr ""
 
-#: inc/class-ui-states.php:210
+#: theme/inc/class-ui-states.php:210
 msgid "Your comment is awaiting moderation."
 msgstr ""
 
-#: inc/class-ui-states.php:292
+#: theme/inc/class-ui-states.php:292
 msgid "Your session has expired. Please refresh and sign in again."
 msgstr ""
 
-#: inc/class-ui-states.php:330
+#: theme/inc/class-ui-states.php:330
 msgid "Request completed successfully."
 msgstr ""
 
-#: inc/class-bindings.php:141
-msgid "Atlas Post Meta"
-msgstr ""
-
-#: patterns/stats-band.php:27
-msgid "Trusted by teams that ship"
-msgstr ""
-
-#: patterns/stats-band.php:39
-msgid "Uptime across deployments"
-msgstr ""
-
-#: patterns/stats-band.php:51
-msgid "JavaScript on the front end"
-msgstr ""
-
-#: patterns/stats-band.php:63
-msgid "Composable section patterns"
-msgstr ""
-
-#: patterns/stats-band.php:75
-msgid "WCAG contrast target"
-msgstr ""
-
-#: patterns/hero-answer-first.php:27
-msgid "Build faster with a theme that answers first"
-msgstr ""
-
-#: patterns/hero-answer-first.php:31
-msgid ""
-"Ship accessible, fast, answer-first pages. Every section is a composable "
-"block pattern styled entirely from your theme presets."
-msgstr ""
-
-#: patterns/hero-answer-first.php:37 patterns/pricing-table.php:57
-msgid "Get started"
-msgstr ""
-
-#: patterns/hero-answer-first.php:41
-msgid "See how it works"
-msgstr ""
-
-#: patterns/testimonial.php:32
-msgid "Reviewer avatar"
-msgstr ""
-
-#: patterns/testimonial.php:36
-msgid ""
-"This theme let us launch an accessible, answer-first site in days instead of "
-"weeks. The section patterns are a joy to work with."
-msgstr ""
-
-#: patterns/testimonial.php:40
-msgid "Jordan Rivera, Head of Web"
-msgstr ""
-
-#: patterns/bound-subtitle.php:30
-msgid "Add a subtitle for this post"
-msgstr ""
-
-#: patterns/search-no-results.php:47
-msgid "No results found"
-msgstr ""
-
-#: patterns/search-no-results.php:51
-msgid ""
-"We could not find anything matching your search. Try different keywords, or "
-"explore one of the suggested topics below."
-msgstr ""
-
-#: patterns/search-no-results.php:54
-msgid "Search"
-msgstr ""
-
-#: patterns/search-no-results.php:54
-msgid "Search again…"
-msgstr ""
-
-#: patterns/search-no-results.php:58 patterns/search-no-results.php:62
-msgid "Suggested topics"
-msgstr ""
-
-#: patterns/key-takeaways.php:26
-msgid "Key takeaways"
-msgstr ""
-
-#: patterns/key-takeaways.php:32
-msgid "Every section is a reusable, inserter-visible block pattern."
-msgstr ""
-
-#: patterns/key-takeaways.php:36
-msgid ""
-"Styling comes entirely from theme.json presets — no inline hex or pixels."
-msgstr ""
-
-#: patterns/key-takeaways.php:40
-msgid ""
-"Markup is answer-first and accessible, with a single logical heading outline."
-msgstr ""
-
-#: patterns/archive-empty-state.php:25
+#: theme/patterns/archive-empty-state.php:25
 msgid "Nothing here yet"
 msgstr ""
 
-#: patterns/archive-empty-state.php:29
+#: theme/patterns/archive-empty-state.php:29
 msgid ""
 "There are no posts in this archive right now. Head back to the home page to "
 "explore the latest content."
 msgstr ""
 
-#: patterns/archive-empty-state.php:35
+#: theme/patterns/archive-empty-state.php:35
 msgid "Back to home"
 msgstr ""
 
-#: patterns/faq.php:25
+#: theme/patterns/bound-subtitle.php:30
+msgid "Add a subtitle for this post"
+msgstr ""
+
+#: theme/patterns/contact-form.php:80
+msgid "Contact us"
+msgstr ""
+
+#: theme/patterns/contact-form.php:113
+msgid "Name"
+msgstr ""
+
+#: theme/patterns/contact-form.php:132
+msgid "Email"
+msgstr ""
+
+#: theme/patterns/contact-form.php:151
+msgid "Message"
+msgstr ""
+
+#: theme/patterns/contact-form.php:171
+msgid "Leave this field empty"
+msgstr ""
+
+#: theme/patterns/contact-form.php:190
+msgid "Send message"
+msgstr ""
+
+#: theme/patterns/editorial-toc.php:24
+msgid "Article Overview and Table of Contents"
+msgstr ""
+
+#: theme/patterns/editorial-toc.php:28
+msgid "Reading time:"
+msgstr ""
+
+#: theme/patterns/editorial-toc.php:28
+msgid "5 minutes"
+msgstr ""
+
+#: theme/patterns/editorial-toc.php:32
+msgid "Status:"
+msgstr ""
+
+#: theme/patterns/editorial-toc.php:32
+msgid "Fact-Checked & Verified"
+msgstr ""
+
+#: theme/patterns/editorial-toc.php:36
+msgid "Version:"
+msgstr ""
+
+#: theme/patterns/editorial-toc.php:36
+msgid "October 2026"
+msgstr ""
+
+#: theme/patterns/editorial-toc.php:48
+msgid "Table of Contents"
+msgstr ""
+
+#: theme/patterns/editorial-toc.php:54
+msgid "1. Executive Summary & Findings"
+msgstr ""
+
+#: theme/patterns/editorial-toc.php:58
+msgid "2. Core Architecture & Design Tokens"
+msgstr ""
+
+#: theme/patterns/editorial-toc.php:62
+msgid "3. Interactivity API Contracts"
+msgstr ""
+
+#: theme/patterns/editorial-toc.php:66
+msgid "4. Performance & Core Web Vitals"
+msgstr ""
+
+#: theme/patterns/editorial-toc.php:70
+msgid "5. Conclusion & Implementation Notes"
+msgstr ""
+
+#: theme/patterns/faq.php:25
 msgid "Frequently asked questions"
 msgstr ""
 
-#: patterns/faq.php:29
+#: theme/patterns/faq.php:29
 msgid "How do I use these patterns?"
 msgstr ""
 
-#: patterns/faq.php:31
+#: theme/patterns/faq.php:31
 msgid ""
 "Open the block inserter, search the Atlas category, and drop any section "
 "into your page. Each pattern is fully editable after insertion."
 msgstr ""
 
-#: patterns/faq.php:37
+#: theme/patterns/faq.php:37
 msgid "Do the patterns require any JavaScript?"
 msgstr ""
 
-#: patterns/faq.php:39
+#: theme/patterns/faq.php:39
 msgid ""
 "No. This FAQ uses the native details element, and every pattern relies only "
 "on block supports and theme presets, so pages stay fast and work without "
 "scripts."
 msgstr ""
 
-#: patterns/faq.php:45
+#: theme/patterns/faq.php:45
 msgid "Can I change the colours and spacing?"
 msgstr ""
 
-#: patterns/faq.php:47
+#: theme/patterns/faq.php:47
 msgid ""
 "Yes. Colours, spacing, and typography all come from your theme presets, so "
 "adjusting the theme updates every pattern consistently."
 msgstr ""
 
-#: patterns/feature-grid.php:26
+#: theme/patterns/feature-grid.php:26
 msgid "Everything you need to ship"
 msgstr ""
 
-#: patterns/feature-grid.php:34
+#: theme/patterns/feature-grid.php:34
 msgid "Composable sections"
 msgstr ""
 
-#: patterns/feature-grid.php:38
+#: theme/patterns/feature-grid.php:38
 msgid "Mix and match focused section patterns to assemble any page in minutes."
 msgstr ""
 
-#: patterns/feature-grid.php:46
+#: theme/patterns/feature-grid.php:46
 msgid "Preset-driven styling"
 msgstr ""
 
-#: patterns/feature-grid.php:50
+#: theme/patterns/feature-grid.php:50
 msgid ""
 "Colours, spacing, and type scale all flow from theme.json, so your brand "
 "stays consistent."
 msgstr ""
 
-#: patterns/feature-grid.php:58
+#: theme/patterns/feature-grid.php:58
 msgid "Accessible by default"
 msgstr ""
 
-#: patterns/feature-grid.php:62
+#: theme/patterns/feature-grid.php:62
 msgid ""
 "Semantic markup, logical heading order, and AA-contrast colours are built in."
 msgstr ""
 
-#: patterns/contact-form.php:80
-msgid "Contact us"
+#: theme/patterns/hero-answer-first.php:27
+msgid "Build faster with a theme that answers first"
 msgstr ""
 
-#: patterns/contact-form.php:113
-msgid "Name"
+#: theme/patterns/hero-answer-first.php:31
+msgid ""
+"Ship accessible, fast, answer-first pages. Every section is a composable "
+"block pattern styled entirely from your theme presets."
 msgstr ""
 
-#: patterns/contact-form.php:132
-msgid "Email"
+#: theme/patterns/hero-answer-first.php:37 theme/patterns/pricing-table.php:57
+msgid "Get started"
 msgstr ""
 
-#: patterns/contact-form.php:151
-msgid "Message"
+#: theme/patterns/hero-answer-first.php:41
+msgid "See how it works"
 msgstr ""
 
-#: patterns/contact-form.php:171
-msgid "Leave this field empty"
+#: theme/patterns/impact-metrics.php:24
+msgid "Organizational Impact Metrics"
 msgstr ""
 
-#: patterns/contact-form.php:190
-msgid "Send message"
+#: theme/patterns/impact-metrics.php:28
+msgid "Real Impact, Driven by Community Trust"
 msgstr ""
 
-#: patterns/pricing-table.php:27
+#: theme/patterns/impact-metrics.php:32
+msgid ""
+"Every contribution powers transparent, verifiable change. Here is how our "
+"collective effort creates measurable progress."
+msgstr ""
+
+#: theme/patterns/impact-metrics.php:46
+msgid "Families Supported"
+msgstr ""
+
+#: theme/patterns/impact-metrics.php:50
+msgid ""
+"Direct humanitarian aid and clean water infrastructure delivered across 18 "
+"operational communities."
+msgstr ""
+
+#: theme/patterns/impact-metrics.php:62
+msgid "Direct Mission Funding"
+msgstr ""
+
+#: theme/patterns/impact-metrics.php:66
+msgid ""
+"94 cents of every single dollar received is deployed directly into ground "
+"programs and community initiatives."
+msgstr ""
+
+#: theme/patterns/impact-metrics.php:78
+msgid "Volunteer Hours"
+msgstr ""
+
+#: theme/patterns/impact-metrics.php:82
+msgid ""
+"Passionate volunteers providing grassroots educational guidance and regional "
+"disaster readiness."
+msgstr ""
+
+#: theme/patterns/impact-metrics.php:94
+msgid "Public Auditing"
+msgstr ""
+
+#: theme/patterns/impact-metrics.php:98
+msgid ""
+"Independently audited yearly financials, available for open inspection with "
+"zero obscured allocations."
+msgstr ""
+
+#: theme/patterns/impact-metrics.php:108
+msgid "Support Our Mission"
+msgstr ""
+
+#: theme/patterns/impact-metrics.php:112
+msgid "Download 2026 Audit Report"
+msgstr ""
+
+#: theme/patterns/key-takeaways.php:26
+msgid "Key takeaways"
+msgstr ""
+
+#: theme/patterns/key-takeaways.php:32
+msgid "Every section is a reusable, inserter-visible block pattern."
+msgstr ""
+
+#: theme/patterns/key-takeaways.php:36
+msgid ""
+"Styling comes entirely from theme.json presets — no inline hex or pixels."
+msgstr ""
+
+#: theme/patterns/key-takeaways.php:40
+msgid ""
+"Markup is answer-first and accessible, with a single logical heading outline."
+msgstr ""
+
+#: theme/patterns/pricing-table.php:27
 msgid "Simple, transparent pricing"
 msgstr ""
 
-#: patterns/pricing-table.php:35
+#: theme/patterns/pricing-table.php:35
 msgid "Starter"
 msgstr ""
 
-#: patterns/pricing-table.php:39
+#: theme/patterns/pricing-table.php:39
 msgid "$0"
 msgstr ""
 
-#: patterns/pricing-table.php:45
+#: theme/patterns/pricing-table.php:45
 msgid "All core section patterns"
 msgstr ""
 
-#: patterns/pricing-table.php:49
+#: theme/patterns/pricing-table.php:49
 msgid "Community support"
 msgstr ""
 
-#: patterns/pricing-table.php:67
+#: theme/patterns/pricing-table.php:67
 msgid "Pro (most popular)"
 msgstr ""
 
-#: patterns/pricing-table.php:71
+#: theme/patterns/pricing-table.php:71
 msgid "$19/mo"
 msgstr ""
 
-#: patterns/pricing-table.php:77
+#: theme/patterns/pricing-table.php:77
 msgid "Everything in Starter"
 msgstr ""
 
-#: patterns/pricing-table.php:81
+#: theme/patterns/pricing-table.php:81
 msgid "Synced pattern overrides"
 msgstr ""
 
-#: patterns/pricing-table.php:85
+#: theme/patterns/pricing-table.php:85
 msgid "Priority support"
 msgstr ""
 
-#: patterns/pricing-table.php:93
+#: theme/patterns/pricing-table.php:93
 msgid "Choose Pro"
 msgstr ""
 
-#: patterns/pricing-table.php:103
+#: theme/patterns/pricing-table.php:103
 msgid "Enterprise"
 msgstr ""
 
-#: patterns/pricing-table.php:107
+#: theme/patterns/pricing-table.php:107
 msgid "Custom"
 msgstr ""
 
-#: patterns/pricing-table.php:113
+#: theme/patterns/pricing-table.php:113
 msgid "Everything in Pro"
 msgstr ""
 
-#: patterns/pricing-table.php:117
+#: theme/patterns/pricing-table.php:117
 msgid "Dedicated onboarding"
 msgstr ""
 
-#: patterns/pricing-table.php:121
+#: theme/patterns/pricing-table.php:121
 msgid "SLA and account management"
 msgstr ""
 
-#: patterns/pricing-table.php:129
+#: theme/patterns/pricing-table.php:129
 msgid "Contact sales"
+msgstr ""
+
+#: theme/patterns/quotes-masonry.php:27
+msgid "Insights & Perspective"
+msgstr ""
+
+#: theme/patterns/quotes-masonry.php:31
+msgid ""
+"Curated wisdom from pioneers in software design, engineering, and continuous "
+"learning."
+msgstr ""
+
+#: theme/patterns/quotes-masonry.php:38
+msgid "Simplicity is prerequisite for reliability."
+msgstr ""
+
+#: theme/patterns/quotes-masonry.php:39
+msgid "Edsger W. Dijkstra"
+msgstr ""
+
+#: theme/patterns/quotes-masonry.php:45
+msgid ""
+"The most dangerous phrase in the language is, \"We've always done it this "
+"way.\""
+msgstr ""
+
+#: theme/patterns/quotes-masonry.php:46
+msgid "Grace Hopper"
+msgstr ""
+
+#: theme/patterns/quotes-masonry.php:52
+msgid ""
+"Perfection is achieved, not when there is nothing more to add, but when "
+"there is nothing left to take away."
+msgstr ""
+
+#: theme/patterns/quotes-masonry.php:53
+msgid "Antoine de Saint-Exupéry"
+msgstr ""
+
+#: theme/patterns/quotes-masonry.php:59
+msgid "Simple things should be simple, complex things should be possible."
+msgstr ""
+
+#: theme/patterns/quotes-masonry.php:60
+msgid "Alan Kay"
+msgstr ""
+
+#: theme/patterns/quotes-masonry.php:66
+msgid "Talk is cheap. Show me the code."
+msgstr ""
+
+#: theme/patterns/quotes-masonry.php:67
+msgid "Linus Torvalds"
+msgstr ""
+
+#: theme/patterns/quotes-masonry.php:73
+msgid ""
+"Premature optimization is the root of all evil (or at least most of it) in "
+"programming."
+msgstr ""
+
+#: theme/patterns/quotes-masonry.php:74
+msgid "Donald E. Knuth"
+msgstr ""
+
+#: theme/patterns/search-no-results.php:47
+msgid "No results found"
+msgstr ""
+
+#: theme/patterns/search-no-results.php:51
+msgid ""
+"We could not find anything matching your search. Try different keywords, or "
+"explore one of the suggested topics below."
+msgstr ""
+
+#: theme/patterns/search-no-results.php:54
+msgid "Search"
+msgstr ""
+
+#: theme/patterns/search-no-results.php:54
+msgid "Search again…"
+msgstr ""
+
+#: theme/patterns/search-no-results.php:58
+#: theme/patterns/search-no-results.php:62
+msgid "Suggested topics"
+msgstr ""
+
+#: theme/patterns/stats-band.php:27
+msgid "Trusted by teams that ship"
+msgstr ""
+
+#: theme/patterns/stats-band.php:39
+msgid "Uptime across deployments"
+msgstr ""
+
+#: theme/patterns/stats-band.php:51
+msgid "JavaScript on the front end"
+msgstr ""
+
+#: theme/patterns/stats-band.php:63
+msgid "Composable section patterns"
+msgstr ""
+
+#: theme/patterns/stats-band.php:75
+msgid "WCAG contrast target"
+msgstr ""
+
+#: theme/patterns/testimonial.php:32
+msgid "Reviewer avatar"
+msgstr ""
+
+#: theme/patterns/testimonial.php:36
+msgid ""
+"This theme let us launch an accessible, answer-first site in days instead of "
+"weeks. The section patterns are a joy to work with."
+msgstr ""
+
+#: theme/patterns/testimonial.php:40
+msgid "Jordan Rivera, Head of Web"
 msgstr ""
