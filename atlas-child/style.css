@@ -1,0 +1,15 @@
+/*
+Theme Name:   Atlas Child Starter
+Theme URI:    https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme
+Description:  Zero-PHP Child Theme for Atlas Multipurpose Parent Theme.
+Author:       Anurag Singh
+Template:     atlas-theme
+Version:      1.0.0
+Text Domain:  atlas-child
+License:      GNU General Public License v2 or later
+*/
+
+/*
+ * NOTE: Modern FSE child themes do NOT need custom CSS or @import rules here.
+ * Design tokens and styling overrides cascade automatically via theme.json.
+ */

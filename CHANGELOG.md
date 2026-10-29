@@ -12,13 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Planned
 - Dedicated visual regression baselines for key WooCommerce and landing page patterns.
 - Optional `/llms-full.txt` full-content Markdown catalog expansion.
-- Child theme boilerplate generator script.
 
 ---
 
 ## [1.0.0] - 2026-10-28
 
 ### Added
+
+#### Child Theme Architecture & Tooling
+- **Zero-PHP Child Theme Starter (`atlas-child/`):** Shipped an official starter boilerplate demonstrating the Full-Site Editing zero-PHP child theme principle (`style.css` linking to `atlas-theme`, cascaded `theme.json` v3 design tokens, `templates/front-page.html`, and `parts/header-compact.html`).
+- **Child Theme Scaffolding CLI (`scripts/create-child-theme.sh`):** Added a CLI generator script (and `npm run create-child` workflow) that automates directory generation, parent linkage, token cascades, and enforces a strict zero-PHP boundary.
 
 #### E-Commerce & WooCommerce Block Theming
 - **WooCommerce FSE Block Templates:** Added 8 dedicated Full-Site Editing templates under `theme/templates/`:
@@ -49,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Editorial Blog Table of Contents (`atlas/editorial-toc`):** Article reading companion featuring estimated reading time, verification badges, and a structured `<nav>` Table of Contents with deep anchor links for human navigation and GEO parsing.
 
 #### Automated Testing & CI/CD Pipeline
-- **PHP Unit Test Suite:** Lightweight, database-free unit test environment (`tests/bootstrap.php`, `tests/run-tests.php`) covering Speculation Rules, Robots AI policies, Block Bindings, Contact Form security, Transient Caching, 503 Maintenance, and Niche Patterns (31 tests total).
+- **PHP Unit Test Suite:** Lightweight, database-free unit test environment (`tests/bootstrap.php`, `tests/run-tests.php`) covering Speculation Rules, Robots AI policies, Block Bindings, Contact Form security, Transient Caching, 503 Maintenance, Niche Patterns, and Zero-PHP Child Theme architecture (37 tests total).
 - **PHPUnit Configuration:** Standard `phpunit.xml.dist` configuration file.
 - **JavaScript Unit Tests:** Native Node.js test runner suite (`tests/js/ui-states.test.js`) validating REST client outcome classification and contact form client-side contracts.
 - **CI Workflow Integration:** Updated `.github/workflows/ci.yml` to automatically execute `composer test` and `npm test` on every push and pull request.

@@ -10,6 +10,7 @@
     "build": "wp-scripts build --experimental-modules",
     "start": "wp-scripts start --experimental-modules",
     "test": "node --test 'tests/js/**/*.test.js'",
+    "create-child": "bash scripts/create-child-theme.sh",
     "prepare": "husky"
   },
   "devDependencies": {
