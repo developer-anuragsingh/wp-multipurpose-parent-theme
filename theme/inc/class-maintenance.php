@@ -129,9 +129,13 @@ class Maintenance {
 
 		$retry_after = (int) apply_filters( self::FILTER_RETRY_AFTER, self::DEFAULT_RETRY_AFTER );
 
+		nocache_headers();
 		status_header( 503 );
-		header( 'Retry-After: ' . $retry_after );
-		header( 'X-Robots-Tag: noindex, nofollow' );
+
+		if ( ! headers_sent() ) {
+			header( 'Retry-After: ' . $retry_after );
+			header( 'X-Robots-Tag: noindex, nofollow' );
+		}
 
 		add_filter( 'template_include', array( self::class, 'override_template' ), 99 );
 	}

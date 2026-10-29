@@ -39,6 +39,21 @@ class Test_Maintenance {
 			'passed' => 3600 === Atlas\Maintenance::DEFAULT_RETRY_AFTER,
 		);
 
+		// Test 5: Interception emits nocache_headers.
+		global $atlas_test_current_user_can, $atlas_test_headers;
+		$atlas_test_current_user_can = false;
+		$atlas_test_headers          = array();
+
+		Atlas\Maintenance::maybe_intercept();
+
+		$results[] = array(
+			'name'   => 'Maintenance maybe_intercept emits nocache_headers',
+			'passed' => isset( $atlas_test_headers['Cache-Control'] ) && str_contains( $atlas_test_headers['Cache-Control'], 'no-cache' ),
+		);
+
+		// Restore user cap mock.
+		$atlas_test_current_user_can = true;
+
 		return $results;
 	}
 }

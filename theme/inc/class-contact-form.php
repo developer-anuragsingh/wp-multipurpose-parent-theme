@@ -119,8 +119,25 @@ class Contact_Form {
 	const MIN_SUBMIT_SECONDS = 3;
 
 	/**
+	 * Filter hook name for resolving the client IP address.
+	 *
+	 * Allows operators behind trusted reverse proxies (e.g. AWS ALB, Cloudflare,
+	 * Fastly, Nginx) to provide the verified client IP.
+	 *
+	 * @var string
+	 */
+	const FILTER_CLIENT_IP = 'atlas_client_ip';
+
+	/**
+	 * Filter hook name for overriding the contact form rate limit cap.
+	 *
+	 * @var string
+	 */
+	const FILTER_RATE_LIMIT = 'atlas_contact_form_rate_limit';
+
+	/**
 	 * Default maximum submissions per IP per window. Filterable via
-	 * atlas_contact_form_rate_limit.
+	 * self::FILTER_RATE_LIMIT.
 	 *
 	 * @var int
 	 */
@@ -489,6 +506,16 @@ class Contact_Form {
 			? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) )
 			: '';
 
+		/**
+		 * Filters the resolved client IP address for rate limiting.
+		 *
+		 * Defaults to REMOTE_ADDR. Operators behind a trusted reverse proxy (e.g.
+		 * AWS ALB, Cloudflare, Fastly, or Nginx) may supply the verified client IP.
+		 *
+		 * @param string $ip The sanitized client IP address.
+		 */
+		$ip = (string) apply_filters( self::FILTER_CLIENT_IP, $ip );
+
 		if ( '' === $ip ) {
 			// No resolvable IP: do not throttle (fail open on the limiter only;
 			// the other four controls still apply).
@@ -500,7 +527,7 @@ class Contact_Form {
 		 *
 		 * @param int $limit The default per-IP submission cap.
 		 */
-		$limit = (int) apply_filters( 'atlas_contact_form_rate_limit', self::RATE_LIMIT_DEFAULT );
+		$limit = (int) apply_filters( self::FILTER_RATE_LIMIT, self::RATE_LIMIT_DEFAULT );
 
 		$key   = self::TRANSIENT_PREFIX . md5( $ip );
 		$count = (int) get_transient( $key );

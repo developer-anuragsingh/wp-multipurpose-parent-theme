@@ -189,9 +189,28 @@ if ( ! function_exists( 'is_admin' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_doing_ajax' ) ) {
+	function wp_doing_ajax() {
+		return false;
+	}
+}
+
+if ( ! function_exists( 'wp_doing_cron' ) ) {
+	function wp_doing_cron() {
+		return false;
+	}
+}
+
+global $atlas_test_current_user_can;
+$atlas_test_current_user_can = true;
+
 if ( ! function_exists( 'current_user_can' ) ) {
 	function current_user_can( $capability, ...$args ) {
-		return true;
+		global $atlas_test_current_user_can;
+		if ( is_callable( $atlas_test_current_user_can ) ) {
+			return call_user_func( $atlas_test_current_user_can, $capability, ...$args );
+		}
+		return (bool) $atlas_test_current_user_can;
 	}
 }
 
@@ -364,6 +383,20 @@ if ( ! function_exists( 'parse_blocks' ) ) {
 				'innerBlocks'  => array(),
 			),
 		);
+	}
+}
+
+global $atlas_test_headers;
+$atlas_test_headers = array();
+
+if ( ! function_exists( 'nocache_headers' ) ) {
+	function nocache_headers() {
+		global $atlas_test_headers;
+		if ( ! is_array( $atlas_test_headers ) ) {
+			$atlas_test_headers = array();
+		}
+		$atlas_test_headers['Cache-Control'] = 'no-cache, must-revalidate, max-age=0';
+		$atlas_test_headers['Expires']       = 'Wed, 11 Jan 1984 05:00:00 GMT';
 	}
 }
 

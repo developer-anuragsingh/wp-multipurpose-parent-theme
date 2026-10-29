@@ -40,6 +40,16 @@ class Test_Contact_Form {
 		);
 
 		$results[] = array(
+			'name'   => 'Contact_Form defines FILTER_CLIENT_IP constant',
+			'passed' => 'atlas_client_ip' === Atlas\Contact_Form::FILTER_CLIENT_IP,
+		);
+
+		$results[] = array(
+			'name'   => 'Contact_Form defines FILTER_RATE_LIMIT constant',
+			'passed' => 'atlas_contact_form_rate_limit' === Atlas\Contact_Form::FILTER_RATE_LIMIT,
+		);
+
+		$results[] = array(
 			'name'   => 'Contact_Form route is /contact',
 			'passed' => '/contact' === Atlas\Contact_Form::REST_ROUTE,
 		);
