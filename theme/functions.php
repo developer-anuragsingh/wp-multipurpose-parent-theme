@@ -50,6 +50,7 @@ spl_autoload_register(
 
 Atlas\Setup::init();
 Atlas\Assets::init();
+Atlas\I18n::init();
 Atlas\UI_States::init();
 Atlas\Bindings::init();
 Atlas\Contact_Form::init();

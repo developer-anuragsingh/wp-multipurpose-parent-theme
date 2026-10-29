@@ -413,6 +413,46 @@ if ( ! function_exists( 'render_block' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_unslash' ) ) {
+	function wp_unslash( $value ) {
+		return is_string( $value ) ? stripslashes( $value ) : $value;
+	}
+}
+
+if ( ! function_exists( 'add_query_arg' ) ) {
+	function add_query_arg( ...$args ) {
+		if ( 2 === count( $args ) && is_array( $args[0] ) ) {
+			$params = $args[0];
+			$url    = $args[1];
+		} elseif ( 3 === count( $args ) ) {
+			$params = array( $args[0] => $args[1] );
+			$url    = $args[2];
+		} else {
+			return '';
+		}
+		$sep = false !== strpos( $url, '?' ) ? '&' : '?';
+		return $url . $sep . http_build_query( $params );
+	}
+}
+
+if ( ! function_exists( 'remove_query_arg' ) ) {
+	function remove_query_arg( $key, $url = '' ) {
+		$parts = explode( '?', $url, 2 );
+		if ( count( $parts ) < 2 ) {
+			return $url;
+		}
+		parse_str( $parts[1], $query );
+		if ( is_array( $key ) ) {
+			foreach ( $key as $k ) {
+				unset( $query[ $k ] );
+			}
+		} else {
+			unset( $query[ $key ] );
+		}
+		return empty( $query ) ? $parts[0] : $parts[0] . '?' . http_build_query( $query );
+	}
+}
+
 // Register the theme autoloader.
 spl_autoload_register(
 	function ( $class_name ) {

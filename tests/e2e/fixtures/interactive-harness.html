@@ -74,10 +74,18 @@
 			</nav>
 		</div>
 
-		<button type="button" class="atlas-theme-toggle" hidden data-wp-interactive="atlas/theme-mode" data-wp-init="callbacks.init" data-wp-on--click="actions.toggleTheme" data-wp-bind--aria-pressed="state.ariaPressed" data-wp-bind--aria-label="state.toggleLabel" aria-label="Toggle colour theme">
-			<span class="atlas-theme-toggle__icon atlas-theme-toggle__sun" aria-hidden="true">&#9728;</span>
-			<span class="atlas-theme-toggle__icon atlas-theme-toggle__moon" aria-hidden="true">&#9790;</span>
-		</button>
+		<div class="atlas-header-actions" style="display:flex;align-items:center;gap:0.75rem;">
+			<nav class="atlas-lang-switcher" aria-label="Language selector">
+				<a href="?lang=en_US" class="atlas-lang-switcher__item is-active" data-lang="en_US" hreflang="en" lang="en" aria-current="true">EN</a>
+				<span class="atlas-lang-switcher__separator" aria-hidden="true">/</span>
+				<a href="?lang=hi_IN" class="atlas-lang-switcher__item" data-lang="hi_IN" hreflang="hi" lang="hi">हिन्दी</a>
+			</nav>
+
+			<button type="button" class="atlas-theme-toggle" hidden data-wp-interactive="atlas/theme-mode" data-wp-init="callbacks.init" data-wp-on--click="actions.toggleTheme" data-wp-bind--aria-pressed="state.ariaPressed" data-wp-bind--aria-label="state.toggleLabel" aria-label="Toggle colour theme">
+				<span class="atlas-theme-toggle__icon atlas-theme-toggle__sun" aria-hidden="true">&#9728;</span>
+				<span class="atlas-theme-toggle__icon atlas-theme-toggle__moon" aria-hidden="true">&#9790;</span>
+			</button>
+		</div>
 	</header>
 
 	<main style="padding: 2rem; max-width: 800px; margin: 0 auto;">
