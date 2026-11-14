@@ -55,16 +55,16 @@
 </head>
 <body>
 	<!-- 1. Header with Drawer and Theme Toggle (matching theme/parts/header.html) -->
-	<header class="wp-block-group" style="padding: 1rem; display: flex; justify-content: space-between; align-items: center; position: relative;">
+	<header class="wp-block-group" style="padding: 0.75rem 1rem; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center; position: relative;">
 		<div class="site-title"><strong>Atlas Theme</strong></div>
 
-		<div class="atlas-nav" data-wp-interactive="atlas/navigation" data-wp-context='{ "isOpen": false, "isDrawer": false }' data-breakpoint="48rem" data-wp-init="callbacks.init" data-wp-on--keydown="actions.handleKeydown">
-			<button type="button" class="atlas-nav__toggle" hidden data-wp-on--click="actions.toggle" data-wp-bind--aria-expanded="state.ariaExpanded" aria-controls="atlas-nav-panel" aria-label="Toggle navigation menu">
+		<div class="atlas-nav" id="atlas-nav" data-wp-interactive="atlas/navigation" data-wp-context='{ "isOpen": false, "isDrawer": false }' data-breakpoint="48rem" data-wp-init="callbacks.init" data-wp-on--keydown="actions.handleKeydown">
+			<a href="#atlas-nav-panel" role="button" class="atlas-nav__toggle" data-wp-on--click="actions.toggle" data-wp-on--keydown="actions.handleToggleKey" data-wp-bind--aria-expanded="state.ariaExpanded" aria-expanded="false" aria-controls="atlas-nav-panel" aria-label="Toggle navigation menu">
 				<span class="atlas-nav__icon atlas-nav__icon-open" aria-hidden="true">&#9776;</span>
 				<span class="atlas-nav__icon atlas-nav__icon-close" aria-hidden="true">&#10005;</span>
-			</button>
-
+			</a>
 			<nav id="atlas-nav-panel" class="atlas-nav__panel" tabindex="-1" aria-label="Primary navigation" data-wp-bind--role="state.dialogRole" data-wp-bind--aria-modal="state.ariaModal" data-wp-bind--hidden="state.drawerHidden" data-wp-watch="callbacks.watchOpen">
+				<a href="#atlas-nav" class="atlas-nav__close" data-wp-on--click="actions.close">Close menu</a>
 				<ul style="display: flex; gap: 1rem; list-style: none; margin: 0; padding: 0;">
 					<li><a href="#home">Home</a></li>
 					<li><a href="#services">Services</a></li>

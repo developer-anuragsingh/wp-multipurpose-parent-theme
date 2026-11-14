@@ -10,10 +10,9 @@
 #   e.g.   scripts/lighthouse.sh https://staging.example.com / /contact/
 #
 # Thresholds (override via env): MIN_PERFORMANCE=90 MIN_ACCESSIBILITY=100
-#   MIN_BEST_PRACTICES=95 MIN_SEO=95 MAX_TBT=200 MAX_LCP=2500 MAX_CLS=0.15
-# MAX_CLS is 0.15, not the 0.10 "good" line, because of a documented, measured
-# mobile shift (inline nav -> drawer on hydration); see
-# docs/07-performance-and-qa/01-performance-budget.md §6. Tighten it once fixed.
+#   MIN_BEST_PRACTICES=95 MIN_SEO=95 MAX_TBT=200 MAX_LCP=2500 MAX_CLS=0.1
+# MAX_CLS is Google's "good" line (0.1). The mobile nav no longer shifts on
+# hydration (see docs/07-performance-and-qa/01-performance-budget.md §6).
 #
 # Lighthouse is run through npx at a pinned version (not a project dependency).
 set -uo pipefail
@@ -48,7 +47,7 @@ checks = [
     ("seo",            score("seo"),            float(env("MIN_SEO", 95)), ">="),
     ("TBT ms",         a["total-blocking-time"]["numericValue"],      float(env("MAX_TBT", 200)), "<="),
     ("LCP ms",         a["largest-contentful-paint"]["numericValue"], float(env("MAX_LCP", 2500)), "<="),
-    ("CLS",            a["cumulative-layout-shift"]["numericValue"],  float(env("MAX_CLS", 0.15)), "<="),
+    ("CLS",            a["cumulative-layout-shift"]["numericValue"],  float(env("MAX_CLS", 0.1)), "<="),
 ]
 bad = 0
 for name, val, limit, op in checks:

@@ -33,7 +33,7 @@
 * **Speculation Rules:** `prefetch` (not `prerender`) by default with `moderate` eagerness to balance instant loads against server/bandwidth cost; excluded routes per `04-modern-wp-features/02-speculation-rules.md`. Suppress speculation entirely in Coming Soon / 503 mode so browsers never prefetch error responses.
 
 ## 5. Measurement
-* **Lab:** Lighthouse (mobile preset), Performance ≥ 90, run with `scripts/lighthouse.sh [base-url] [path ...]` against a running site (it needs real PHP, so it is a pre-release gate rather than a CI job). It pins Lighthouse 13.6.0 and fails on: performance < 90, accessibility < 100, best-practices < 95, SEO < 95, TBT > 200 ms, LCP > 2500 ms, CLS > 0.15 (overridable via `MIN_*` / `MAX_*` env vars).
+* **Lab:** Lighthouse (mobile preset), Performance ≥ 90 (currently 100), run with `scripts/lighthouse.sh [base-url] [path ...]` against a running site (it needs real PHP, so it is a pre-release gate rather than a CI job). It pins Lighthouse 13.6.0 and fails on: performance < 90, accessibility < 100, best-practices < 95, SEO < 95, TBT > 200 ms, LCP > 2500 ms, CLS > 0.1 (overridable via `MIN_*` / `MAX_*` env vars).
 * **Bundle size:** CSS/JS budgets checked in CI (fail the build on regression).
 * **Field:** real-user Core Web Vitals via the Site Kit / `web-vitals` where analytics are present.
 
@@ -49,18 +49,21 @@ Lighthouse 13.6.0, mobile emulation, local Studio site (PHP without page cache o
 
 | | Before | After |
 |---|---|---|
-| Performance | 74 | **96** |
+| Performance | 74 | **100** |
 | Accessibility | 100 | **100** |
 | Best Practices | 96 | **100** |
 | SEO | 92 | **100** |
 | Total Blocking Time | 950 ms | **~0-20 ms** |
 | LCP | 1.4 s | 1.4 s |
-| CLS | 0.12 | 0.12 (open) |
+| CLS | 0.12 | **0.000** |
 
 What moved the numbers (each verified on the live site):
 * **Emoji loader removed** (`Atlas\Setup::disable_emoji_scripts`, restore with `atlas_keep_emoji_scripts`). Core's inline detection script plus a `blob:` Worker was the "unattributable" ~1.2 s long task behind the 950 ms TBT, and it was also the only Content-Security-Policy issue Chrome logged. Every browser in the support matrix renders emoji natively.
 * **`<meta name="description">`** added (`Atlas\Seo`); it prints only when the page has a description (singular excerpt or site tagline), so set a tagline.
 * **Heading font preloaded** (see §4).
 
-**Open issue: mobile CLS 0.12 (needs-improvement band 0.1-0.25).** Cause, measured with a `layout-shift` observer on a 412 px viewport: the server cannot know the viewport, so before hydration the primary nav renders inline and wraps to a second row (header 86 px); once `navigation.js` hydrates it switches to the off-canvas drawer and the header shrinks to 58 px, moving `main` up 28 px. Fixing it means deciding between: (a) a `js` class from the head script plus CSS that applies the drawer layout before hydration (no shift, but if the module fails to load the menu stays collapsed); (b) forcing the header to a fixed pre/post height (no shift, but ~28 px of dead space on mobile); (c) a `<details>`-based menu that works with no JS (largest change). Pick one deliberately; do not hide the menu pre-hydration without a no-JS fallback. Until then `scripts/lighthouse.sh` allows CLS ≤ 0.15.
+* **Mobile layout shift fixed (CLS 0.12 -> 0.000).** Cause, measured with a `layout-shift` observer on a 412 px viewport: the server cannot know the viewport, so before hydration the primary nav rendered inline and wrapped to a second row (header 86 px); once `navigation.js` hydrated it switched to the off-canvas drawer and the header shrank to 58 px, moving `main` up 28 px. Fix: the closed drawer layout (collapsed `visibility:hidden` panel, visible toggle link) is now pure CSS from the first paint, so hydration changes no geometry, and the menu works without JS via `:target` (see `02-frontend-and-styles/01-interactivity-api.md`). A second, smaller shift came from the JS-only theme toggle being revealed (header action row 26 px -> 37 px); `.atlas-theme-toggle[hidden]` now reserves its box with `visibility:hidden`.
+* **Guards:** `tests/e2e/navigation-layout.spec.js` asserts (mobile viewport) the header height is identical with `navigation.js` blocked vs hydrated, no layout shift of the header or `<main>` during hydration, the hidden theme toggle keeps a non-zero box but is invisible, and the menu opens/closes with JavaScript disabled and with the module blocked. `tests/test-fixtures.php` fails if the E2E harness markup drifts from `theme/parts/header.html`.
+
+**Known, separate item:** on pages with a Copyable quote, the copy button (`hidden` until the Clipboard API is confirmed usable) is revealed on hydration and grows its quote by ~30 px (CLS about 0.02 on that page; not on the home page). It is not fixed because reserving its space would leave a blank band wherever the Clipboard API is unavailable (insecure contexts), which contradicts that control's "never show a dead button" design. Decide deliberately before changing it.
 

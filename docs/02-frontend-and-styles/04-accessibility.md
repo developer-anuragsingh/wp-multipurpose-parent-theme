@@ -25,6 +25,7 @@ The `theme.json` palette must satisfy AA contrast ratios for every intended fore
 * A visible focus indicator is mandatory. Use `:focus-visible` and never remove outlines without an equivalent replacement.
 * **Skip link:** a "Skip to content" link is the first focusable element in `parts/header.html`.
 * Interactivity API widgets (nav drawer, dropdowns) must implement focus management: move focus into an opened dialog/drawer, trap it while open, restore it to the trigger on close, and close on `Escape`.
+* **Nav drawer toggle semantics:** it is a link with `role="button"`, `aria-controls`, and `aria-expanded` (bound to state once hydrated). Enter activates a link natively; Space does not, so `navigation.js` adds it (and prevents page scroll) to match button behaviour. Before hydration (or if the module fails) only Enter works, which is acceptable for the fallback. The closed panel is `visibility:hidden`, so it is out of the tab order and the accessibility tree; the opened panel gets a visible "Close menu" link.
 
 ## 4. ARIA & Semantics
 * Prefer native semantic HTML over ARIA. Use ARIA only to fill gaps.

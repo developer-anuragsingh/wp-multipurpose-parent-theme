@@ -12,12 +12,14 @@
 
 	<!-- wp:html -->
 	<!-- data-breakpoint value (48rem) mirrors Atlas\Assets::DRAWER_BREAKPOINT, the single source also used for the CSS @media query. -->
-	<div class="atlas-nav" data-wp-interactive="atlas/navigation" data-wp-context='{ "isOpen": false, "isDrawer": false }' data-breakpoint="48rem" data-wp-init="callbacks.init" data-wp-on--keydown="actions.handleKeydown">
-		<button type="button" class="atlas-nav__toggle" hidden data-wp-on--click="actions.toggle" data-wp-bind--aria-expanded="state.ariaExpanded" aria-controls="atlas-nav-panel" aria-label="Toggle navigation menu">
+	<div class="atlas-nav" id="atlas-nav" data-wp-interactive="atlas/navigation" data-wp-context='{ "isOpen": false, "isDrawer": false }' data-breakpoint="48rem" data-wp-init="callbacks.init" data-wp-on--keydown="actions.handleKeydown">
+		<!-- Server-rendered as a link so the menu opens with NO JavaScript (via :target, see interactivity.css). navigation.js intercepts the click and takes over. -->
+		<a href="#atlas-nav-panel" role="button" class="atlas-nav__toggle" data-wp-on--click="actions.toggle" data-wp-on--keydown="actions.handleToggleKey" data-wp-bind--aria-expanded="state.ariaExpanded" aria-expanded="false" aria-controls="atlas-nav-panel" aria-label="Toggle navigation menu">
 			<span class="atlas-nav__icon atlas-nav__icon-open" aria-hidden="true">&#9776;</span>
 			<span class="atlas-nav__icon atlas-nav__icon-close" aria-hidden="true">&#10005;</span>
-		</button>
+		</a>
 		<div class="atlas-nav__panel" id="atlas-nav-panel" tabindex="-1" aria-label="Primary navigation" data-wp-bind--role="state.dialogRole" data-wp-bind--aria-modal="state.ariaModal" data-wp-bind--hidden="state.drawerHidden" data-wp-watch="callbacks.watchOpen">
+			<a href="#atlas-nav" class="atlas-nav__close" data-wp-on--click="actions.close">Close menu</a>
 			<!-- wp:navigation {"overlayMenu":"never","layout":{"type":"flex","justifyContent":"right"}} /-->
 		</div>
 	</div>

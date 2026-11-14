@@ -2,9 +2,12 @@
  * Atlas mobile navigation drawer — Interactivity API store.
  *
  * Namespace: atlas/navigation. Progressive-enhancement, a11y-first off-canvas
- * drawer. The server renders a visible inline nav list; this module adds the
- * hydration gate class, drives the drawer open/close state, moves and traps
- * focus while open at the mobile breakpoint, and restores focus on close.
+ * drawer. The server HTML + CSS already render the final layout (inline list on
+ * desktop; collapsed drawer + toggle link on mobile) and the menu opens with no
+ * JS via :target, so hydration changes no geometry (no layout shift). This
+ * module adds the hydration gate class, takes over open/close from :target,
+ * moves and traps focus while open at the mobile breakpoint, and restores focus
+ * on close.
  *
  * The drawer breakpoint is read from the server-rendered `data-breakpoint`
  * attribute (single source: Atlas\Assets::DRAWER_BREAKPOINT) so JS and CSS
@@ -117,22 +120,49 @@ const { actions } = store( 'atlas/navigation', {
 		/**
 		 * Close the drawer. Focus restore and scroll unlock run in watchOpen.
 		 *
+		 * @param {Event} [event] Click event when invoked from the close link.
 		 * @return {void}
 		 */
-		close() {
+		close( event ) {
+			// The close control is a real link (href="#atlas-nav") so it also
+			// works without JS; once hydrated, JS owns the state instead.
+			if ( event && event.preventDefault ) {
+				event.preventDefault();
+			}
 			getContext().isOpen = false;
 		},
 		/**
 		 * Toggle the drawer open/closed.
 		 *
+		 * @param {Event} [event] Click event when invoked from the toggle link.
 		 * @return {void}
 		 */
-		toggle() {
+		toggle( event ) {
+			// The toggle is a real link (href="#atlas-nav-panel") so it also
+			// opens the menu without JS; once hydrated, JS owns the state, so
+			// cancel the hash navigation (no URL change, no :target).
+			if ( event && event.preventDefault ) {
+				event.preventDefault();
+			}
 			const context = getContext();
 			if ( context.isOpen ) {
 				actions.close();
 			} else {
 				actions.open();
+			}
+		},
+		/**
+		 * Keyboard support for the role="button" link toggle. Enter already
+		 * activates a link natively (and fires click); Space does not, so add it
+		 * as a real button would, without scrolling the page.
+		 *
+		 * @param {KeyboardEvent} event Keyboard event.
+		 * @return {void}
+		 */
+		handleToggleKey( event ) {
+			if ( ' ' === event.key ) {
+				event.preventDefault();
+				actions.toggle();
 			}
 		},
 		/**
@@ -199,11 +229,6 @@ const { actions } = store( 'atlas/navigation', {
 
 			ref.classList.add( 'is-atlas-interactive' );
 
-			const toggle = ref.querySelector( '.atlas-nav__toggle' );
-			if ( toggle ) {
-				toggle.removeAttribute( 'hidden' );
-			}
-
 			const breakpoint = ref.dataset.breakpoint;
 			if ( ! breakpoint || ! window.matchMedia ) {
 				return;
@@ -212,6 +237,23 @@ const { actions } = store( 'atlas/navigation', {
 			const context = getContext();
 			const mql = window.matchMedia( '(max-width: ' + breakpoint + ')' );
 			context.isDrawer = mql.matches;
+
+			// If the menu was opened without JS (URL is #atlas-nav-panel), adopt
+			// that as the open state and drop the hash so JS, not :target,
+			// controls the panel from here on.
+			const panel = getPanel( ref );
+			if (
+				context.isDrawer &&
+				panel &&
+				window.location.hash === '#' + panel.id
+			) {
+				context.isOpen = true;
+				window.history.replaceState(
+					null,
+					'',
+					window.location.pathname + window.location.search
+				);
+			}
 
 			const onChange = ( event ) => {
 				if ( ! event.matches && context.isOpen ) {

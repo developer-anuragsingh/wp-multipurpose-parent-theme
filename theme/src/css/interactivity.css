@@ -60,10 +60,14 @@
  * Navigation drawer.
  * ------------------------------------------------------------------------- */
 
-/* The toggle button is mobile + JS-only: defaults to display: none on desktop
-   and pre-hydration, and reveals at mobile breakpoint once hydrated. */
+/* The toggle is a link (href="#atlas-nav-panel", role="button"): it works with
+   NO JavaScript through the :target rules below. It is display:none on desktop
+   and shown at the mobile breakpoint from the very first paint, so the server
+   HTML already has the final mobile layout and nothing shifts when
+   navigation.js hydrates (it used to swap inline nav -> drawer, CLS 0.12). */
 .atlas-nav__toggle {
 	display: none;
+	text-decoration: none;
 	align-items: center;
 	justify-content: center;
 	padding: 0.5rem;
@@ -101,15 +105,22 @@
 	display: block;
 }
 
+/* The in-panel close link is only for the drawer presentation. */
+.atlas-nav__close {
+	display: none;
+}
+
 @media (max-width: 48rem) { /* 48rem == Atlas\Assets::DRAWER_BREAKPOINT */
 
-	/* Only once hydrated (is-atlas-interactive) AND at mobile width does the
-	   off-canvas drawer presentation engage. */
-	.atlas-nav.is-atlas-interactive .atlas-nav__toggle {
+	/* The drawer layout applies from the FIRST PAINT, not after hydration, so
+	   the page never reflows when the module loads. Closed state is the
+	   default: the panel is off-canvas and visibility:hidden, which also takes
+	   it out of the tab order and the accessibility tree. */
+	.atlas-nav__toggle {
 		display: inline-flex;
 	}
 
-	.atlas-nav.is-atlas-interactive .atlas-nav__panel {
+	.atlas-nav__panel {
 		position: fixed;
 		inset-block: 0;
 		inset-inline-end: 0;
@@ -119,12 +130,40 @@
 		background: var(--wp--preset--color--light);
 		box-shadow: -4px 0 16px rgb(0 0 0 / 15%);
 		transform: translateX(100%);
-		transition: transform 0.3s ease;
+		visibility: hidden;
+
+		/* Delay visibility on close so the slide-out can finish. */
+		transition: transform 0.3s ease, visibility 0s linear 0.3s;
 		overflow-y: auto;
 	}
 
+	.atlas-nav__close {
+		display: inline-block;
+		margin-block-end: 1rem;
+		padding: 0.5rem 0.75rem;
+		border: 1px solid currentcolor;
+		border-radius: 0.375rem;
+		text-decoration: none;
+	}
+
+	.atlas-nav__close:focus-visible {
+		outline: 2px solid var(--wp--preset--color--primary);
+		outline-offset: 2px;
+	}
+
+	/* NO-JS (and module-failed) OPEN STATE: following the toggle link makes the
+	   panel the :target. navigation.js removes the hash when it takes over. */
+	.atlas-nav__panel:target {
+		transform: translateX(0);
+		visibility: visible;
+		transition: transform 0.3s ease, visibility 0s;
+	}
+
+	/* HYDRATED: the open/closed state is driven by the [hidden] binding. */
 	.atlas-nav.is-atlas-interactive .atlas-nav__panel:not([hidden]) {
 		transform: translateX(0);
+		visibility: visible;
+		transition: transform 0.3s ease, visibility 0s;
 	}
 
 	/* Keep the bound-hidden panel out of the layout and the AT tree. */
@@ -205,8 +244,13 @@
 	cursor: pointer;
 }
 
+/* JS-only control. While [hidden] (pre-hydration / no JS) it still RESERVES its
+   box but is invisible and out of the tab order and accessibility tree
+   (visibility:hidden), so revealing it on hydration does not grow the header
+   row and shift the page (measured: actions row 26px -> 37px). */
 .atlas-theme-toggle[hidden] {
-	display: none;
+	display: inline-flex;
+	visibility: hidden;
 }
 
 .atlas-theme-toggle:focus-visible {
@@ -265,6 +309,7 @@
 	font-size: 1em;
 	line-height: 1;
 }
+
 
 /* Copied state: clear visual confirmation so the user knows it worked and
  * does not click again. Uses preset colours; not colour-alone (the label
@@ -380,8 +425,10 @@
  * ------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
 
-	.atlas-nav.is-atlas-interactive .atlas-nav__panel {
-		transition-duration: 0.01ms;
+	.atlas-nav__panel,
+	.atlas-nav__panel:target,
+	.atlas-nav.is-atlas-interactive .atlas-nav__panel:not([hidden]) {
+		transition: none;
 	}
 
 	.atlas-theme-toggle,
