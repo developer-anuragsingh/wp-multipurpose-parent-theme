@@ -182,7 +182,7 @@ $atlas_contact_messages = array(
 			class="atlas-contact-form__submit"
 			type="submit"
 			data-wp-bind--disabled="state.isSubmitting"
-		><?php echo esc_html__( 'Send message', 'atlas-theme' ); ?></button>
+		><?php echo \Atlas\Icons::get( 'send' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static, trusted SVG from Atlas\Icons. ?><span><?php echo esc_html__( 'Send message', 'atlas-theme' ); ?></span></button>
 	</form>
 	<!-- /wp:html -->
 </section>

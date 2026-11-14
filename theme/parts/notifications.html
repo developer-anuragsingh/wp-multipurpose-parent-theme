@@ -10,7 +10,7 @@
 	<!-- Offline banner: hidden by default, progressively revealed when the browser goes offline. -->
 	<div class="atlas-notifications__offline" role="region" aria-label="Connection status" hidden data-wp-bind--hidden="state.offlineHidden">
 		<p class="atlas-notifications__offline-message">You are offline. Some actions may not work until your connection is restored.</p>
-		<button type="button" class="atlas-notifications__retry wp-element-button" data-wp-on--click="actions.retry">Retry</button>
+		<button type="button" class="atlas-notifications__retry wp-element-button" data-wp-on--click="actions.retry"><svg class="atlas-icon atlas-icon--refresh" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v6h-6"/></svg><span>Retry</span></button>
 	</div>
 
 	<!-- Toast stack: the failure/success modules append toasts here. -->
@@ -22,7 +22,7 @@
 			<span class="atlas-notifications__sentinel" tabindex="0" data-wp-on--focus="actions.focusLast" aria-hidden="true"></span>
 			<h2 class="atlas-notifications__modal-title" id="atlas-session-modal-title">Session expired</h2>
 			<p class="atlas-notifications__modal-desc" id="atlas-session-modal-desc">Your session has expired. Please sign in again to continue where you left off.</p>
-			<button type="button" class="atlas-notifications__reauth wp-element-button" data-wp-on--click="actions.reauthenticate">Sign in again</button>
+			<button type="button" class="atlas-notifications__reauth wp-element-button" data-wp-on--click="actions.reauthenticate"><svg class="atlas-icon atlas-icon--log-in" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 17l5-5-5-5M15 12H4"/></svg><span>Sign in again</span></button>
 			<span class="atlas-notifications__sentinel" tabindex="0" data-wp-on--focus="actions.focusFirst" aria-hidden="true"></span>
 		</div>
 	</div>

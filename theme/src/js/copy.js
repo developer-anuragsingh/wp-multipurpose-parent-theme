@@ -3,9 +3,10 @@
  *
  * Namespace: atlas/copy. Per-instance context (each quote has its own copied
  * flag and source text). A generator action performs the async Clipboard
- * write without a Promise library. The button accessible name is stable
- * ("Copy quote"); success is announced exactly once through a decoupled
- * aria-live region fed by statusText. The copy button is revealed on
+ * write without a Promise library. The button is icon-only: its accessible name
+ * is stable ("Copy quote"), the copy icon swaps to a check through the
+ * is-copied class (pure CSS), and success is announced exactly once through a
+ * decoupled aria-live region fed by statusText. The copy button is revealed on
  * hydration only when the Clipboard API is actually usable (canCopy), so an
  * insecure-context / unsupported browser never shows a dead control.
  */
@@ -32,33 +33,12 @@ const { state } = store( 'atlas/copy', {
 			return getContext().labelCopy;
 		},
 		/**
-		 * Visible button text. Flips to the "Copied!" label for the copied
-		 * window so sighted users get clear, immediate feedback, then reverts.
-		 * The accessible name (triggerLabel) stays stable regardless.
-		 *
-		 * @return {string} The current visible button label.
-		 */
-		get visibleLabel() {
-			const context = getContext();
-			return context.copied ? context.labelCopied : context.labelCopy;
-		},
-		/**
 		 * Whether the button is in its copied state (for visual styling hook).
 		 *
 		 * @return {boolean} True during the copied window.
 		 */
 		get isCopied() {
 			return !! getContext().copied;
-		},
-		/**
-		 * Decorative glyph shown in the button: a checkmark once copied, a
-		 * clipboard before. Marked aria-hidden in markup so it is purely
-		 * visual and never announced.
-		 *
-		 * @return {string} The current glyph character.
-		 */
-		get iconGlyph() {
-			return getContext().copied ? '\u2713' : '\u29C9';
 		},
 		/**
 		 * Live-region text: "Copied!" while copied, else empty. Announces
@@ -82,7 +62,7 @@ const { state } = store( 'atlas/copy', {
 
 	actions: {
 		/**
-		 * Copy the quote text to the clipboard, flash "Copied!" for 2s, then
+		 * Copy the quote text to the clipboard, show the copied state (check icon + "Copied!" announcement) for 2s, then
 		 * reset. Generator action so the async Clipboard write and the timeout
 		 * resolve without a Promise library.
 		 *

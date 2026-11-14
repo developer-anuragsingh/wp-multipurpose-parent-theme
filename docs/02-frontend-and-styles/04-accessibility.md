@@ -17,7 +17,7 @@ The `theme.json` palette must satisfy AA contrast ratios for every intended fore
 * **Role-based presets (not raw brand colours) where contrast differs by surface:**
   - `accent-text` (`#c2410c`, 4.95:1 on the light surface) is the accent colour **for text**. The brand `accent` (`#f97316`) is only 2.68:1 on `light`, so never use `has-accent-color` for text on light surfaces. In dark mode `accent-text` re-points to `accent` (6.37:1 on navy).
   - `surface` is the card/section background: white in light mode, `#1e293b` in dark mode. Never use `white` as a surface behind `dark` text: `white` is not re-pointed in dark mode (it is the label colour on primary buttons), so a white card with `dark` text became near-white on white (1.04:1).
-  - Links: `primary` (`#2563eb`) is 3.45:1 on the dark surface, so in dark mode links use `#60a5fa` (7.02:1). Buttons keep primary background with white text (5.17:1).
+  - Links: `link` preset (`#2563eb` = `primary` in light mode). `primary` is 3.45:1 on the dark surface, so dark mode re-points the **preset** to `#60a5fa` (7.02:1); `theme.json` colours the link element with `link`. Re-pointing the preset (rather than overriding every `<a>` with a selector) leaves controls that set `color: inherit` (nav toggle, language switcher) alone. Buttons keep `primary` + white (5.17:1).
 * `tests/test-colors.php` (fast PHP suite) enforces that every colour preset referenced by patterns/parts/templates exists in `theme.json` and that the pairs above meet AA in **both** modes, reading dark overrides straight from `interactivity.css`.
 
 ## 3. Keyboard & Focus
@@ -25,6 +25,7 @@ The `theme.json` palette must satisfy AA contrast ratios for every intended fore
 * A visible focus indicator is mandatory. Use `:focus-visible` and never remove outlines without an equivalent replacement.
 * **Skip link:** a "Skip to content" link is the first focusable element in `parts/header.html`.
 * Interactivity API widgets (nav drawer, dropdowns) must implement focus management: move focus into an opened dialog/drawer, trap it while open, restore it to the trigger on close, and close on `Escape`.
+* **Icon-only controls** (menu, close, theme, copy) must have an `aria-label`, a matching `title`, and a 44px target; see `06-icons.md` §3. The icon itself is `aria-hidden`.
 * **Nav drawer toggle semantics:** it is a link with `role="button"`, `aria-controls`, and `aria-expanded` (bound to state once hydrated). Enter activates a link natively; Space does not, so `navigation.js` adds it (and prevents page scroll) to match button behaviour. Before hydration (or if the module fails) only Enter works, which is acceptable for the fallback. The closed panel is `visibility:hidden`, so it is out of the tab order and the accessibility tree; the opened panel gets a visible "Close menu" link.
 
 ## 4. ARIA & Semantics

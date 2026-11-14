@@ -89,6 +89,8 @@ class Test_Colors {
 			array( 'accent-text', 'light', 3.0, 'large metric numbers on the page surface' ),
 			array( 'accent-text', 'surface', 3.0, 'large metric numbers on cards' ),
 			array( 'white', 'primary', 4.5, 'button label on primary' ),
+			array( 'link', 'light', 4.5, 'link text on the page surface' ),
+			array( 'link', 'surface', 4.5, 'link text on cards' ),
 		);
 
 		foreach ( array(
@@ -105,6 +107,12 @@ class Test_Colors {
 				);
 			}
 		}
+
+		$results[] = array(
+			'name'   => 'Colours: links are coloured by the dark-mode aware "link" preset (not raw primary, not a per-selector override)',
+			'passed' => 'var:preset|color|link' === ( $theme_json['styles']['elements']['link']['color']['text'] ?? '' )
+				&& ! str_contains( $css, 'a:where(:not(.wp-element-button))' ),
+		);
 
 		$results[] = array(
 			'name'   => 'Colours: the brand accent is NOT used as text on the light surface (it is only ' . sprintf( '%.2f', self::ratio( $light['accent'], $light['light'] ) ) . ':1)',

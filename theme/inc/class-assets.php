@@ -162,16 +162,22 @@ class Assets {
 			return $block_content;
 		}
 
+		// Icon-only control: the copy icon swaps to a check for the copied window
+		// (CSS, driven by .is-copied). The accessible name is the stable
+		// aria-label; the tooltip (title) mirrors it for pointer users. The
+		// visually hidden status region announces "Copied!" once.
 		$controls = sprintf(
 			'<div class="atlas-copy" data-wp-interactive="atlas/copy" data-wp-context=\'%1$s\' data-wp-init="callbacks.init">' .
-				'<button type="button" class="atlas-copy__button" hidden data-wp-on--click="actions.copy" data-wp-bind--aria-label="state.triggerLabel" data-wp-class--is-copied="state.isCopied">' .
-					'<span class="atlas-copy__icon" aria-hidden="true" data-wp-text="state.iconGlyph"></span>' .
-					'<span class="atlas-copy__label" data-wp-text="state.visibleLabel">%2$s</span>' .
+				'<button type="button" class="atlas-copy__button" hidden title="%2$s" aria-label="%2$s" data-wp-on--click="actions.copy" data-wp-bind--aria-label="state.triggerLabel" data-wp-class--is-copied="state.isCopied">' .
+					'<span class="atlas-copy__icon atlas-copy__icon--copy" aria-hidden="true">%3$s</span>' .
+					'<span class="atlas-copy__icon atlas-copy__icon--check" aria-hidden="true">%4$s</span>' .
 				'</button>' .
-				'<span class="atlas-copy__status" data-wp-bind--aria-live="state.ariaLive" data-wp-text="state.statusText"></span>' .
+				'<span class="atlas-copy__status" role="status" aria-live="polite" data-wp-text="state.statusText"></span>' .
 			'</div>',
 			esc_attr( $context ),
-			esc_html__( 'Copy quote', 'atlas-theme' )
+			esc_attr__( 'Copy quote', 'atlas-theme' ),
+			Icons::get( 'copy' ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static, trusted SVG from Atlas\Icons.
+			Icons::get( 'check' ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static, trusted SVG from Atlas\Icons.
 		);
 
 		// Insert before the final closing </blockquote> so the controls sit

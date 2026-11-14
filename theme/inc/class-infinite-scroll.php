@@ -132,13 +132,14 @@ class Infinite_Scroll {
 		$controls = sprintf(
 			'<div class="atlas-infinite-scroll" data-wp-interactive="atlas/infinite-scroll" data-wp-context=\'%1$s\' data-wp-init="callbacks.init">' .
 				'<button type="button" class="atlas-infinite-scroll__button wp-element-button" hidden data-wp-on--click="actions.loadMore" data-wp-bind--disabled="state.isLoading">' .
-					'<span data-wp-text="state.buttonText">%2$s</span>' .
+					'%3$s<span data-wp-text="state.buttonText">%2$s</span>' .
 				'</button>' .
 				'<div class="atlas-infinite-scroll__sentinel" data-wp-init="callbacks.observeSentinel" style="height:1px;"></div>' .
 				'<div class="atlas-infinite-scroll__status" role="status" aria-live="polite" data-wp-text="state.statusText"></div>' .
 			'</div>',
 			esc_attr( $context ),
-			esc_html__( 'Load more posts', 'atlas-theme' )
+			esc_html__( 'Load more posts', 'atlas-theme' ),
+			Icons::get( 'chevron-down' ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static, trusted SVG from Atlas\Icons.
 		);
 
 		$pos = strripos( $block_content, '</div>' );

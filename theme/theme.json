@@ -20,7 +20,8 @@
         { "slug": "dark", "color": "#0f172a", "name": "Dark Navy" },
         { "slug": "light", "color": "#f8fafc", "name": "Light Surface" },
         { "slug": "white", "color": "#ffffff", "name": "Pure White" },
-        { "slug": "surface", "color": "#ffffff", "name": "Surface (white, dark-mode aware)" }
+        { "slug": "surface", "color": "#ffffff", "name": "Surface (white, dark-mode aware)" },
+        { "slug": "link", "color": "#2563eb", "name": "Link (dark-mode aware)" }
       ]
     },
     "typography": {
@@ -122,7 +123,7 @@
     },
     "elements": {
       "link": {
-        "color": { "text": "var:preset|color|primary" },
+        "color": { "text": "var:preset|color|link" },
         ":hover": {
           "color": { "text": "var:preset|color|dark" }
         },

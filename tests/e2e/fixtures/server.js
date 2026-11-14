@@ -48,7 +48,22 @@ function paletteCss() {
 				`.has-${ c.slug }-border-color{border-color:var(--wp--preset--color--${ c.slug })}`
 		)
 		.join( '' );
-	return `:root{${ vars }}${ classes }`;
+	// The link element colour, exactly as WordPress emits it from
+	// styles.elements.link (zero-specificity :where, so component classes win).
+	const link = themeJson.styles?.elements?.link;
+	const toVar = ( ref ) =>
+		typeof ref === 'string' && ref.startsWith( 'var:preset|color|' )
+			? `var(--wp--preset--color--${ ref.split( '|' ).pop() })`
+			: null;
+	const linkColor = toVar( link?.color?.text );
+	const hoverColor = toVar( link?.[ ':hover' ]?.color?.text );
+	const linkCss = linkColor
+		? `:root :where(a:where(:not(.wp-element-button))){color:${ linkColor };text-decoration:underline}` +
+		  ( hoverColor
+				? `:root :where(a:where(:not(.wp-element-button)):hover){color:${ hoverColor }}`
+				: '' )
+		: '';
+	return `:root{${ vars }}${ classes }${ linkCss }`;
 }
 
 const server = http.createServer( ( req, res ) => {
