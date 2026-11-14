@@ -12,7 +12,9 @@ Form spam protection is covered in `02-frontend-and-styles/05-forms-and-validati
 
 ## 3. Endpoint Rate Limiting
 * Every theme-authored write/compute endpoint (form submit, infinite-scroll loader, donation, llms.txt builder) should enforce a per-IP / per-user rate limit using a transient- or object-cache-backed counter, returning `429 Too Many Requests` with `Retry-After` when exceeded.
-* Make limits filterable (e.g. `atlas_rate_limit_contact_form`) so operators adjust without editing theme code.
+* Make limits filterable so operators adjust without editing theme code. The contact form uses `atlas_contact_form_rate_limit` (default 5 per 10 minutes) and `atlas_client_ip` for the real client address behind proxies.
+* Counters must be **atomic** where possible: `Atlas\Contact_Form` uses `wp_cache_add` + `wp_cache_incr` when a persistent object cache is active (no race between concurrent requests) and falls back to a transient otherwise (best-effort; enable an object cache or rate-limit at the edge for a hard guarantee).
+* Counter keys are keyed hashes (HMAC with the site salt), never raw or plain-md5 IPs. A request with no resolvable IP shares an `unknown` bucket rather than bypassing the limiter (fail closed).
 * Rate-limit by authenticated user ID when available, falling back to IP (respecting proxy headers only when the host is trusted).
 
 ## 4. Brute-Force & Credential Abuse

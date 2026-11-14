@@ -19,6 +19,7 @@ require_once __DIR__ . '/test-infinite-scroll.php';
 require_once __DIR__ . '/test-llms-txt.php';
 require_once __DIR__ . '/test-i18n.php';
 require_once __DIR__ . '/test-security-headers.php';
+require_once __DIR__ . '/test-contact-form-security.php';
 
 echo "Running Atlas Theme Unit Tests...\n\n";
 
@@ -35,6 +36,7 @@ $suites = array(
 	'GEO & llms.txt'     => Test_Llms_Txt::run(),
 	'i18n & Language'    => Test_I18n::run(),
 	'Security Headers'   => Test_Security_Headers::run(),
+	'Contact Form Security' => Test_Contact_Form_Security::run(),
 );
 
 $total_tests = 0;

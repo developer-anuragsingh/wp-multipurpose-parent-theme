@@ -59,7 +59,7 @@ Error feedback MUST follow `02-frontend-and-styles/04-accessibility.md` §6:
 ## 4. Backend Layer (Security / Source of Truth)
 Every submission — form POST, AJAX, or Interactivity API store request — is re-validated server-side per `06-security-and-i18n/01-security-and-data.md`:
 1. **Authorize:** `current_user_can()` where the action is privileged.
-2. **Verify intent:** nonce / `X-WP-Nonce` (CSRF).
+2. **Verify intent:** nonce / `X-WP-Nonce` (CSRF) for logged-in actions. Public anonymous forms (contact) use a stateless signed form token instead, because a nonce proves nothing for a visitor with no session (see §5).
 3. **Validate:** reject values outside the expected shape/range/allow-list — do not silently coerce. For REST, use the route's `args` schema with `validate_callback`.
 4. **Sanitize:** `wp_unslash()` then type-specific sanitizers (`sanitize_text_field()`, `sanitize_email()`, `absint()`, `sanitize_textarea_field()`, …). For REST, use `sanitize_callback`.
 5. **Escape on output** when any submitted value is later rendered.
@@ -67,10 +67,17 @@ Every submission — form POST, AJAX, or Interactivity API store request — is 
 The frontend rules in §3 and the backend rules here must agree on the *contract* (same required fields, same formats, same max lengths) so the two layers give consistent results — but they are implemented and enforced independently.
 
 ## 5. Spam & Abuse (non-negotiable for public forms)
-Public forms (contact, donation, newsletter) add anti-abuse measures that do not harm accessibility:
-* Honeypot field (hidden from users, bots fill it) and/or a timing check.
-* Rate limiting on the server endpoint.
+Public forms (contact, donation, newsletter) add anti-abuse measures that do not harm accessibility. The contact form (`Atlas\Contact_Form`) is the reference implementation, enforced in this order and failing early:
+1. **Signed form token** (`atlas_contact_ts` field) — a stateless `<issued-at>.<HMAC-SHA256>` token. A missing, forged, back-dated or expired token returns `403`. Lifetime 12 h, tune with `atlas_contact_token_ttl`. The JS refreshes it from `GET atlas/v1/contact/token` on load so page caches cannot make it stale.
+2. **Honeypot** (`atlas_contact_hp`) — must stay empty; bots get a generic `200` with no mail.
+3. **Timing** — the *signed* token age must be at least 3 s; a faster submission gets a generic `200` with no mail. Because the age is inside the HMAC, a bot cannot fake it.
+4. **Rate limit** — per client IP (default 5 per 10 min, `atlas_contact_form_rate_limit`), `429` + `Retry-After`. The counter is atomic on a persistent object cache (Redis/Memcached) and best-effort on transients. The IP is keyed-hashed (never stored or reversible). An empty or invalid IP falls into one shared bucket (it is **not** a free pass). Behind a proxy/CDN, supply the real IP via `atlas_client_ip`.
+5. **Validate + sanitize** every field server-side.
+6. **Mail hardening** — the submitter name is stripped of CR/LF/NUL, `<>",;:@` before it reaches the subject or `Reply-To` (header-injection and display-name spoofing), and the email must pass `is_email()` with no whitespace.
+
+Other rules:
 * Avoid CAPTCHAs that break a11y; if required, use an accessible, privacy-respecting option and consent-gate any third-party loader (see `06-security-and-i18n/03-data-protection.md` §8).
+* The enhanced request is sent with `credentials: 'omit'` and no `X-WP-Nonce`, so a stale core REST nonce can never cause a spurious `403`.
 
 ## 6. Verification Checklist (per form)
 - [ ] Native HTML5 constraints present; JS used only where native can't suffice.
@@ -80,4 +87,4 @@ Public forms (contact, donation, newsletter) add anti-abuse measures that do not
 - [ ] Labels associated; errors in `aria-live` region with `aria-describedby` + `aria-invalid`; strings translatable.
 - [ ] Server re-validates AND sanitizes every field independently of the frontend.
 - [ ] Authorization + nonce + arg-schema validation on the endpoint.
-- [ ] Spam protection (honeypot/timing/rate-limit) on public forms.
+- [ ] Spam protection (signed token/honeypot/timing/rate-limit) on public forms; mail headers built only from header-safe values.

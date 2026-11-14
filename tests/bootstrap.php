@@ -453,6 +453,157 @@ if ( ! function_exists( 'remove_query_arg' ) ) {
 	}
 }
 
+// Contact-form / REST doubles.
+global $atlas_test_mail, $atlas_test_mail_result, $atlas_test_ext_cache, $atlas_test_object_cache;
+$atlas_test_mail        = array();
+$atlas_test_mail_result = true;
+$atlas_test_ext_cache   = false;
+$atlas_test_object_cache = array();
+
+if ( ! function_exists( 'wp_salt' ) ) {
+	function wp_salt( $scheme = 'auth' ) {
+		return 'atlas-test-salt-' . $scheme;
+	}
+}
+
+if ( ! function_exists( 'is_email' ) ) {
+	function is_email( $email ) {
+		return false !== filter_var( $email, FILTER_VALIDATE_EMAIL ) ? $email : false;
+	}
+}
+
+if ( ! function_exists( 'sanitize_email' ) ) {
+	function sanitize_email( $email ) {
+		return trim( (string) $email );
+	}
+}
+
+if ( ! function_exists( 'sanitize_textarea_field' ) ) {
+	function sanitize_textarea_field( $str ) {
+		return is_string( $str ) ? trim( strip_tags( $str ) ) : '';
+	}
+}
+
+if ( ! function_exists( 'is_wp_error' ) ) {
+	function is_wp_error( $thing ) {
+		return $thing instanceof WP_Error;
+	}
+}
+
+if ( ! function_exists( 'wp_get_referer' ) ) {
+	function wp_get_referer() {
+		return 'https://example.com/contact/';
+	}
+}
+
+if ( ! function_exists( 'rest_url' ) ) {
+	function rest_url( $path = '' ) {
+		return 'https://example.com/wp-json/' . ltrim( $path, '/' );
+	}
+}
+
+if ( ! function_exists( 'wp_mail' ) ) {
+	function wp_mail( $to, $subject, $message, $headers = '' ) {
+		global $atlas_test_mail, $atlas_test_mail_result;
+		$atlas_test_mail[] = compact( 'to', 'subject', 'message', 'headers' );
+		return $atlas_test_mail_result;
+	}
+}
+
+if ( ! function_exists( 'wp_using_ext_object_cache' ) ) {
+	function wp_using_ext_object_cache() {
+		global $atlas_test_ext_cache;
+		return $atlas_test_ext_cache;
+	}
+}
+
+if ( ! function_exists( 'wp_cache_add' ) ) {
+	function wp_cache_add( $key, $data, $group = '', $expire = 0 ) {
+		global $atlas_test_object_cache;
+		if ( isset( $atlas_test_object_cache[ $group . $key ] ) ) {
+			return false;
+		}
+		$atlas_test_object_cache[ $group . $key ] = $data;
+		return true;
+	}
+}
+
+if ( ! function_exists( 'wp_cache_incr' ) ) {
+	function wp_cache_incr( $key, $offset = 1, $group = '' ) {
+		global $atlas_test_object_cache;
+		if ( ! isset( $atlas_test_object_cache[ $group . $key ] ) ) {
+			return false;
+		}
+		$atlas_test_object_cache[ $group . $key ] += $offset;
+		return $atlas_test_object_cache[ $group . $key ];
+	}
+}
+
+if ( ! class_exists( 'WP_Error' ) ) {
+	class WP_Error {
+		public $code;
+		public $message;
+		public $data;
+		public function __construct( $code = '', $message = '', $data = '' ) {
+			$this->code    = $code;
+			$this->message = $message;
+			$this->data    = $data;
+		}
+		public function get_error_data() {
+			return $this->data;
+		}
+	}
+}
+
+if ( ! class_exists( 'WP_REST_Server' ) ) {
+	class WP_REST_Server {
+		const READABLE  = 'GET';
+		const CREATABLE = 'POST';
+	}
+}
+
+if ( ! class_exists( 'WP_HTTP_Response' ) ) {
+	class WP_HTTP_Response {
+		public $data;
+		public $status;
+		public $headers = array();
+		public function __construct( $data = null, $status = 200 ) {
+			$this->data   = $data;
+			$this->status = $status;
+		}
+		public function header( $key, $value ) {
+			$this->headers[ $key ] = $value;
+		}
+		public function get_status() {
+			return $this->status;
+		}
+		public function get_data() {
+			return $this->data;
+		}
+	}
+}
+
+if ( ! class_exists( 'WP_REST_Response' ) ) {
+	class WP_REST_Response extends WP_HTTP_Response {}
+}
+
+if ( ! class_exists( 'WP_REST_Request' ) ) {
+	class WP_REST_Request {
+		private $params;
+		private $headers;
+		public function __construct( array $params = array(), array $headers = array() ) {
+			$this->params  = $params;
+			$this->headers = array_change_key_case( $headers, CASE_LOWER );
+		}
+		public function get_param( $key ) {
+			return $this->params[ $key ] ?? null;
+		}
+		public function get_header( $key ) {
+			return $this->headers[ strtolower( $key ) ] ?? null;
+		}
+	}
+}
+
 // Register the theme autoloader.
 spl_autoload_register(
 	function ( $class_name ) {

@@ -14,7 +14,7 @@ The theme claims "instant" loads and sub-second FCP. Those claims only hold unde
 ## 3. Theme Responsibilities
 * **Fragment caching:** cache the output of expensive, reusable fragments (e.g. the generated `llms.txt`, a computed JSON-LD graph) in a transient with a sensible TTL and a clear invalidation hook (on `save_post`, `switch_theme`, etc.).
 * **Dynamic vs. cached:** anything genuinely per-user (mini-cart count, logged-in greeting) must load via a cache-safe mechanism — a client-side Interactivity API fetch to a non-cached REST endpoint — not baked into the cached page HTML.
-* **Nonce caching trap:** nonces are user- and time-specific. Never print a nonce into page-cached HTML; fetch it client-side or exclude the fragment from cache. (This directly affects forms — see `02-frontend-and-styles/05-forms-and-validation.md`.)
+* **Nonce caching trap:** nonces are user- and time-specific. Never print a nonce into page-cached HTML; fetch it client-side or exclude the fragment from cache. The contact form follows this: it seeds no nonce and refreshes its signed token from the no-store `atlas/v1/contact/token` endpoint (see `02-frontend-and-styles/05-forms-and-validation.md` §5).
 * **Avoid cache-busting patterns:** no `nocache_headers()` on normal front-end templates, no cookies set on anonymous pages (they defeat page caches).
 
 ## 4. Speculation Rules at Scale

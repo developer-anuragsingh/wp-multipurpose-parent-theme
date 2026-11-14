@@ -5,9 +5,9 @@
  * entry), NOT a slice of atlas/ui-states. It progressively enhances a real
  * <form method="post" action="…"> so a no-JS visitor still submits straight to
  * the REST route; this module intercepts the submit, validates locally for UX,
- * and POSTs the same payload with the seeded wp_rest nonce.
+ * and POSTs the same payload with the signed form token.
  *
- * Server config (restUrl, nonce, pre-translated labels) is seeded by
+ * Server config (restUrl, tokenUrl, pre-translated labels) is seeded by
  * Atlas\Contact_Form::register_assets() via wp_interactivity_state, so the
  * module reads config from state and performs NO runtime i18n — it only selects
  * among pre-translated strings. There is NO validation library (agent-rules §4
@@ -47,6 +47,34 @@ const isFieldValid = ( field, value ) => {
 			return trimmed.length >= 10 && trimmed.length <= 5000;
 		default:
 			return true;
+	}
+};
+
+/**
+ * Fetch a fresh signed form token and write it into the form's hidden field.
+ *
+ * Never throws: on any failure the existing token is left untouched.
+ *
+ * @param {HTMLElement} form The contact form element.
+ * @return {Promise<void>} Resolves once the field is updated (or on failure).
+ */
+const refreshFormToken = async ( form ) => {
+	try {
+		const response = await fetch( state.tokenUrl, {
+			method: 'GET',
+			credentials: 'omit',
+			cache: 'no-store',
+		} );
+		if ( ! response.ok ) {
+			return;
+		}
+		const data = await response.json();
+		const field = form.querySelector( '[data-role="ts"]' );
+		if ( field && data && typeof data.token === 'string' ) {
+			field.value = data.token;
+		}
+	} catch {
+		// Keep the server-rendered token.
 	}
 };
 
@@ -129,6 +157,24 @@ const { state } = store( 'atlas/contact-form', {
 		},
 	},
 
+	callbacks: {
+		/**
+		 * Swap the server-rendered form token for a fresh one on load.
+		 *
+		 * A full-page-cached page serves an old token; fetching a new one keeps
+		 * the submission valid regardless of cache age. On any failure the
+		 * server-rendered token is left in place (the no-JS value still works
+		 * until it expires).
+		 *
+		 * @yield {Promise} The token fetch.
+		 * @return {void}
+		 */
+		*refreshToken() {
+			const { ref } = getElement();
+			yield refreshFormToken( ref );
+		},
+	},
+
 	actions: {
 		/**
 		 * Validate a single field on blur (instant local check, no debounce).
@@ -184,7 +230,7 @@ const { state } = store( 'atlas/contact-form', {
 		 *
 		 * Flow: preventDefault -> validate all fields (focus the first invalid
 		 * and abort on failure) -> announce "submitting" -> POST JSON with the
-		 * nonce and X-Atlas-Enhanced header -> branch on HTTP status
+		 * signed form token and X-Atlas-Enhanced header -> branch on HTTP status
 		 * (200/400/429/other) -> announce + manage focus. submitting is always
 		 * cleared in finally.
 		 *
@@ -228,9 +274,12 @@ const { state } = store( 'atlas/contact-form', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-WP-Nonce': state.nonce,
 						'X-Atlas-Enhanced': '1',
 					},
+					// No cookies/nonce: the signed form token authorises the
+					// request, and omitting credentials means a stale core REST
+					// nonce can never cause a spurious 403.
+					credentials: 'omit',
 					body: JSON.stringify( {
 						name: values.name.trim(),
 						email: values.email.trim(),
@@ -264,9 +313,20 @@ const { state } = store( 'atlas/contact-form', {
 					if ( status ) {
 						status.focus();
 					}
-				} else if ( response.status === 400 ) {
-					// Server rejected input that passed local checks: flag all
-					// fields and focus the first one for correction.
+					// A token is tied to one render time; mint a new one so a
+					// second message is not treated as a "too fast" bot.
+					yield refreshFormToken( ref );
+				} else if (
+					response.status === 400 ||
+					response.status === 403
+				) {
+					// 400: server rejected input that passed local checks.
+					// 403: the form token was rejected (expired/forged); get a
+					// fresh one so a retry succeeds. Either way, focus the
+					// first field for correction.
+					if ( response.status === 403 ) {
+						yield refreshFormToken( ref );
+					}
 					context.status = state.labels.invalid;
 					context.statusType = 'error';
 					const firstField = ref.querySelector(

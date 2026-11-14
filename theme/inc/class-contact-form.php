@@ -86,15 +86,35 @@ class Contact_Form {
 	const STYLE_HANDLE = 'atlas-contact-form';
 
 	/**
-	 * Nonce action for the contact form's intent check.
-	 *
-	 * The core REST nonce action: core verifies it automatically for logged-in
-	 * REST via the X-WP-Nonce header, but this public form mints and re-verifies
-	 * it itself as one of the compensating controls (see handle_request()).
+	 * REST route (relative to self::REST_NAMESPACE) that mints a fresh form
+	 * token. Full endpoint is atlas/v1/contact/token. The enhanced JS fetches it
+	 * on load so a full-page-cached form never submits a stale token.
 	 *
 	 * @var string
 	 */
-	const NONCE_ACTION = 'wp_rest';
+	const TOKEN_ROUTE = '/contact/token';
+
+	/**
+	 * Filter hook name for the form-token lifetime in seconds.
+	 *
+	 * @var string
+	 */
+	const FILTER_TOKEN_TTL = 'atlas_contact_token_ttl';
+
+	/**
+	 * Default form-token lifetime in seconds (12 hours).
+	 *
+	 * @var int
+	 */
+	const TOKEN_TTL_DEFAULT = 43200;
+
+	/**
+	 * Domain-separation prefix mixed into the token HMAC so a token minted here
+	 * can never validate in another context.
+	 *
+	 * @var string
+	 */
+	const TOKEN_CONTEXT = 'atlas_contact_form|';
 
 	/**
 	 * Honeypot input name. Must be empty for a submission to pass.
@@ -104,7 +124,8 @@ class Contact_Form {
 	const HONEYPOT_FIELD = 'atlas_contact_hp';
 
 	/**
-	 * Hidden timing field name. Carries the unix-seconds render timestamp.
+	 * Hidden form-token field name. Carries the signed "<unix-seconds>.<hmac>"
+	 * token minted by issue_token() (it doubles as the timing check).
 	 *
 	 * @var string
 	 */
@@ -152,8 +173,8 @@ class Contact_Form {
 	const RATE_LIMIT_WINDOW = 600;
 
 	/**
-	 * Per-IP rate-limit counter transient key prefix (the IP is hashed into the
-	 * key, never stored in the clear).
+	 * Per-IP rate-limit counter key prefix (the IP is keyed-hashed into the key,
+	 * never stored in the clear). Also the object-cache group name.
 	 *
 	 * @var string
 	 */
@@ -320,10 +341,12 @@ class Contact_Form {
 	 * write route is permitted ONLY with a full set of documented compensating
 	 * controls, all enforced inside handle_request() before any mail is sent:
 	 *
-	 *   1. Intent — the seeded wp_rest nonce is verified (X-WP-Nonce header or
-	 *      the _wpnonce body param for the no-JS POST).
+	 *   1. Form token — a stateless, HMAC-signed, expiring token (see
+	 *      issue_token()/verify_token()) must accompany the submission. It does
+	 *      not depend on a user session, so it works for anonymous visitors and
+	 *      cannot be forged or back-dated by a bot.
 	 *   2. Honeypot — a hidden field that must stay empty; a filled one is a bot.
-	 *   3. Timing — a submission faster than MIN_SUBMIT_SECONDS is a bot.
+	 *   3. Timing — the token's signed age must be >= MIN_SUBMIT_SECONDS.
 	 *   4. Rate limit — per-IP throttling returning HTTP 429 + Retry-After once
 	 *      the filterable limit is exceeded.
 	 *   5. Validation + sanitization — every field is independently validated
@@ -349,6 +372,88 @@ class Contact_Form {
 				'args'                => self::args_schema(),
 			)
 		);
+
+		register_rest_route(
+			self::REST_NAMESPACE,
+			self::TOKEN_ROUTE,
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array( self::class, 'handle_token_request' ),
+				// Public by design: it only mints a short-lived signed token and
+				// reads/writes no stored data. Responses are marked no-store.
+				'permission_callback' => '__return_true',
+			)
+		);
+	}
+
+	/**
+	 * Mint a signed form token: "<issued-at>.<hmac>".
+	 *
+	 * Stateless (nothing is stored). The HMAC uses the site's secret salt and a
+	 * domain-separation prefix, so a bot cannot forge a token or back-date its
+	 * issue time to defeat the timing check.
+	 *
+	 * @param int|null $issued_at Unix timestamp to sign; defaults to now.
+	 * @return string The token.
+	 */
+	public static function issue_token( ?int $issued_at = null ): string {
+		$issued_at = $issued_at ?? time();
+
+		return $issued_at . '.' . self::sign( $issued_at );
+	}
+
+	/**
+	 * Validate a form token.
+	 *
+	 * @param string   $token The submitted token.
+	 * @param int|null $now   Current unix time; defaults to now (for tests).
+	 * @return string One of 'ok', 'too_fast' (valid but younger than
+	 *                MIN_SUBMIT_SECONDS), or 'invalid' (malformed, forged,
+	 *                from the future, or expired).
+	 */
+	public static function verify_token( string $token, ?int $now = null ): string {
+		$now = $now ?? time();
+
+		if ( 1 !== preg_match( '/^(\d{1,12})\.([a-f0-9]{64})$/', $token, $m ) ) {
+			return 'invalid';
+		}
+
+		$issued_at = (int) $m[1];
+
+		if ( ! hash_equals( self::sign( $issued_at ), $m[2] ) ) {
+			return 'invalid';
+		}
+
+		$ttl = (int) apply_filters( self::FILTER_TOKEN_TTL, self::TOKEN_TTL_DEFAULT );
+		$age = $now - $issued_at;
+
+		if ( $age < 0 || $age > $ttl ) {
+			return 'invalid';
+		}
+
+		return $age < self::MIN_SUBMIT_SECONDS ? 'too_fast' : 'ok';
+	}
+
+	/**
+	 * Compute the token HMAC for an issue time.
+	 *
+	 * @param int $issued_at Unix timestamp being signed.
+	 * @return string Hex HMAC-SHA256.
+	 */
+	private static function sign( int $issued_at ): string {
+		return hash_hmac( 'sha256', self::TOKEN_CONTEXT . $issued_at, wp_salt( 'auth' ) );
+	}
+
+	/**
+	 * Route callback for the token endpoint: return a fresh token, never cached.
+	 *
+	 * @return \WP_REST_Response The { token } response with no-store headers.
+	 */
+	public static function handle_token_request(): \WP_REST_Response {
+		$response = new \WP_REST_Response( array( 'token' => self::issue_token() ), 200 );
+		$response->header( 'Cache-Control', 'no-store, max-age=0' );
+
+		return $response;
 	}
 
 	/**
@@ -407,9 +512,9 @@ class Contact_Form {
 			),
 			self::TIMING_FIELD   => array(
 				'required'          => false,
-				'type'              => 'integer',
+				'type'              => 'string',
 				'sanitize_callback' => static function ( $value ) {
-					return absint( $value );
+					return sanitize_text_field( wp_unslash( (string) $value ) );
 				},
 			),
 		);
@@ -418,7 +523,7 @@ class Contact_Form {
 	/**
 	 * Route callback: run the full 5-step security pipeline, then send mail.
 	 *
-	 * Order (each step fails early): intent (nonce) -> honeypot -> timing ->
+	 * Order (each step fails early): signed form token -> honeypot -> timing ->
 	 * rate limit -> re-validate/sanitize -> wp_mail. Returns a GENERIC success
 	 * or GENERIC error — never a message that leaks which control tripped (a
 	 * caught bot sees a 200 "thanks", not "you were blocked"). No field value is
@@ -436,14 +541,10 @@ class Contact_Form {
 	public static function handle_request( \WP_REST_Request $request ) {
 		$enhanced = '1' === (string) $request->get_header( 'X-Atlas-Enhanced' );
 
-		// 1. Verify intent: accept the nonce from the header (enhanced) OR the
-		// _wpnonce body param (no-JS POST). Not the sole gate — a compensating
-		// control per the route PHPDoc.
-		$nonce = (string) $request->get_header( 'X-WP-Nonce' );
-		if ( '' === $nonce ) {
-			$nonce = (string) $request->get_param( '_wpnonce' );
-		}
-		if ( ! wp_verify_nonce( $nonce, self::NONCE_ACTION ) ) {
+		// 1. Form token: a signed, expiring, stateless token must be present and
+		// authentic. A missing, forged, or expired token is rejected outright.
+		$token_state = self::verify_token( (string) $request->get_param( self::TIMING_FIELD ) );
+		if ( 'invalid' === $token_state ) {
 			return self::respond( $enhanced, 'invalid', 403 );
 		}
 
@@ -454,16 +555,15 @@ class Contact_Form {
 			return self::respond( $enhanced, 'sent', 200 );
 		}
 
-		// 3. Timing: a submission faster than MIN_SUBMIT_SECONDS (or with a
-		// missing/future timestamp) is a bot. Generic success, no mail.
-		$ts  = absint( $request->get_param( self::TIMING_FIELD ) );
-		$now = time();
-		if ( 0 === $ts || $ts > $now || ( $now - $ts ) < self::MIN_SUBMIT_SECONDS ) {
+		// 3. Timing: the token's signed age is below MIN_SUBMIT_SECONDS, so a
+		// bot. The age is unforgeable (it is inside the HMAC). Generic success,
+		// no mail.
+		if ( 'too_fast' === $token_state ) {
 			return self::respond( $enhanced, 'sent', 200 );
 		}
 
 		// 4. Rate limit: per-IP throttle. 429 + Retry-After once the filterable
-		// limit is exceeded. REMOTE_ADDR only — proxy headers are untrusted.
+		// limit is exceeded. REMOTE_ADDR by default; see atlas_client_ip.
 		$rate_limited = self::check_rate_limit();
 		if ( is_wp_error( $rate_limited ) ) {
 			return $rate_limited;
@@ -516,10 +616,10 @@ class Contact_Form {
 		 */
 		$ip = (string) apply_filters( self::FILTER_CLIENT_IP, $ip );
 
-		if ( '' === $ip ) {
-			// No resolvable IP: do not throttle (fail open on the limiter only;
-			// the other four controls still apply).
-			return true;
+		// Fail closed on the limiter: an empty or malformed address is NOT a free
+		// pass. It falls into one shared "unknown" bucket so it is still throttled.
+		if ( false === filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+			$ip = 'unknown';
 		}
 
 		/**
@@ -529,10 +629,12 @@ class Contact_Form {
 		 */
 		$limit = (int) apply_filters( self::FILTER_RATE_LIMIT, self::RATE_LIMIT_DEFAULT );
 
-		$key   = self::TRANSIENT_PREFIX . md5( $ip );
-		$count = (int) get_transient( $key );
+		// Keyed hash: the key is not reversible to an IP (plain md5 of an IPv4
+		// address can be brute-forced in seconds).
+		$key   = self::TRANSIENT_PREFIX . substr( hash_hmac( 'sha256', $ip, wp_salt( 'auth' ) ), 0, 32 );
+		$count = self::increment_counter( $key );
 
-		if ( $count >= $limit ) {
+		if ( $count > $limit ) {
 			return new \WP_Error(
 				'atlas_contact_rate_limited',
 				__( 'Too many requests. Please try again later.', 'atlas-theme' ),
@@ -544,9 +646,52 @@ class Contact_Form {
 			);
 		}
 
-		set_transient( $key, $count + 1, self::RATE_LIMIT_WINDOW );
-
 		return true;
+	}
+
+	/**
+	 * Increment and return the rate-limit counter for a key.
+	 *
+	 * With a persistent object cache (Redis/Memcached) the increment is atomic
+	 * (wp_cache_add + wp_cache_incr), so concurrent requests cannot slip past the
+	 * limit. Without one it falls back to a transient, which is best-effort (a
+	 * burst of truly simultaneous requests can under-count); operators who need a
+	 * hard guarantee should enable an object cache or limit at the edge.
+	 *
+	 * @param string $key Counter key.
+	 * @return int The counter value after this request is counted.
+	 */
+	private static function increment_counter( string $key ): int {
+		if ( function_exists( 'wp_using_ext_object_cache' ) && wp_using_ext_object_cache() ) {
+			wp_cache_add( $key, 0, self::TRANSIENT_PREFIX, self::RATE_LIMIT_WINDOW );
+			$value = wp_cache_incr( $key, 1, self::TRANSIENT_PREFIX );
+
+			if ( false !== $value ) {
+				return (int) $value;
+			}
+		}
+
+		$count = (int) get_transient( $key ) + 1;
+		set_transient( $key, $count, self::RATE_LIMIT_WINDOW );
+
+		return $count;
+	}
+
+	/**
+	 * Make a value safe for use inside a mail header or subject line.
+	 *
+	 * Strips CR, LF and NUL (header injection / response splitting) and the
+	 * characters that could close or open an address or start a new header in a
+	 * "Name <email>" display name (also ':' and '@', so a name cannot spoof an
+	 * address), then collapses whitespace.
+	 *
+	 * @param string $value Raw (already sanitized) text.
+	 * @return string Header-safe text.
+	 */
+	public static function header_safe( string $value ): string {
+		$value = str_replace( array( "\r", "\n", "\0", '<', '>', '"', ',', ';', ':', '@' ), ' ', $value );
+
+		return trim( (string) preg_replace( '/\s+/', ' ', $value ) );
 	}
 
 	/**
@@ -576,10 +721,12 @@ class Contact_Form {
 			return false;
 		}
 
+		$safe_name = self::header_safe( $name );
+
 		$subject = sprintf(
 			/* translators: %s: submitter name. */
 			__( 'New contact message from %s', 'atlas-theme' ),
-			$name
+			$safe_name
 		);
 
 		$body = sprintf(
@@ -591,8 +738,8 @@ class Contact_Form {
 		);
 
 		$headers = array();
-		if ( is_email( $email ) ) {
-			$headers[] = 'Reply-To: ' . $name . ' <' . $email . '>';
+		if ( is_email( $email ) && ! preg_match( '/[\r\n\0<>,;"\s]/', $email ) ) {
+			$headers[] = 'Reply-To: ' . ( '' !== $safe_name ? $safe_name . ' ' : '' ) . '<' . $email . '>';
 		}
 
 		return (bool) wp_mail( $recipient, $subject, $body, $headers );
@@ -648,7 +795,8 @@ class Contact_Form {
 	 * Seed the Interactivity store and conditionally enqueue the built assets.
 	 *
 	 * Runs on wp_enqueue_scripts (front end only, guarded by is_admin()). Seeds
-	 * the atlas/contact-form store with the REST URL, a fresh wp_rest nonce, and
+	 * the atlas/contact-form store with the REST and token URLs (no secret is
+	 * seeded, so a cached page leaks and stales nothing) and
 	 * the pre-translated gettext labels (so the module performs no runtime i18n),
 	 * then registers the built module from its .asset.php and enqueues it + the
 	 * built stylesheet ONLY when page_has_contact_form() is true. A missing
@@ -665,9 +813,9 @@ class Contact_Form {
 		wp_interactivity_state(
 			self::STORE,
 			array(
-				'restUrl' => rest_url( self::REST_NAMESPACE . self::REST_ROUTE ),
-				'nonce'   => wp_create_nonce( self::NONCE_ACTION ),
-				'labels'  => array(
+				'restUrl'  => rest_url( self::REST_NAMESPACE . self::REST_ROUTE ),
+				'tokenUrl' => rest_url( self::REST_NAMESPACE . self::TOKEN_ROUTE ),
+				'labels'   => array(
 					'submitting'   => __( 'Sending your message…', 'atlas-theme' ),
 					'success'      => __( 'Thanks — your message has been sent.', 'atlas-theme' ),
 					'error'        => __( 'Something went wrong. Please try again later.', 'atlas-theme' ),

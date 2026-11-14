@@ -11,11 +11,11 @@
  * atlas/v1/contact REST route so a visitor without JS still submits and the
  * server handles the request; the atlas/contact-form Interactivity store
  * intercepts the submit, validates inline for UX, and POSTs the same payload
- * with the seeded wp_rest nonce (one server handler, one validation path).
+ * with the signed form token (one server handler, one validation path).
  *
  * This is a PHP pattern (not static block markup) because it renders per-request
- * values at output time: the no-JS action URL, a hidden _wpnonce for the plain
- * POST, a timing timestamp, and an escaped server-side status message when the
+ * values at output time: the no-JS action URL, a signed (HMAC) form
+ * token that also proves render time, and an escaped server-side status message when the
  * no-JS redirect returns ?atlas-contact=sent|error|invalid. Every visible string
  * is translated and escaped at the point of output.
  *
@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $atlas_contact_action = esc_url( rest_url( 'atlas/v1/contact' ) );
-$atlas_contact_ts     = esc_attr( (string) time() );
+$atlas_contact_ts     = esc_attr( \Atlas\Contact_Form::issue_token() );
 
 // Per-instance ids so multiple forms on one page never collide.
 $atlas_contact_uid    = wp_unique_id( 'atlas-contact-' );
@@ -88,15 +88,10 @@ $atlas_contact_messages = array(
 		data-wp-interactive="atlas/contact-form"
 		data-wp-context='<?php echo esc_attr( $atlas_contact_context ); ?>'
 		data-wp-on--submit="actions.submit"
+		data-wp-init="callbacks.refreshToken"
 		data-hp-field="atlas_contact_hp"
 		data-ts-field="atlas_contact_ts"
 	>
-		<?php
-		// Nonce for the no-JS POST path; the enhanced path sends it as the
-		// X-WP-Nonce header instead. Printed, not returned.
-		wp_nonce_field( 'wp_rest', '_wpnonce', false, true );
-		?>
-
 		<p
 			id="<?php echo esc_attr( $atlas_status_id ); ?>"
 			class="atlas-contact-form__status"
@@ -180,7 +175,7 @@ $atlas_contact_messages = array(
 			/>
 		</div>
 
-		<?php /* Timing field: the render timestamp, checked server-side against MIN_SUBMIT_SECONDS. */ ?>
+		<?php /* Signed form token (also the timing proof): HMAC-signed, expiring; the enhanced JS swaps in a fresh one on load so a page-cached form never goes stale. */ ?>
 		<input type="hidden" name="atlas_contact_ts" data-role="ts" value="<?php echo $atlas_contact_ts; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped with esc_attr() above. ?>" />
 
 		<button

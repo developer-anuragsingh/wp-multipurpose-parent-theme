@@ -84,10 +84,12 @@ If server-level configuration is inaccessible (e.g. shared hosting), hook `atlas
 
 Modern hosting environments (LiteSpeed Cache, Varnish, WP Rocket, Nginx FastCGI, Cloudflare APO) cache full HTML responses.
 
-### Nonce Expiry Prevention
-* WordPress nonces have a standard lifespan of 12–24 hours.
-* If a page containing a dynamic form (like the contact form) is cached at the edge for >24 hours, the rendered nonce will become invalid, causing `403 Forbidden` errors on submission.
-* **Best Practice:** Exclude dynamic form pages (`/contact/`, `/checkout/`, `/cart/`) from full-page edge caching, or configure cache TTL on form pages to under 10 hours.
+### Contact-Form Token & Page Caching
+The contact form does **not** use a WordPress nonce. An anonymous visitor has no session, so a `wp_rest` nonce adds no CSRF protection, and it would be frozen into cached HTML and expire (12-24 h), causing `403` errors. Instead the form carries a **stateless, HMAC-signed token** (`<issued-at>.<hmac>`, see `Atlas\Contact_Form::issue_token()`), valid for 12 hours by default (`atlas_contact_token_ttl` filter).
+* **Enhanced (JS) path:** on load the form fetches a fresh token from `GET /wp-json/atlas/v1/contact/token` (`Cache-Control: no-store`), so a page cached for days still submits correctly. No secret is seeded into the cacheable HTML.
+* **No-JS path:** uses the token rendered into the HTML. If a cached page is older than the token TTL, the visitor sees the generic "please check the form" message; reloading fixes it. For no-JS-critical sites keep the page cache TTL below the token TTL.
+* **Cache rules:** never cache `/wp-json/atlas/v1/contact/token` or the `POST` to `/wp-json/atlas/v1/contact`. Most CDNs already skip REST `POST`; add an explicit bypass for the token URL if your CDN caches `GET` REST responses.
+* Still exclude `/checkout/` and `/cart/` from full-page edge caching (WooCommerce nonces).
 
 ### 503 Maintenance Mode Cache Hygiene
 When maintenance mode is triggered via `Atlas\Maintenance`, the controller issues `nocache_headers()` alongside `status_header( 503 )`. This emits:
