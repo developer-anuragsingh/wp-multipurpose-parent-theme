@@ -17,3 +17,7 @@ The theme implements a custom endpoint parameter. By appending `?format=md` to a
 
 ## 3. SEO Protection
 To prevent traditional search engines (like Googlebot) from penalizing the site for duplicate content, the Markdown endpoints must automatically include a canonical link header pointing to the standard HTML URL.
+
+## Caching & Limits
+The converted body is cached in a transient keyed by post ID, `post_modified_gmt` and locale (`Atlas\Markdown_Endpoint::CACHE_TTL`, 1 hour), so editing a post or changing language bypasses stale entries automatically and repeated crawls never re-run block renderers. Output is capped at `atlas_markdown_max_bytes` (default 512 KB), truncated on a UTF-8 boundary. URLs go through `esc_url_raw()` (so `javascript:` and `data:` links/images are dropped) and all tags are stripped to plain text.
+

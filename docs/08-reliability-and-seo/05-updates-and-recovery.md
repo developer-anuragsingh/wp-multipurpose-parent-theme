@@ -31,7 +31,7 @@ Child themes override by matching **slugs and paths** (template/part filenames, 
 
 ## 6. Backup & Rollback
 * **Before any production deploy:** back up the current theme files and the database (operator responsibility; document it in the end-user guide).
-* **Rollback:** keep the previous release artifact so a bad deploy can be reverted by redeploying the last-good tag (git tag per release makes this trivial). rsync/SFTP deploys should retain the prior version until the new one is verified.
+* **Rollback:** keep the previous release artifact so a bad deploy can be reverted by redeploying the last-good tag (git tag per release makes this trivial; each GitHub Release carries the installable `atlas-theme-<version>.zip` and its SHA-256 built by `scripts/build-release.sh`, see `07-performance-and-qa/06-automation-setup.md` §6). rsync/SFTP deploys should retain the prior version until the new one is verified.
 * **Recovery mode:** rely on WordPress fatal-error protection / recovery mode so a broken update does not white-screen the live site; the operator receives the recovery email and can revert.
 
 ## 7. Verification Checklist

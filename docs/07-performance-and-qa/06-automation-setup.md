@@ -46,6 +46,7 @@ The hook catches style and obvious secret issues before they reach CI. Per `05-c
 * **`e2e`** — build + Playwright E2E and visual regression.
 * **`secrets`** — full-history checkout → `gitleaks/gitleaks-action` using `.gitleaks.toml`.
 * **`commitlint`** — Conventional Commits on the PR range or pushed commit.
+* **`package`** — runs `scripts/build-release.sh` so a broken build or a leaky zip fails the PR, not the release.
 * **`audit`** — `composer audit --locked` (blocking); `npm audit --omit=dev` (blocking: the theme ships no npm runtime dependencies, so this must stay at 0); `npm audit --audit-level=critical` (blocking); `npm audit --audit-level=high` (informational, `continue-on-error`) because build-tool (`@wordpress/scripts`) advisories can only be fixed upstream and never ship to visitors.
 
 **Supply-chain hardening**
@@ -59,3 +60,13 @@ The jobs mirror the local gates but run clean-room, so a commit that slipped pas
 
 ## 5. How Pre-Commit and CI Relate
 Pre-commit is a fast, local, best-effort filter over staged files; CI is the slower, authoritative, whole-repo gate. Pre-commit reduces round-trips (style/secret problems caught before push); CI guarantees the gates actually ran regardless of local setup. Neither replaces the manual QA passes (accessibility, cross-browser, RTL/i18n) in `02-testing-and-ci.md` §5.
+
+## 6. Release Packaging
+`theme/build/` (compiled JS/CSS) is generated and gitignored, so zipping the repo or `theme/` by hand ships a theme **without its scripts**. Always package with:
+```bash
+npm ci
+scripts/build-release.sh          # builds, verifies, writes dist/atlas-theme-<version>.zip (+ .sha256)
+scripts/build-release.sh --skip-build   # package the existing build/ output
+```
+The script (1) refuses to run if `style.css`, `ATLAS_THEME_VERSION` in `functions.php` and `package.json` disagree on the version, (2) builds and checks every expected bundle exists, (3) stages a clean copy (no `.DS_Store`, source maps, `.gitignore`, or `src/js/`; `src/css/interactivity.css` is kept because the theme enqueues it), (4) zips deterministically with top-level folder `atlas-theme/` (the required slug), and (5) verifies the archive contents.
+**Versioning:** release-please bumps `package.json` and, via `extra-files` plus `x-release-please-start-version` / `-end` markers, `theme/style.css` and `theme/functions.php`. Do not delete those marker lines. On a release, `.github/workflows/release-please.yml` builds the zip and attaches it and its SHA-256 to the GitHub Release; keep the previous release asset for rollback (`08-reliability-and-seo/05-updates-and-recovery.md`).

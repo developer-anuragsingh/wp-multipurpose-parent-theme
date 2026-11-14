@@ -9,7 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/* x-release-please-start-version */
 define( 'ATLAS_THEME_VERSION', '1.0.0' );
+/* x-release-please-end */
 define( 'ATLAS_THEME_DIR', get_template_directory() );
 define( 'ATLAS_THEME_URI', get_template_directory_uri() );
 

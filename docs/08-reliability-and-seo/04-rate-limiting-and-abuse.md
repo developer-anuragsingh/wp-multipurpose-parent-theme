@@ -22,7 +22,7 @@ Form spam protection is covered in `02-frontend-and-styles/05-forms-and-validati
 * Recommend (in operator docs) limiting `wp-login.php` / XML-RPC at the host level; link this from the end-user guide (`09-monitoring-and-usage/02-end-user-guide.md`).
 
 ## 5. Scraping & GEO Endpoint Abuse
-* `llms.txt`, `llms-full.txt`, and `?format=md` are intentionally machine-readable, so they invite heavy crawling. Serve them from cache (`07-performance-and-qa/04-caching-and-scaling.md`) so crawl volume hits the cache, not PHP.
+* `llms.txt`, `llms-full.txt`, and `?format=md` are intentionally machine-readable, so they invite heavy crawling. Serve them from cache (`07-performance-and-qa/04-caching-and-scaling.md`) so crawl volume hits the cache, not PHP. `?format=md` is cached per post/modified-time/locale for 1 hour and size-capped (`atlas_markdown_max_bytes`).
 * Expose only already-public content through these endpoints (reinforces `06-security-and-i18n/03-data-protection.md` §8) so scraping leaks nothing sensitive.
 
 ## 6. Resource-Exhaustion Hygiene

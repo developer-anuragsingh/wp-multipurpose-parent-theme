@@ -20,6 +20,8 @@ require_once __DIR__ . '/test-llms-txt.php';
 require_once __DIR__ . '/test-i18n.php';
 require_once __DIR__ . '/test-security-headers.php';
 require_once __DIR__ . '/test-contact-form-security.php';
+require_once __DIR__ . '/test-markdown-endpoint.php';
+require_once __DIR__ . '/test-assets.php';
 
 echo "Running Atlas Theme Unit Tests...\n\n";
 
@@ -37,6 +39,8 @@ $suites = array(
 	'i18n & Language'    => Test_I18n::run(),
 	'Security Headers'   => Test_Security_Headers::run(),
 	'Contact Form Security' => Test_Contact_Form_Security::run(),
+	'Markdown Endpoint'  => Test_Markdown_Endpoint::run(),
+	'Assets & CSP Nonce' => Test_Assets::run(),
 );
 
 $total_tests = 0;

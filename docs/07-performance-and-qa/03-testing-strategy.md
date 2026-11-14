@@ -48,3 +48,9 @@ Favour many fast, cheap tests at the base and few slow, broad tests at the top:
 - [ ] Playwright covers nav, dark mode, a form, and commerce flow; axe runs on key pages.
 - [ ] Visual regression baselines exist for key templates.
 - [ ] Every bug fix ships with a failing-then-passing regression test.
+
+## 7. What Exists Today (and how to run it)
+* **PHP unit suite — `composer test` (`php tests/run-tests.php`, 106 tests).** A fast, dependency-free runner over lightweight WordPress doubles in `tests/bootstrap.php`. Suites include Security Headers, Contact Form Security (signed token, rate limit incl. the object-cache path, header injection), Markdown Endpoint (conversion, hostile `javascript:`/`<script>` input, cache, size cap), Assets & CSP nonce, 503 Maintenance, i18n, llms.txt and patterns. Doubles can drift from core; keep them faithful (e.g. `esc_url_raw` rejects non-allow-listed protocols like core does) and prefer adding a smoke check for anything the doubles cannot prove.
+* **Live smoke test — `scripts/smoke-test.sh [base-url]`.** Runs against a real site (default `http://localhost:8885`, the Studio site) and proves what the doubles cannot: security headers are actually sent, the token endpoint is registered and `no-store`, and a missing or forged contact token is rejected with `403`. Run it after any change to headers, REST routes or the contact form, and before every release.
+* **JS unit tests — `npm test`** and **Playwright E2E/visual — `npm run test:e2e`** (fixture server, not WordPress).
+* **Not yet covered:** a PHPUnit suite on the WordPress core test library (`WP_UnitTestCase`, §2) and Seo/Schema output tests. Until then, the unit suite plus the smoke test are the safety net.

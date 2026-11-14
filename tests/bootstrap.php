@@ -103,7 +103,12 @@ if ( ! function_exists( 'esc_url' ) ) {
 
 if ( ! function_exists( 'esc_url_raw' ) ) {
 	function esc_url_raw( $url ) {
-		return filter_var( $url, FILTER_SANITIZE_URL ) ?: '';
+		$url = (string) filter_var( $url, FILTER_SANITIZE_URL );
+		// Mirror core: only allow safe protocols (never javascript:, data:, vbscript:).
+		if ( preg_match( '#^([a-z][a-z0-9+.-]*):#i', $url, $m ) && ! in_array( strtolower( $m[1] ), array( 'http', 'https', 'mailto', 'tel' ), true ) ) {
+			return '';
+		}
+		return $url;
 	}
 }
 
@@ -300,6 +305,19 @@ if ( ! function_exists( 'get_post' ) ) {
 		global $atlas_test_posts;
 		$id = is_object( $post ) ? ( $post->ID ?? 0 ) : (int) $post;
 		return isset( $atlas_test_posts[ $id ] ) ? (object) $atlas_test_posts[ $id ] : null;
+	}
+}
+
+if ( ! function_exists( 'get_post_field' ) ) {
+	function get_post_field( $field, $post = null ) {
+		$p = get_post( $post );
+		return $p ? ( $p->$field ?? '' ) : '';
+	}
+}
+
+if ( ! function_exists( 'get_locale' ) ) {
+	function get_locale() {
+		return 'en_US';
 	}
 }
 

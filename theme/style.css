@@ -1,4 +1,5 @@
 /*
+x-release-please-start-version
 Theme Name: Atlas Multipurpose
 Theme URI: https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme
 Author: Anurag Singh
@@ -11,6 +12,7 @@ Requires PHP: 8.1
 License: GNU General Public License v2 or later
 Text Domain: atlas-theme
 Domain Path: /languages
+x-release-please-end
 */
 
 /* Critical base: accessibility skip link (unlayered top-level rule). */

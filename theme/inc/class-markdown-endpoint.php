@@ -77,6 +77,38 @@ class Markdown_Endpoint {
 	const FILTER_ENABLED = 'atlas_markdown_endpoint_enabled';
 
 	/**
+	 * Transient key prefix for cached Markdown bodies.
+	 *
+	 * The key also carries a hash of the post's modified time and the locale, so
+	 * editing a post (or switching language) naturally bypasses stale entries.
+	 *
+	 * @var string
+	 */
+	const CACHE_PREFIX = 'atlas_md_';
+
+	/**
+	 * Cache lifetime in seconds (1 hour). Crawl bursts hit the cache, not the
+	 * block renderer.
+	 *
+	 * @var int
+	 */
+	const CACHE_TTL = 3600;
+
+	/**
+	 * Filter: maximum Markdown body size in bytes (resource-exhaustion cap).
+	 *
+	 * @var string
+	 */
+	const FILTER_MAX_BYTES = 'atlas_markdown_max_bytes';
+
+	/**
+	 * Default maximum Markdown body size in bytes (512 KB).
+	 *
+	 * @var int
+	 */
+	const MAX_BYTES_DEFAULT = 524288;
+
+	/**
 	 * Register the Markdown endpoint WordPress hooks.
 	 *
 	 * Called once from functions.php after Atlas\Robots::init(). Hooks
@@ -136,10 +168,7 @@ class Markdown_Endpoint {
 			return;
 		}
 
-		$markdown = self::blocks_to_markdown(
-			(string) get_post_field( 'post_content', $post_id ),
-			(string) get_the_title( $post_id )
-		);
+		$markdown = self::markdown_for_post( $post_id );
 
 		if ( '' === $markdown ) {
 			return;
@@ -152,6 +181,43 @@ class Markdown_Endpoint {
 
 		echo $markdown; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Machine Markdown body; URLs sanitised with esc_url_raw and text decoded to plain text in blocks_to_markdown().
 		exit;
+	}
+
+	/**
+	 * Return the (cached, size-capped) Markdown document for a post.
+	 *
+	 * Converting blocks can run dynamic block renderers, so the result is cached
+	 * in a transient keyed by post ID, modified time and locale; repeated crawls
+	 * are served without re-rendering. The body is truncated at a UTF-8 boundary
+	 * to the atlas_markdown_max_bytes cap so one huge post cannot exhaust memory
+	 * or bandwidth.
+	 *
+	 * @param int $post_id The published, public post ID (already gated by the caller).
+	 * @return string The Markdown document, or '' when nothing converts.
+	 */
+	public static function markdown_for_post( int $post_id ): string {
+		$modified = (string) get_post_field( 'post_modified_gmt', $post_id );
+		$locale   = function_exists( 'get_locale' ) ? (string) get_locale() : '';
+		$key      = self::CACHE_PREFIX . $post_id . '_' . substr( md5( $modified . '|' . $locale ), 0, 12 );
+
+		$cached = get_transient( $key );
+		if ( is_string( $cached ) ) {
+			return $cached;
+		}
+
+		$markdown = self::blocks_to_markdown(
+			(string) get_post_field( 'post_content', $post_id ),
+			(string) get_the_title( $post_id )
+		);
+
+		$max = max( 1024, (int) apply_filters( self::FILTER_MAX_BYTES, self::MAX_BYTES_DEFAULT ) );
+		if ( strlen( $markdown ) > $max ) {
+			$markdown = rtrim( mb_strcut( $markdown, 0, $max, 'UTF-8' ) ) . "\n";
+		}
+
+		set_transient( $key, $markdown, self::CACHE_TTL );
+
+		return $markdown;
 	}
 
 	/**

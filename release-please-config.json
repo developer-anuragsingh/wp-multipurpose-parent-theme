@@ -4,7 +4,11 @@
     ".": {
       "release-type": "node",
       "package-name": "atlas-wp-multipurpose-parent-theme",
-      "changelog-path": "CHANGELOG.md"
+      "changelog-path": "CHANGELOG.md",
+      "extra-files": [
+        "theme/style.css",
+        "theme/functions.php"
+      ]
     }
   }
 }
