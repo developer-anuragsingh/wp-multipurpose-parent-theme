@@ -147,17 +147,49 @@ class Maintenance {
 	 * @return string Maintenance template path or original fallback.
 	 */
 	public static function override_template( string $template ): string {
-		$maintenance_file = ATLAS_THEME_DIR . '/templates/maintenance.html';
+		foreach ( array( 'maintenance', 'blank' ) as $slug ) {
+			$block_template = self::resolve_block_template( $slug );
 
-		if ( file_exists( $maintenance_file ) ) {
-			return $maintenance_file;
+			if ( null === $block_template ) {
+				continue;
+			}
+
+			// Block templates are NOT PHP files: handing core a path to a .html
+			// file would include it raw (unrendered block comments, no <html>,
+			// no head, no CSS). Instead publish the template to core's
+			// template-canvas.php, exactly as locate_block_template() does.
+			global $_wp_current_template_id, $_wp_current_template_content;
+
+			// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited,WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Core's block-template handoff globals.
+			$_wp_current_template_id = $block_template->id;
+			// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited,WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Core's block-template handoff globals.
+			$_wp_current_template_content = $block_template->content;
+
+			return ABSPATH . WPINC . '/template-canvas.php';
 		}
 
-		$blank_file = ATLAS_THEME_DIR . '/templates/blank.html';
-		if ( file_exists( $blank_file ) ) {
-			return $blank_file;
-		}
-
+		// No usable block template (classic theme / not resolvable): keep the
+		// original template. The 503 status and headers still apply.
 		return $template;
+	}
+
+	/**
+	 * Resolve a block template by slug through the active theme (child first).
+	 *
+	 * @param string $slug Template slug, e.g. 'maintenance'.
+	 * @return \WP_Block_Template|null The template, or null when unavailable.
+	 */
+	private static function resolve_block_template( string $slug ): ?object {
+		if ( ! function_exists( 'get_block_template' ) || ! function_exists( 'get_stylesheet' ) ) {
+			return null;
+		}
+
+		$block_template = get_block_template( get_stylesheet() . '//' . $slug, 'wp_template' );
+
+		if ( ! is_object( $block_template ) || empty( $block_template->content ) ) {
+			return null;
+		}
+
+		return $block_template;
 	}
 }

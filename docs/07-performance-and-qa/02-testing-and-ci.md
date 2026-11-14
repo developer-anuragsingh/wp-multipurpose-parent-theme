@@ -25,7 +25,7 @@ A change is "done" only when it passes every gate below. A command exiting witho
 * **`.phpcs.xml.dist`** pins the ruleset (`WordPress-Extra`), the text domain (`atlas-theme`), the minimum WP/PHP versions, and the paths to scan.
 
 ## 4. CI (`.github/workflows/`)
-A `ci.yml` workflow runs on every push and pull request:
+A `ci.yml` workflow runs on every push and pull request (jobs, SHA-pinned actions, least-privilege permissions and the dependency `audit` job are documented in `06-automation-setup.md` §4; the snippet below is only the shape, with tags shown for readability, while the real file pins each action to a commit SHA):
 
 ```yaml
 # .github/workflows/ci.yml (shape, not final)

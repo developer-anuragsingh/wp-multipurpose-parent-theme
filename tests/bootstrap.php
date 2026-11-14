@@ -453,6 +453,27 @@ if ( ! function_exists( 'remove_query_arg' ) ) {
 	}
 }
 
+// Block-template doubles (maintenance override).
+if ( ! defined( 'WPINC' ) ) {
+	define( 'WPINC', 'wp-includes' );
+}
+
+global $atlas_test_block_templates;
+$atlas_test_block_templates = array();
+
+if ( ! function_exists( 'get_stylesheet' ) ) {
+	function get_stylesheet() {
+		return 'atlas-theme';
+	}
+}
+
+if ( ! function_exists( 'get_block_template' ) ) {
+	function get_block_template( $id, $template_type = 'wp_template' ) {
+		global $atlas_test_block_templates;
+		return $atlas_test_block_templates[ $id ] ?? null;
+	}
+}
+
 // Contact-form / REST doubles.
 global $atlas_test_mail, $atlas_test_mail_result, $atlas_test_ext_cache, $atlas_test_object_cache;
 $atlas_test_mail        = array();

@@ -12,3 +12,7 @@ Landing pages and "Coming Soon" modes require high conversion focus, meaning glo
 
 ## 3. 503 Maintenance Mode
 When the "Coming Soon" mode is active, the theme intercepts requests and returns a `503 Service Unavailable` HTTP status code to prevent search engines from indexing the incomplete site.
+
+### How the maintenance page is rendered
+`Atlas\Maintenance` serves `templates/maintenance.html` as a **block template**: it publishes the resolved template (child theme first, then parent; falling back to `blank`) to core's `template-canvas.php`, so the page is a full HTML document with `<head>`, global styles, header/footer parts and the Security_Headers. A `.html` template must never be returned straight from `template_include`: PHP would include it raw and print unrendered block comments with no `<html>`, head or CSS. If no block template resolves (e.g. a classic theme), the original template is kept; the `503`, `Retry-After`, `noindex` and `nocache` headers are still sent.
+Enable with `define( 'ATLAS_MAINTENANCE', true );`, the `atlas_maintenance_enabled` filter, or the `atlas_maintenance_mode` option (e.g. `wp option update atlas_maintenance_mode 1`). Users with `manage_options` bypass it.

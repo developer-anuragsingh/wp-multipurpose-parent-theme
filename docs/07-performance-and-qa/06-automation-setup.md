@@ -27,6 +27,7 @@ npm install        # @wordpress/scripts, husky, lint-staged (also installs the g
 | **JS lint** | `npm run lint:js` | `@wordpress/scripts` defaults | `wp-scripts lint-js` over `theme/src/js` |
 | **CSS lint** | `npm run lint:css` | `@wordpress/scripts` defaults | `wp-scripts lint-style` over `theme/src/css/**/*.css` |
 | **Build** | `npm run build` | `@wordpress/scripts` | Interactivity API bundles / optional Tailwind compile |
+| **Dependency audit** | `composer audit --locked`, `npm audit` | `composer.lock`, `package-lock.json` | Known-vulnerability advisories (see §4) |
 | **Secret scan** | `gitleaks` | `.gitleaks.toml` | Default gitleaks rules, scoped away from `vendor/`, `node_modules/`, `.worktrees/` |
 
 The PHP ruleset only scans `theme/`; `vendor/`, `node_modules/`, and `.worktrees/` are excluded. `browserslist` in `package.json` targets the Tier-1 matrix from `08-reliability-and-seo/03-browser-support.md` so autoprefixer and `@wordpress/scripts` build to the same support policy.
@@ -39,10 +40,20 @@ The PHP ruleset only scans `theme/`; `vendor/`, `node_modules/`, and `.worktrees
 The hook catches style and obvious secret issues before they reach CI. Per `05-coding-standards.md` §9, never bypass it with `--no-verify` to force a commit.
 
 ## 4. CI (authoritative, every push and PR)
-`.github/workflows/ci.yml` runs on `push` and `pull_request` with three independent jobs:
-* **`php`** — `shivammathur/setup-php@v2` (PHP 8.1) → `composer install` → `composer lint`.
-* **`node`** — `actions/setup-node@v4` (Node LTS) → `npm ci` → `npm run lint:js` + `npm run lint:css`.
-* **`secrets`** — full-history checkout → `gitleaks/gitleaks-action@v2` using `.gitleaks.toml`.
+`.github/workflows/ci.yml` runs on `push` and `pull_request` with independent jobs:
+* **`php`** — `shivammathur/setup-php` (PHP 8.1) → `composer install` → `composer lint` → `composer test`.
+* **`node`** — `actions/setup-node` (Node LTS) → `npm ci` → `npm run lint:js` + `npm run lint:css` → `npm test`.
+* **`e2e`** — build + Playwright E2E and visual regression.
+* **`secrets`** — full-history checkout → `gitleaks/gitleaks-action` using `.gitleaks.toml`.
+* **`commitlint`** — Conventional Commits on the PR range or pushed commit.
+* **`audit`** — `composer audit --locked` (blocking); `npm audit --omit=dev` (blocking: the theme ships no npm runtime dependencies, so this must stay at 0); `npm audit --audit-level=critical` (blocking); `npm audit --audit-level=high` (informational, `continue-on-error`) because build-tool (`@wordpress/scripts`) advisories can only be fixed upstream and never ship to visitors.
+
+**Supply-chain hardening**
+* Every third-party action is **pinned to a full commit SHA** (the readable tag is kept as a trailing comment). A moved or hijacked tag can no longer change what CI runs. To update, change the SHA and comment together, or let Dependabot do it.
+* The workflow sets top-level `permissions: contents: read` (least privilege). `release-please.yml` is the only workflow with write scopes (`contents`, `pull-requests`), scoped to `main`.
+* `concurrency` cancels superseded runs on branches (never on `main`).
+* `.github/dependabot.yml` opens weekly grouped PRs for GitHub Actions, npm and Composer; security advisories open PRs immediately.
+* Recommended repository settings (not enforceable from code): branch protection on `main` requiring the CI jobs above, "Require approval for first-time contributors", and GitHub secret scanning + push protection.
 
 The jobs mirror the local gates but run clean-room, so a commit that slipped past (or bypassed) the local hook is still caught. CI is the Definition-of-Done gate from `02-testing-and-ci.md` §1 — a change that would break CI is not done.
 

@@ -24,13 +24,41 @@ class Test_Maintenance {
 			'passed' => true === Atlas\Maintenance::is_active(),
 		);
 
-		// Test 3: Template override returns maintenance.html.
+		// Test 3: Template override hands the block template to core's canvas.
+		global $atlas_test_block_templates, $_wp_current_template_id, $_wp_current_template_content;
 		$original_template = '/path/to/some/template.php';
-		$override          = Atlas\Maintenance::override_template( $original_template );
+
+		$atlas_test_block_templates = array(
+			'atlas-theme//maintenance' => (object) array(
+				'id'      => 'atlas-theme//maintenance',
+				'content' => '<!-- wp:paragraph --><p>Back soon</p><!-- /wp:paragraph -->',
+			),
+		);
+		$override = Atlas\Maintenance::override_template( $original_template );
 
 		$results[] = array(
-			'name'   => 'Maintenance overrides template with maintenance.html',
-			'passed' => str_ends_with( $override, 'maintenance.html' ),
+			'name'   => 'Maintenance serves the block template through template-canvas.php (never a raw .html include)',
+			'passed' => str_ends_with( $override, 'wp-includes/template-canvas.php' )
+				&& 'atlas-theme//maintenance' === $_wp_current_template_id
+				&& str_contains( (string) $_wp_current_template_content, 'Back soon' ),
+		);
+
+		$atlas_test_block_templates = array(
+			'atlas-theme//blank' => (object) array(
+				'id'      => 'atlas-theme//blank',
+				'content' => '<!-- wp:post-content /-->',
+			),
+		);
+		$results[] = array(
+			'name'   => 'Maintenance falls back to the blank block template when maintenance is missing',
+			'passed' => str_ends_with( Atlas\Maintenance::override_template( $original_template ), 'template-canvas.php' )
+				&& 'atlas-theme//blank' === $_wp_current_template_id,
+		);
+
+		$atlas_test_block_templates = array();
+		$results[]                  = array(
+			'name'   => 'Maintenance keeps the original template (never a .html path) when no block template resolves',
+			'passed' => $original_template === Atlas\Maintenance::override_template( $original_template ),
 		);
 
 		// Test 4: Default retry after is 3600.
