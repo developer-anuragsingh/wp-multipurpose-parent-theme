@@ -193,18 +193,20 @@ class Schema {
 			return;
 		}
 
-		$json = wp_json_encode( $graph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+		$json = wp_json_encode( $graph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP );
 
 		if ( false === $json ) {
 			return;
 		}
 
-		// Neutralise any "</" so a string value can never close the inline
-		// <script> element early. The JSON is already encoded, so no further
-		// HTML escaping is applied (esc_html would corrupt the JSON).
-		$json = str_replace( '</', '<\/', $json );
+		// JSON_HEX_TAG / JSON_HEX_AMP encode every "<", ">" and "&" inside string
+		// values as \u003C, \u003E and \u0026, so a value can neither close the
+		// inline <script> early ("</script>") nor push the HTML parser into the
+		// "script data double escaped" state ("<!--<script>") that would swallow
+		// the real closing tag and the rest of the page. They are still valid
+		// JSON escapes, so consumers decode them back to the original text.
 
-		echo '<script type="application/ld+json">' . $json . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON is machine-generated via wp_json_encode and "</" neutralised; esc_* would corrupt it.
+		echo '<script type="application/ld+json">' . $json . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON is machine-generated via wp_json_encode with JSON_HEX_TAG/JSON_HEX_AMP; esc_* would corrupt it.
 	}
 
 	/**

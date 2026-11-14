@@ -40,3 +40,7 @@ Modern GEO is driven less by any single file and more by how strongly an engine 
 
 ## 4. AI Crawler Access
 Structured data only helps if crawlers may read the page. Access control is defined in `03-ai-and-seo/01-geo-llms-txt.md` and `08-reliability-and-seo/02-traditional-seo.md` (robots.txt for AI user agents such as GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, and Google-Extended). Blocking a crawler there makes any schema on the page moot for that engine.
+
+## 5. Safe Output (inline `<script>` hardening)
+The graph is printed inside `<script type="application/ld+json">`, so a value must never be able to end or confuse that element. `Atlas\Schema::print_json_ld()` encodes with `JSON_HEX_TAG | JSON_HEX_AMP`, so every `<`, `>` and `&` inside a string becomes `\u003C`, `\u003E`, `\u0026` (still valid JSON; consumers decode them back). This blocks both `</script>` and the `<!--<script>` sequence that pushes the HTML parser into the "script data double escaped" state, where the real closing tag is swallowed and the rest of the page is lost. A post title or site name is user-controlled (contributors can set titles), so it is treated as hostile. Never pass the JSON through `esc_html()` (it corrupts the JSON) and never concatenate values into the script by hand. Graphs are cached per front page/post in transients (`atlas_schema_front`, `atlas_schema_post_<id>`, 12 h) and cleared on `save_post`/`deleted_post`. The block backs off completely when Yoast, Rank Math or SEOPress is active.
+

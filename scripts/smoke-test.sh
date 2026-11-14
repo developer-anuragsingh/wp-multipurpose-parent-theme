@@ -33,6 +33,11 @@ check "Content-Security-Policy (or Report-Only) sent"  grep -qiE "^content-secur
 check "CSP forbids plugins (object-src 'none')"        grep -qi "object-src 'none'" <<<"${HEADERS}"
 check "CSP never allows unsafe-inline scripts"         bash -c "! grep -i '^content-security-policy' <<<\"\$1\" | grep -Eio \"script-src[^;]*\" | grep -q unsafe-inline" _ "${HEADERS}"
 
+PAGE="$(curl -sL -m 30 "${BASE}/")"
+check "Page has exactly one canonical link"            bash -c '[[ "$(grep -o "rel=\"canonical\"" <<<"$1" | wc -l | tr -d " ")" == "1" ]]' _ "${PAGE}"
+check "JSON-LD block is present and valid JSON"        bash -c 'python3 -c "import json,re,sys; m=re.search(r\"<script type=.application/ld\\+json.>(.*?)</script>\", sys.stdin.read(), re.S); json.loads(m.group(1))" <<<"$1"' _ "${PAGE}"
+check "No unescaped '<' inside the JSON-LD block"      bash -c 'python3 -c "import re,sys; m=re.search(r\"<script type=.application/ld\\+json.>(.*?)</script>\", sys.stdin.read(), re.S); sys.exit(1 if \"<\" in m.group(1) else 0)" <<<"$1"' _ "${PAGE}"
+
 TOKEN_JSON="$(curl -s -m 30 -D /tmp/atlas-smoke-h "${BASE}/wp-json/atlas/v1/contact/token")"
 check "Contact token endpoint returns a token"         grep -Eq '"token":"[0-9]+\.[a-f0-9]{64}"' <<<"${TOKEN_JSON}"
 check "Contact token endpoint is no-store"             grep -qi "cache-control:.*no-store" /tmp/atlas-smoke-h

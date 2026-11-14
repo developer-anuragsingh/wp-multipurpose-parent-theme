@@ -97,7 +97,12 @@ if ( ! function_exists( 'sanitize_text_field' ) ) {
 
 if ( ! function_exists( 'esc_url' ) ) {
 	function esc_url( $url ) {
-		return filter_var( $url, FILTER_SANITIZE_URL ) ?: '';
+		$url = (string) filter_var( $url, FILTER_SANITIZE_URL );
+		// Mirror core: safe protocols only, and entity-encode for HTML output.
+		if ( preg_match( '#^([a-z][a-z0-9+.-]*):#i', $url, $m ) && ! in_array( strtolower( $m[1] ), array( 'http', 'https', 'mailto', 'tel' ), true ) ) {
+			return '';
+		}
+		return htmlspecialchars( $url, ENT_QUOTES, 'UTF-8' );
 	}
 }
 
@@ -489,6 +494,64 @@ if ( ! function_exists( 'get_block_template' ) ) {
 	function get_block_template( $id, $template_type = 'wp_template' ) {
 		global $atlas_test_block_templates;
 		return $atlas_test_block_templates[ $id ] ?? null;
+	}
+}
+
+// Request-context doubles for Seo/Schema (conditional tags driven by one array).
+global $atlas_test_request;
+$atlas_test_request = array();
+
+foreach ( array( 'is_search', 'is_archive', 'is_front_page', 'is_home', 'is_category', 'is_tag', 'is_tax', 'is_post_type_archive' ) as $atlas_test_tag ) {
+	if ( ! function_exists( $atlas_test_tag ) ) {
+		eval( 'function ' . $atlas_test_tag . '() { global $atlas_test_request; return ! empty( $atlas_test_request["' . $atlas_test_tag . '"] ); }' ); // phpcs:ignore Squiz.PHP.Eval.Discouraged -- Test-only generated doubles.
+	}
+}
+
+if ( ! function_exists( 'is_singular' ) ) {
+	function is_singular( $type = '' ) {
+		global $atlas_test_request;
+		$singular = $atlas_test_request['is_singular'] ?? '';
+		return '' !== $singular && ( '' === $type || $type === $singular );
+	}
+}
+
+if ( ! function_exists( 'get_the_ID' ) ) {
+	function get_the_ID() {
+		global $atlas_test_request;
+		return $atlas_test_request['post_id'] ?? false;
+	}
+}
+
+if ( ! function_exists( 'wp_get_document_title' ) ) {
+	function wp_get_document_title() {
+		global $atlas_test_request;
+		return $atlas_test_request['title'] ?? 'Atlas Test Site';
+	}
+}
+
+if ( ! function_exists( 'wp_get_canonical_url' ) ) {
+	function wp_get_canonical_url() {
+		global $atlas_test_request;
+		return $atlas_test_request['canonical'] ?? false;
+	}
+}
+
+if ( ! function_exists( 'get_the_post_thumbnail_url' ) ) {
+	function get_the_post_thumbnail_url( $post = null, $size = 'post-thumbnail' ) {
+		global $atlas_test_request;
+		return $atlas_test_request['thumbnail'] ?? false;
+	}
+}
+
+if ( ! function_exists( 'get_theme_mod' ) ) {
+	function get_theme_mod( $name, $default_value = false ) {
+		return $default_value;
+	}
+}
+
+if ( ! function_exists( 'wp_get_attachment_image_url' ) ) {
+	function wp_get_attachment_image_url( $id, $size = 'thumbnail' ) {
+		return false;
 	}
 }
 
