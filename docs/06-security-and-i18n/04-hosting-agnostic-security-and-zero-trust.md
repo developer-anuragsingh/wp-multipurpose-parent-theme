@@ -101,13 +101,12 @@ This guarantees that no intermediate CDN, proxy, or browser caches the 503 maint
 
 ## 4. Content Security Policy (CSP): Nonces vs. Hashes
 
-When applying strict Content Security Policy (CSP) headers:
-* `Atlas\Assets::print_theme_mode_script()` generates a per-request CSP nonce.
-* However, if full HTML page caching is enabled, the nonce inside the cached HTML will become static and mismatch any dynamically generated CSP header.
-* **Universal Solution:** For sites behind aggressive page caching, allow the inline script via its deterministic SHA-256 hash in your web server or CDN CSP headers:
-  ```http
-  script-src 'self' 'sha256-wQe28UaD2U0zZ08uM6v432b...'
-  ```
+`Atlas\Security_Headers` emits the CSP (report-only by default; see `01-security-and-data.md` §8):
+* `Atlas\Assets::print_theme_mode_script()` prints the inline dark-mode script with a per-request CSP nonce.
+* If full HTML page caching is enabled, the nonce inside cached HTML becomes static and mismatches the freshly generated header.
+* **Built-in solution:** the CSP **also** allows the theme script by its deterministic SHA-256 hash (computed from `Atlas\Assets::theme_mode_script()`), so the theme's own script keeps working behind any page cache. Only cached third-party inline scripts that rely on the nonce are affected.
+* **Header precedence:** if your web server or CDN already sets a security header (e.g. `Strict-Transport-Security`, `Content-Security-Policy`), the theme leaves it untouched. To manage CSP entirely at the edge, set `define( 'ATLAS_CSP_MODE', 'off' );`.
+* **HSTS:** sent only on HTTPS; override with the `atlas_hsts_header` filter.
 
 ---
 

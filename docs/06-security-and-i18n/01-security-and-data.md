@@ -53,9 +53,29 @@ Because the theme uses the WordPress Interactivity API for dynamic frontend feat
 * CSRF intent is confirmed via the standard `wp_rest` nonce (`X-WP-Nonce`) that the Interactivity API attaches to store requests — in addition to, never instead of, the capability check.
 
 ## 8. Content Security Policy (CSP)
-The theme includes hooks to enforce strict CSP headers, preventing unauthorized third-party scripts from loading — critical for the E-Commerce (WooCommerce) checkout flows.
+The theme **emits** security headers itself via `Atlas\Security_Headers` (`theme/inc/class-security-headers.php`, wired on the core `wp_headers` filter), preventing unauthorized third-party scripts from loading — critical for the E-Commerce (WooCommerce) checkout flows.
+
+| Header | Default | Notes |
+|---|---|---|
+| `X-Content-Type-Options` | `nosniff` | |
+| `X-Frame-Options` | `SAMEORIGIN` | Matches CSP `frame-ancestors 'self'`. |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` | |
+| `Permissions-Policy` | `camera=(), microphone=(), geolocation=(), payment=(self)` | |
+| `Strict-Transport-Security` | `max-age=31536000` | Sent **only over HTTPS**; no `includeSubDomains`/`preload` (opt-in). |
+| `Content-Security-Policy-Report-Only` | see below | Default mode. Switch to `enforce` when clean. |
+
+Rules: a header already set by the server, CDN or a plugin is **never overwritten** (case-insensitive), and any filtered value containing CR/LF is dropped (no response splitting).
+
+**Configuring**
+* Mode — `define( 'ATLAS_CSP_MODE', 'enforce' );` in `wp-config.php`, or the `atlas_csp_mode` filter. Values: `off`, `report-only` (default), `enforce`; anything else falls back to `report-only`.
+* Directives — `atlas_csp_directives` filter (directive ⇒ list of sources), e.g. to allow a payment or analytics origin.
+* Headers — `atlas_security_headers` filter (all added headers); `atlas_hsts_header` filter (return `''` to disable HSTS, or add `; includeSubDomains; preload`).
+
+**Default policy:** `default-src 'self'`; `script-src 'self' 'nonce-…' 'sha256-…'`; `style-src 'self' 'unsafe-inline'` (core block-support inline styles; styles cannot execute code); `img-src 'self' data: https:`; `font-src 'self' data:`; `connect-src 'self'`; `object-src 'none'`; `base-uri 'self'`; `form-action 'self'`; `frame-ancestors 'self'`.
 * **No blanket `unsafe-inline`:** a strict policy forbids inline scripts, which collides with the inline dark-mode head script (see `02-frontend-and-styles/03-dark-light-mode.md`). Reconcile this by emitting a per-request CSP nonce and attaching it to that single inline script (`<script nonce="...">` + `script-src 'nonce-...'`), or by hashing the script and allowing it via `'sha256-...'`. Never relax the whole policy to `unsafe-inline` to make one script work.
-* **Report before enforce:** ship `Content-Security-Policy-Report-Only` first to catch violations, then switch to enforcing.
+* **No blanket `unsafe-inline` for scripts:** the theme's dark-mode script is allowed by its SHA-256 hash (computed at runtime from `Atlas\Assets::theme_mode_script()`, so it can never drift from the printed script). Core and plugin inline scripts that go through `wp_inline_script_attributes` / `wp_script_attributes` automatically receive the per-request nonce. Plugins that print raw `<script>` tags will be reported and must be allow-listed via `atlas_csp_directives`.
+* **Report before enforce:** the theme ships `Content-Security-Policy-Report-Only` by default. Browse the site (including checkout) with the browser console open, fix or allow-list violations, then set `ATLAS_CSP_MODE` to `enforce`.
+* **Page caches:** a cached page freezes the nonce in HTML. The theme script is unaffected (hash), but cached nonce-based inline scripts from other plugins will break in `enforce` mode. See `04-hosting-agnostic-security-and-zero-trust.md` §4.
 
 ## 9. Privacy & Data Retention (GDPR)
 NGO and commerce niches collect personal data, so privacy is a first-class security concern, not an afterthought.

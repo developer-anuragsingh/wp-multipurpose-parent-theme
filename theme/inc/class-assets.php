@@ -278,15 +278,25 @@ class Assets {
 
 		$nonce = self::get_csp_nonce();
 
-		$script = <<<'JS'
-(function(){try{var m=localStorage.getItem('atlas-theme-mode');if(!m){m=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',m);}catch(e){}})();
-JS;
-
 		printf(
 			'<script nonce="%1$s">%2$s</script>' . "\n",
 			esc_attr( $nonce ),
-			$script // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static inline bootstrap script, no dynamic data.
+			self::theme_mode_script() // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static inline bootstrap script, no dynamic data.
 		);
+	}
+
+	/**
+	 * Return the static flicker-free dark-mode bootstrap script body.
+	 *
+	 * Single source of truth for the inline script: it is printed verbatim by
+	 * print_theme_mode_script() and hashed by Atlas\Security_Headers so the CSP
+	 * can allow it by its deterministic SHA-256 (cache-safe, no nonce needed).
+	 * Any edit to this string changes the hash automatically.
+	 *
+	 * @return string The script body (no <script> tags).
+	 */
+	public static function theme_mode_script(): string {
+		return "(function(){try{var m=localStorage.getItem('atlas-theme-mode');if(!m){m=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',m);}catch(e){}})();";
 	}
 
 	/**
