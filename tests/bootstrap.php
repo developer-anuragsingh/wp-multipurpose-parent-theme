@@ -288,9 +288,120 @@ if ( ! function_exists( 'wp_strip_all_tags' ) ) {
 	}
 }
 
+// In-memory store for the private submission post type.
+global $atlas_test_store, $atlas_test_store_next, $atlas_test_post_types, $atlas_test_cron, $atlas_test_policy;
+$atlas_test_store      = array();
+$atlas_test_store_next = 1;
+$atlas_test_post_types = array();
+$atlas_test_cron       = array();
+$atlas_test_policy     = array();
+
+foreach ( array( 'HOUR_IN_SECONDS' => 3600, 'DAY_IN_SECONDS' => 86400 ) as $atlas_test_const => $atlas_test_val ) {
+	if ( ! defined( $atlas_test_const ) ) {
+		define( $atlas_test_const, $atlas_test_val );
+	}
+}
+
+if ( ! function_exists( 'wp_slash' ) ) {
+	function wp_slash( $value ) {
+		return $value;
+	}
+}
+
+if ( ! function_exists( 'register_post_type' ) ) {
+	function register_post_type( $type, $args = array() ) {
+		global $atlas_test_post_types;
+		$atlas_test_post_types[ $type ] = $args;
+		return (object) $args;
+	}
+}
+
+if ( ! function_exists( 'wp_insert_post' ) ) {
+	function wp_insert_post( $postarr, $wp_error = false ) {
+		global $atlas_test_store, $atlas_test_store_next;
+		$id                         = $atlas_test_store_next++;
+		$postarr['ID']              = $id;
+		$postarr['post_date_gmt']   = $postarr['post_date_gmt'] ?? gmdate( 'Y-m-d H:i:s' );
+		$postarr['meta']            = $postarr['meta_input'] ?? array();
+		$atlas_test_store[ $id ]    = $postarr;
+		return $id;
+	}
+}
+
+if ( ! function_exists( 'wp_delete_post' ) ) {
+	function wp_delete_post( $id, $force = false ) {
+		global $atlas_test_store;
+		if ( ! isset( $atlas_test_store[ $id ] ) ) {
+			return false;
+		}
+		unset( $atlas_test_store[ $id ] );
+		return true;
+	}
+}
+
+if ( ! function_exists( 'get_post_meta' ) ) {
+	function get_post_meta( $id, $key = '', $single = false ) {
+		global $atlas_test_store;
+		return $atlas_test_store[ $id ]['meta'][ $key ] ?? '';
+	}
+}
+
+if ( ! function_exists( 'wp_next_scheduled' ) ) {
+	function wp_next_scheduled( $hook ) {
+		global $atlas_test_cron;
+		return $atlas_test_cron[ $hook ] ?? false;
+	}
+}
+
+if ( ! function_exists( 'wp_schedule_event' ) ) {
+	function wp_schedule_event( $timestamp, $recurrence, $hook ) {
+		global $atlas_test_cron;
+		$atlas_test_cron[ $hook ] = array( 'at' => $timestamp, 'recurrence' => $recurrence );
+		return true;
+	}
+}
+
+if ( ! function_exists( 'wp_add_privacy_policy_content' ) ) {
+	function wp_add_privacy_policy_content( $name, $content ) {
+		global $atlas_test_policy;
+		$atlas_test_policy[ $name ] = $content;
+	}
+}
+
+if ( ! function_exists( 'wp_kses_post' ) ) {
+	function wp_kses_post( $data ) {
+		return $data;
+	}
+}
+
+if ( ! function_exists( 'wpautop' ) ) {
+	function wpautop( $text ) {
+		return '<p>' . $text . '</p>';
+	}
+}
+
 if ( ! function_exists( 'get_posts' ) ) {
 	function get_posts( $args = null ) {
-		global $atlas_test_posts;
+		global $atlas_test_posts, $atlas_test_store;
+
+		if ( is_array( $args ) && 'atlas_submission' === ( $args['post_type'] ?? '' ) ) {
+			$matches = array();
+			foreach ( $atlas_test_store as $id => $row ) {
+				if ( isset( $args['meta_query'][0]['key'] ) && ( $row['meta'][ $args['meta_query'][0]['key'] ] ?? null ) !== $args['meta_query'][0]['value'] ) {
+					continue;
+				}
+				if ( isset( $args['date_query'][0]['before'] ) && ! ( $row['post_date_gmt'] < $args['date_query'][0]['before'] ) ) {
+					continue;
+				}
+				$matches[ $id ] = $row;
+			}
+			ksort( $matches );
+			$per     = (int) ( $args['posts_per_page'] ?? 50 );
+			$paged   = max( 1, (int) ( $args['paged'] ?? 1 ) );
+			$matches = array_slice( $matches, ( $paged - 1 ) * $per, $per, true );
+			return 'ids' === ( $args['fields'] ?? '' ) ? array_keys( $matches ) : array_map( static fn( $r ) => (object) $r, array_values( $matches ) );
+		}
+
 		$results = array();
 		$limit   = isset( $args['posts_per_page'] ) ? (int) $args['posts_per_page'] : 50;
 		$count   = 0;
@@ -307,7 +418,11 @@ if ( ! function_exists( 'get_posts' ) ) {
 
 if ( ! function_exists( 'get_post' ) ) {
 	function get_post( $post = null ) {
-		global $atlas_test_posts;
+		global $atlas_test_posts, $atlas_test_store;
+		$sid = is_object( $post ) ? ( $post->ID ?? 0 ) : (int) $post;
+		if ( isset( $atlas_test_store[ $sid ] ) ) {
+			return (object) $atlas_test_store[ $sid ];
+		}
 		$id = is_object( $post ) ? ( $post->ID ?? 0 ) : (int) $post;
 		return isset( $atlas_test_posts[ $id ] ) ? (object) $atlas_test_posts[ $id ] : null;
 	}

@@ -34,7 +34,9 @@ To customize safely without losing changes on update, use a child theme. You onl
 The theme provides safe defaults and consent hooks, but these are YOUR responsibility to complete:
 * Publish a privacy policy and link it from forms.
 * Configure consent for any analytics/embeds you add (nothing non-essential loads before consent).
-* Set data-retention expectations for form/donation submissions.
+* Set data-retention expectations for form/donation submissions. Contact-form messages are kept for 90 days by default, then deleted automatically (change it with the `atlas_submission_retention_days` filter, see `06-security-and-i18n/03-data-protection.md` §7).
+* **Where to read messages:** WP Admin → **Contact Submissions** (administrators only). Entries marked `mail_failed` were saved but the notification email did not send; check your site's mail setup (an SMTP plugin or host mail service).
+* **Privacy requests:** use WP Admin → Tools → **Export Personal Data** / **Erase Personal Data**; contact-form submissions are included automatically. Review the suggested text under Settings → Privacy → Policy Guide.
 See `06-security-and-i18n/03-data-protection.md` for the full standard.
 
 ## 7. Performance & Languages

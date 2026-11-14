@@ -11,10 +11,12 @@
  * functions.php after Atlas\Bindings::init(). Resolved via the hand-rolled
  * autoloader (Atlas\ -> inc/).
  *
- * Email delivery is wp_mail() only. Persisting submissions (a submissions store
- * + core privacy export/erasure hooks + a retention window per
- * docs/06-security-and-i18n/03-data-protection.md §7), file uploads, and CAPTCHA
- * are explicitly OUT OF SCOPE for this first cut and noted here as future work.
+ * Email delivery is wp_mail(). Accepted submissions are handed to the
+ * atlas_contact_form_submitted action; Atlas\Submissions stores them privately
+ * (so a mail failure never loses a message) and owns retention and the core
+ * export/erase tooling per docs/06-security-and-i18n/03-data-protection.md §7.
+ * An optional extra challenge (CAPTCHA/Turnstile) plugs in through the
+ * atlas_contact_form_verify_challenge filter. File uploads are out of scope.
  *
  * @package AtlasTheme
  */
@@ -148,6 +150,13 @@ class Contact_Form {
 	 * @var string
 	 */
 	const FILTER_CLIENT_IP = 'atlas_client_ip';
+
+	/**
+	 * Filter hook for an optional extra anti-abuse challenge (CAPTCHA etc.).
+	 *
+	 * @var string
+	 */
+	const FILTER_CHALLENGE = 'atlas_contact_form_verify_challenge';
 
 	/**
 	 * Filter hook name for overriding the contact form rate limit cap.
@@ -569,6 +578,19 @@ class Contact_Form {
 			return $rate_limited;
 		}
 
+		// 4b. Optional extra challenge (CAPTCHA/Turnstile/etc.). Off by default
+		// (the filter returns true). A provider plugs in via the filter and
+		// returns anything other than true to reject; the verdict is generic.
+		/**
+		 * Filters whether the submission passes an extra anti-abuse challenge.
+		 *
+		 * @param bool             $passed  True unless a challenge has failed.
+		 * @param \WP_REST_Request $request The incoming request.
+		 */
+		if ( true !== apply_filters( self::FILTER_CHALLENGE, true, $request ) ) {
+			return self::respond( $enhanced, 'invalid', 400 );
+		}
+
 		// 5. Re-read the already-validated-and-sanitized fields. The args schema
 		// guarantees these are present, sanitized, and within bounds; re-check
 		// defensively so a bypassed schema still fails closed.
@@ -581,6 +603,26 @@ class Contact_Form {
 		}
 
 		$sent = self::send_mail( $name, $email, $message );
+
+		/**
+		 * Fires after an accepted submission, whether or not the mail was sent.
+		 *
+		 * Atlas\Submissions stores it so a mail failure never loses the message.
+		 * Listeners MUST NOT log the payload (data-protection §6).
+		 *
+		 * @param array $data { name, email, message } validated and sanitized.
+		 * @param bool  $sent Whether wp_mail() accepted the message.
+		 */
+		do_action(
+			'atlas_contact_form_submitted',
+			array(
+				'name'    => $name,
+				'email'   => $email,
+				'message' => $message,
+			),
+			$sent
+		);
+
 		if ( ! $sent ) {
 			// Generic error only. No field values, no payload, no stack trace.
 			return self::respond( $enhanced, 'error', 500 );

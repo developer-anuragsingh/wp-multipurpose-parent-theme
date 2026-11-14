@@ -45,6 +45,15 @@ Treat anything in the top two tiers as protected: it must be authorized to acces
   - **Erasure:** register with the personal-data eraser so `Tools → Erase Personal Data` removes it.
 * Provide a clear path to a published privacy policy; link it from forms that collect PII.
 
+### Contact-form submissions (implemented: `Atlas\Submissions`)
+* **What is stored:** name, email (lower-cased, used to find a person's records), message, mail status (`sent` / `mail_failed`) and the date, as a **private** `atlas_submission` post. A failed `wp_mail()` therefore never loses a message; the visitor still sees the generic error.
+* **Who can see it:** only users with `manage_options` (every capability maps to it; UI creation is disabled). The post type is not public, not queryable, not searchable, not in REST, has no archive or rewrite, and is excluded from export. Verified against a live site: front-end URL returns 404 and the type is absent from `/wp-json/wp/v2/types`.
+* **Retention:** a daily cron (`atlas_purge_submissions`) deletes entries older than **90 days**. Change with the `atlas_submission_retention_days` filter (never below 1 day, so a bad value cannot wipe everything). The purge is batched (50 per query) and aborts a pass that deletes nothing.
+* **Data-subject rights:** registered with core's personal-data tools. `Tools → Export Personal Data` includes name, email, message and timestamp; `Tools → Erase Personal Data` permanently deletes that email's submissions (matched case-insensitively).
+* **Privacy policy:** suggested text (with the real retention period) is added to the core policy guide ("Atlas theme: contact form").
+* **Opt out:** `add_filter( 'atlas_contact_store_submissions', '__return_false' );` stops storage entirely (then a mail failure loses the message again). Data is not deleted on theme switch; remove the `atlas_submission` posts first if you are decommissioning.
+* **Logging:** nothing from a submission is ever logged; the `atlas_contact_form_submitted` action's listeners must not log the payload either.
+
 ## 8. Consent & Third-Party Data Sharing
 * **Consent before non-essential collection:** analytics, marketing cookies, and third-party embeds load only after explicit consent.
 * **Local-first assets:** self-host fonts via the Font Library API — no third-party font CDN beacons (see `01-architecture/01-fse-overview.md` §6).

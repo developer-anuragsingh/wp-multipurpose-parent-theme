@@ -72,8 +72,22 @@ Public forms (contact, donation, newsletter) add anti-abuse measures that do not
 2. **Honeypot** (`atlas_contact_hp`) — must stay empty; bots get a generic `200` with no mail.
 3. **Timing** — the *signed* token age must be at least 3 s; a faster submission gets a generic `200` with no mail. Because the age is inside the HMAC, a bot cannot fake it.
 4. **Rate limit** — per client IP (default 5 per 10 min, `atlas_contact_form_rate_limit`), `429` + `Retry-After`. The counter is atomic on a persistent object cache (Redis/Memcached) and best-effort on transients. The IP is keyed-hashed (never stored or reversible). An empty or invalid IP falls into one shared bucket (it is **not** a free pass). Behind a proxy/CDN, supply the real IP via `atlas_client_ip`.
-5. **Validate + sanitize** every field server-side.
-6. **Mail hardening** — the submitter name is stripped of CR/LF/NUL, `<>",;:@` before it reaches the subject or `Reply-To` (header-injection and display-name spoofing), and the email must pass `is_email()` with no whitespace.
+5. **Optional extra challenge** — `atlas_contact_form_verify_challenge` (default `true`, so nothing changes out of the box). A provider returns anything other than `true` to reject with a generic `400`; the request is then neither mailed nor stored. The theme ships no vendor code (no third-party request, no consent issue by default). To add one, render the provider's widget in the form and verify its token server-side, e.g. (illustrative, vendor-specific details are yours to confirm):
+   ```php
+   add_filter( 'atlas_contact_form_verify_challenge', function ( $passed, $request ) {
+       $token = (string) $request->get_param( 'cf-turnstile-response' );
+       $res   = wp_remote_post( 'https://challenges.cloudflare.com/turnstile/v0/siteverify', array(
+           'timeout' => 5, // A slow third party must not pile up PHP workers.
+           'body'    => array( 'secret' => TURNSTILE_SECRET, 'response' => $token ),
+       ) );
+       $body = is_wp_error( $res ) ? array() : json_decode( wp_remote_retrieve_body( $res ), true );
+       return ! empty( $body['success'] ); // Fail closed on any error.
+   }, 10, 2 );
+   ```
+   Loading a third-party script/endpoint is outbound data sharing: document it, add its origin to `atlas_csp_directives`, and consent-gate it (`06-security-and-i18n/03-data-protection.md` §8).
+6. **Validate + sanitize** every field server-side.
+7. **Mail hardening** — the submitter name is stripped of CR/LF/NUL, `<>",;:@` before it reaches the subject or `Reply-To` (header-injection and display-name spoofing), and the email must pass `is_email()` with no whitespace.
+8. **Persistence** — accepted submissions are stored privately and purged after 90 days (`06-security-and-i18n/03-data-protection.md` §7).
 
 Other rules:
 * Avoid CAPTCHAs that break a11y; if required, use an accessible, privacy-respecting option and consent-gate any third-party loader (see `06-security-and-i18n/03-data-protection.md` §8).
