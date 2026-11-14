@@ -30,6 +30,30 @@
 :root[data-theme="dark"] {
 	--wp--preset--color--light: #0f172a; /* theme.json "Dark Navy"     */
 	--wp--preset--color--dark: #f8fafc; /* theme.json "Light Surface" */
+
+	/* Text-safe accent: dark orange on light surfaces (4.95:1), the brand
+	   accent itself on navy (6.37:1). Accent as TEXT must use this preset,
+	   never "accent" (2.68:1 on the light surface). */
+	--wp--preset--color--accent-text: #f97316;
+
+	/* Card/section surface: white in light mode, slate in dark mode. "white"
+	   itself is never re-pointed (it is the text colour on primary buttons), so
+	   a white card with "dark" text went light-on-white (1.04:1) in dark mode.
+	   Text #f8fafc on #1e293b is 13.98:1. */
+	--wp--preset--color--surface: #1e293b;
+}
+
+/* Links: theme.json colours them with "primary" (#2563eb), which is only
+   3.45:1 on the dark surface (AA body text needs 4.5:1). Lighten links in dark
+   mode only (#60a5fa = 7.02:1). Buttons are excluded: they keep primary
+   background + white text, which already passes. Block-level colours from the
+   editor (.has-*-color) are !important and still win. */
+:root[data-theme="dark"] a:where(:not(.wp-element-button)) {
+	color: #60a5fa;
+}
+
+:root[data-theme="dark"] a:where(:not(.wp-element-button)):hover {
+	color: var(--wp--preset--color--dark);
 }
 
 /* -------------------------------------------------------------------------

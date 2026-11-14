@@ -9,7 +9,7 @@
  *
  * NGO / non-profit niche impact metrics pattern. Employs a high-contrast native
  * block grid with explicit ARIA landmark labels, meeting WCAG 2.2 AA contrast
- * standards. Metric numbers use the accent preset on large display text for
+ * standards. Metric numbers use the accent-text preset (a text-safe orange, 4.95:1 on the light surface; the brand accent is only 2.68:1) on large display text for
  * maximum visual hierarchy without sacrificing readability or machine discoverability.
  *
  * @package AtlasTheme
@@ -20,8 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 ?>
-<!-- wp:group {"tagName":"section","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60"},"blockGap":"var:preset|spacing|40"}},"backgroundColor":"white","layout":{"type":"constrained"}} -->
-<section class="wp-block-group alignfull has-white-background-color has-background" role="region" aria-label="<?php echo esc_attr__( 'Organizational Impact Metrics', 'atlas-theme' ); ?>" style="padding-top:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--60)">
+<!-- wp:group {"tagName":"section","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60"},"blockGap":"var:preset|spacing|40"}},"backgroundColor":"surface","layout":{"type":"constrained"}} -->
+<section class="wp-block-group alignfull has-surface-background-color has-background" role="region" aria-label="<?php echo esc_attr__( 'Organizational Impact Metrics', 'atlas-theme' ); ?>" style="padding-top:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--60)">
 	<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|20"}},"layout":{"type":"flex","orientation":"vertical","justifyContent":"center"}} -->
 	<div class="wp-block-group">
 		<!-- wp:heading {"level":2,"textAlign":"center"} -->
@@ -38,8 +38,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="wp-block-group">
 		<!-- wp:group {"style":{"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40","right":"var:preset|spacing|40"},"blockGap":"var:preset|spacing|20"},"border":{"radius":"0.5rem","width":"1px"}},"borderColor":"light","backgroundColor":"light","layout":{"type":"flex","orientation":"vertical","justifyContent":"left"}} -->
 		<div class="wp-block-group has-border-color has-light-border-color has-light-background-color has-background" style="border-width:1px;border-radius:0.5rem;padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40)">
-			<!-- wp:heading {"level":3,"textColor":"accent","fontSize":"xx-large"} -->
-			<h3 class="wp-block-heading has-accent-color has-text-color has-xx-large-font-size">12,800+</h3>
+			<!-- wp:heading {"level":3,"textColor":"accent-text","fontSize":"xx-large"} -->
+			<h3 class="wp-block-heading has-accent-text-color has-text-color has-xx-large-font-size">12,800+</h3>
 			<!-- /wp:heading -->
 
 			<!-- wp:heading {"level":4,"fontSize":"medium"} -->
@@ -54,8 +54,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<!-- wp:group {"style":{"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40","right":"var:preset|spacing|40"},"blockGap":"var:preset|spacing|20"},"border":{"radius":"0.5rem","width":"1px"}},"borderColor":"light","backgroundColor":"light","layout":{"type":"flex","orientation":"vertical","justifyContent":"left"}} -->
 		<div class="wp-block-group has-border-color has-light-border-color has-light-background-color has-background" style="border-width:1px;border-radius:0.5rem;padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40)">
-			<!-- wp:heading {"level":3,"textColor":"accent","fontSize":"xx-large"} -->
-			<h3 class="wp-block-heading has-accent-color has-text-color has-xx-large-font-size">94%</h3>
+			<!-- wp:heading {"level":3,"textColor":"accent-text","fontSize":"xx-large"} -->
+			<h3 class="wp-block-heading has-accent-text-color has-text-color has-xx-large-font-size">94%</h3>
 			<!-- /wp:heading -->
 
 			<!-- wp:heading {"level":4,"fontSize":"medium"} -->
@@ -70,8 +70,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<!-- wp:group {"style":{"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40","right":"var:preset|spacing|40"},"blockGap":"var:preset|spacing|20"},"border":{"radius":"0.5rem","width":"1px"}},"borderColor":"light","backgroundColor":"light","layout":{"type":"flex","orientation":"vertical","justifyContent":"left"}} -->
 		<div class="wp-block-group has-border-color has-light-border-color has-light-background-color has-background" style="border-width:1px;border-radius:0.5rem;padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40)">
-			<!-- wp:heading {"level":3,"textColor":"accent","fontSize":"xx-large"} -->
-			<h3 class="wp-block-heading has-accent-color has-text-color has-xx-large-font-size">52,000+</h3>
+			<!-- wp:heading {"level":3,"textColor":"accent-text","fontSize":"xx-large"} -->
+			<h3 class="wp-block-heading has-accent-text-color has-text-color has-xx-large-font-size">52,000+</h3>
 			<!-- /wp:heading -->
 
 			<!-- wp:heading {"level":4,"fontSize":"medium"} -->
@@ -86,8 +86,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<!-- wp:group {"style":{"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40","right":"var:preset|spacing|40"},"blockGap":"var:preset|spacing|20"},"border":{"radius":"0.5rem","width":"1px"}},"borderColor":"light","backgroundColor":"light","layout":{"type":"flex","orientation":"vertical","justifyContent":"left"}} -->
 		<div class="wp-block-group has-border-color has-light-border-color has-light-background-color has-background" style="border-width:1px;border-radius:0.5rem;padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40)">
-			<!-- wp:heading {"level":3,"textColor":"accent","fontSize":"xx-large"} -->
-			<h3 class="wp-block-heading has-accent-color has-text-color has-xx-large-font-size">100%</h3>
+			<!-- wp:heading {"level":3,"textColor":"accent-text","fontSize":"xx-large"} -->
+			<h3 class="wp-block-heading has-accent-text-color has-text-color has-xx-large-font-size">100%</h3>
 			<!-- /wp:heading -->
 
 			<!-- wp:heading {"level":4,"fontSize":"medium"} -->

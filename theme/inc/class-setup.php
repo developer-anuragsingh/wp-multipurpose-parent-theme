@@ -36,6 +36,34 @@ class Setup {
 		add_action( 'before_woocommerce_init', array( self::class, 'declare_woocommerce_compatibility' ) );
 		add_action( 'after_setup_theme', array( self::class, 'setup' ) );
 		add_action( 'wp_enqueue_scripts', array( self::class, 'enqueue_assets' ) );
+		add_action( 'init', array( self::class, 'disable_emoji_scripts' ) );
+	}
+
+	/**
+	 * Filter: keep core's emoji detection script on the front end (default off).
+	 *
+	 * @var string
+	 */
+	const FILTER_KEEP_EMOJI = 'atlas_keep_emoji_scripts';
+
+	/**
+	 * Remove core's front-end emoji detection script and styles.
+	 *
+	 * Every browser the theme supports (browserslist) renders emoji natively, so
+	 * the loader is dead weight: an inline script plus a blob: Worker on every
+	 * page, which a strict CSP also has to allow. Only the front-end output is
+	 * removed; the editor is untouched. Return true from atlas_keep_emoji_scripts
+	 * to restore it.
+	 *
+	 * @return void
+	 */
+	public static function disable_emoji_scripts(): void {
+		if ( apply_filters( self::FILTER_KEEP_EMOJI, false ) ) {
+			return;
+		}
+
+		remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+		remove_action( 'wp_print_styles', 'print_emoji_styles' );
 	}
 
 	/**

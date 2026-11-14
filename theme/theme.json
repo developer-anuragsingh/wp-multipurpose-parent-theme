@@ -16,9 +16,11 @@
       "palette": [
         { "slug": "primary", "color": "#2563eb", "name": "Primary Blue" },
         { "slug": "accent", "color": "#f97316", "name": "Accent Orange" },
+        { "slug": "accent-text", "color": "#c2410c", "name": "Accent Orange (text-safe)" },
         { "slug": "dark", "color": "#0f172a", "name": "Dark Navy" },
         { "slug": "light", "color": "#f8fafc", "name": "Light Surface" },
-        { "slug": "white", "color": "#ffffff", "name": "Pure White" }
+        { "slug": "white", "color": "#ffffff", "name": "Pure White" },
+        { "slug": "surface", "color": "#ffffff", "name": "Surface (white, dark-mode aware)" }
       ]
     },
     "typography": {

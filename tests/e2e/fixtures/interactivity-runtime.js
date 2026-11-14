@@ -6,6 +6,25 @@
  */
 
 const stores = new Map();
+/*
+ * Server-seeded state, exactly as WordPress prints it for wp_interactivity_state():
+ * <script type="application/json" id="wp-script-module-data-@wordpress/interactivity">
+ * {"state":{"<namespace>":{...}}}</script>. Merged into the store BEFORE any module
+ * registers it, without triggering hydration.
+ */
+const serverState = {};
+if ( typeof document !== 'undefined' ) {
+	const dataEl = document.getElementById(
+		'wp-script-module-data-@wordpress/interactivity'
+	);
+	if ( dataEl ) {
+		try {
+			Object.assign( serverState, JSON.parse( dataEl.textContent ).state );
+		} catch ( e ) {
+			// Malformed seed data: behave as if none was printed.
+		}
+	}
+}
 let activeContext = {};
 let activeElement = null;
 
@@ -20,7 +39,11 @@ export function getElement() {
 export function store( namespace, config ) {
 	let existing = stores.get( namespace );
 	if ( ! existing ) {
-		existing = { state: {}, actions: {}, callbacks: {} };
+		existing = {
+			state: Object.assign( {}, serverState[ namespace ] ),
+			actions: {},
+			callbacks: {},
+		};
 		stores.set( namespace, existing );
 	}
 

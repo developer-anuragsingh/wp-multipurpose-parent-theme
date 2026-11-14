@@ -159,6 +159,7 @@ class Seo {
 			return;
 		}
 
+		self::print_meta_description();
 		self::print_open_graph();
 		self::print_canonical();
 		self::print_hreflang();
@@ -192,6 +193,25 @@ class Seo {
 		$by_constant = defined( self::MAINTENANCE_CONSTANT ) && constant( self::MAINTENANCE_CONSTANT );
 
 		return (bool) $by_constant || (bool) apply_filters( self::FILTER_MAINTENANCE, false );
+	}
+
+	/**
+	 * Print the standard <meta name="description"> tag.
+	 *
+	 * Search engines use it for the result snippet and Lighthouse flags its
+	 * absence. It reuses the same capped, tag-stripped text as og:description, and
+	 * prints nothing when no description exists (fail closed, no empty tag).
+	 *
+	 * @return void
+	 */
+	private static function print_meta_description(): void {
+		$description = self::description();
+
+		if ( '' === $description ) {
+			return;
+		}
+
+		printf( '<meta name="description" content="%s">' . "\n", esc_attr( $description ) );
 	}
 
 	/**

@@ -24,6 +24,33 @@ const MIME_TYPES = {
 	'.svg': 'image/svg+xml',
 };
 
+/**
+ * Build the colour preset CSS (custom properties and has-* classes) from the
+ * REAL theme.json, the way WordPress generates it. The harnesses used to
+ * hand-copy these values and drifted (wrong primary/accent), which made visual
+ * and accessibility results meaningless.
+ *
+ * @return {string} CSS text.
+ */
+function paletteCss() {
+	const themeJson = JSON.parse(
+		fs.readFileSync( path.join( THEME_DIR, 'theme.json' ), 'utf8' )
+	);
+	const palette = themeJson.settings.color.palette;
+	const vars = palette
+		.map( ( c ) => `--wp--preset--color--${ c.slug }:${ c.color };` )
+		.join( '' );
+	const classes = palette
+		.map(
+			( c ) =>
+				`.has-${ c.slug }-color{color:var(--wp--preset--color--${ c.slug })}` +
+				`.has-${ c.slug }-background-color{background-color:var(--wp--preset--color--${ c.slug })}` +
+				`.has-${ c.slug }-border-color{border-color:var(--wp--preset--color--${ c.slug })}`
+		)
+		.join( '' );
+	return `:root{${ vars }}${ classes }`;
+}
+
 const server = http.createServer( ( req, res ) => {
 	const parsedUrl = new URL(
 		req.url || '/',
@@ -38,6 +65,14 @@ const server = http.createServer( ( req, res ) => {
 		return;
 	}
 
+	if ( pathname === '/theme-palette.css' ) {
+		res.writeHead( 200, {
+			'Content-Type': 'text/css; charset=UTF-8',
+			'Cache-Control': 'no-cache',
+		} );
+		res.end( paletteCss() );
+		return;
+	}
 	// Route to fixtures or theme assets.
 	let filePath = '';
 

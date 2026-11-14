@@ -62,6 +62,10 @@ Automated gates are necessary but not sufficient. Before a release, run manual p
 ## 6. Local Verification Commands
 ```bash
 composer lint            # PHPCS (WordPress-Extra) + PHP 8.1 compatibility
+composer test            # PHP unit suite (164 tests)
+npm run test:e2e         # Playwright: E2E + visual + axe accessibility
+scripts/smoke-test.sh    # live-site headers, token endpoint, JSON-LD (running site)
+scripts/lighthouse.sh    # live-site Lighthouse gate (running site)
 npm run lint:js          # wp-scripts lint-js
 npm run lint:css         # wp-scripts lint-style
 npm run build            # Interactivity API bundles / Tailwind

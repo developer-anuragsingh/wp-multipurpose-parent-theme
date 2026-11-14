@@ -670,6 +670,17 @@ if ( ! function_exists( 'wp_get_attachment_image_url' ) ) {
 	}
 }
 
+global $atlas_test_removed_actions;
+$atlas_test_removed_actions = array();
+
+if ( ! function_exists( 'remove_action' ) ) {
+	function remove_action( $hook, $callback, $priority = 10 ) {
+		global $atlas_test_removed_actions;
+		$atlas_test_removed_actions[] = $hook . '|' . $callback . '|' . $priority;
+		return true;
+	}
+}
+
 // Contact-form / REST doubles.
 global $atlas_test_mail, $atlas_test_mail_result, $atlas_test_ext_cache, $atlas_test_object_cache;
 $atlas_test_mail        = array();

@@ -389,8 +389,13 @@ class Assets {
 			return;
 		}
 
+		// Both faces are above the fold on nearly every page: Inter is the body
+		// font and Sora is the heading (h1) font. Preloading only Inter let Sora
+		// arrive late and swap in, shifting the layout (measured CLS 0.12,
+		// culprit sora-variable.woff2).
 		$default_fonts = array(
 			ATLAS_THEME_URI . '/assets/fonts/inter-variable.woff2',
+			ATLAS_THEME_URI . '/assets/fonts/sora-variable.woff2',
 		);
 
 		/**

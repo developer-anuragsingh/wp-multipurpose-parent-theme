@@ -8,12 +8,6 @@
 	<!-- Design tokens matching theme.json v3 -->
 	<style>
 		:root {
-			--wp--preset--color--primary: #1e3a8a;
-			--wp--preset--color--secondary: #0f766e;
-			--wp--preset--color--dark: #0f172a;
-			--wp--preset--color--light: #f8fafc;
-			--wp--preset--color--white: #ffffff;
-			--wp--preset--color--accent: #f59e0b;
 			--wp--preset--spacing--20: 0.5rem;
 			--wp--preset--spacing--30: 0.75rem;
 			--wp--preset--spacing--40: 1rem;
@@ -35,6 +29,8 @@
 	</style>
 
 	<!-- Theme Stylesheets -->
+	<!-- Colours come from the real theme.json; interactivity.css supplies the dark-mode overrides. -->
+	<link rel="stylesheet" href="/theme-palette.css">
 	<link rel="stylesheet" href="/theme/src/css/interactivity.css">
 	<link rel="stylesheet" href="/theme/src/css/ui-states.css">
 	<link rel="stylesheet" href="/theme/src/css/contact-form.css">
@@ -48,6 +44,10 @@
 	}
 	</script>
 
+	<!-- Mirrors wp_interactivity_state(): pre-translated labels seeded by Atlas\Assets::register_assets(). -->
+	<script type="application/json" id="wp-script-module-data-@wordpress/interactivity">
+	{"state":{"atlas/theme-mode":{"labelToLight":"Switch to light mode","labelToDark":"Switch to dark mode"}}}
+	</script>
 	<!-- Nonce head script for theme-mode -->
 	<script>
 		(function(){try{var m=localStorage.getItem('atlas-theme-mode');if(!m){m=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',m);}catch(e){}})();

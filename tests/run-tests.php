@@ -23,6 +23,7 @@ require_once __DIR__ . '/test-contact-form-security.php';
 require_once __DIR__ . '/test-markdown-endpoint.php';
 require_once __DIR__ . '/test-assets.php';
 require_once __DIR__ . '/test-submissions.php';
+require_once __DIR__ . '/test-colors.php';
 require_once __DIR__ . '/test-seo-schema.php';
 
 echo "Running Atlas Theme Unit Tests...\n\n";
@@ -44,6 +45,7 @@ $suites = array(
 	'Markdown Endpoint'  => Test_Markdown_Endpoint::run(),
 	'Assets & CSP Nonce' => Test_Assets::run(),
 	'Submissions & Privacy' => Test_Submissions::run(),
+	'Colours & Contrast' => Test_Colors::run(),
 	// MUST stay last: defines an SEO-plugin constant that disables Seo/Schema for the rest of the process.
 	'SEO & Schema'       => Test_Seo_Schema::run(),
 );

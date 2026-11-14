@@ -90,6 +90,12 @@ class Test_Seo_Schema {
 		);
 
 		$results[] = array(
+			'name'   => 'Seo: a standard <meta name="description"> is printed (search snippet) with the cleaned text',
+			'passed' => str_contains( $out, '<meta name="description" content="Tag line with spaces">' )
+				&& 1 === substr_count( $out, 'name="description"' ),
+		);
+
+		$results[] = array(
 			'name'   => 'Seo: og:description is stripped of tags and whitespace-collapsed',
 			'passed' => str_contains( $out, 'property="og:description" content="Tag line with spaces"' ),
 		);
@@ -103,6 +109,22 @@ class Test_Seo_Schema {
 		$results[] = array(
 			'name'   => 'Seo: falls back to the default OG image and a large Twitter card',
 			'passed' => str_contains( $out, 'og-default.png' ) && str_contains( $out, 'name="twitter:card" content="summary_large_image"' ),
+		);
+
+		$atlas_test_bloginfo['description'] = '"><script>alert(1)</script>';
+		$out                                 = self::capture( array( 'Atlas\Seo', 'print_meta' ) );
+
+		$results[] = array(
+			'name'   => 'Seo: a hostile description cannot break out of the meta description attribute',
+			'passed' => ! str_contains( $out, '<script' ) && str_contains( $out, 'name="description" content="&quot;&gt;">' ),
+		);
+
+		$atlas_test_bloginfo['description'] = '';
+		$out                                 = self::capture( array( 'Atlas\Seo', 'print_meta' ) );
+
+		$results[] = array(
+			'name'   => 'Seo: no description means no empty meta description tag',
+			'passed' => ! str_contains( $out, 'name="description"' ) && ! str_contains( $out, 'og:description' ),
 		);
 
 		$atlas_test_bloginfo['description'] = str_repeat( 'x', 500 );
@@ -236,6 +258,7 @@ class Test_Seo_Schema {
 			'passed' => str_contains( $before, 'og:title' )
 				&& str_contains( $seo_after, 'noindex,follow' )
 				&& ! str_contains( $seo_after, 'og:title' )
+				&& ! str_contains( $seo_after, 'name="description"' )
 				&& ! str_contains( $seo_after, 'rel="canonical"' ),
 		);
 
