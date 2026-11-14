@@ -202,7 +202,7 @@ class Test_Seo_Schema {
 
 		$atlas_test_bloginfo['name'] = 'Atlas Test Site';
 
-		$atlas_test_transients = array( 'atlas_schema_front' => array( array( '@type' => 'Thing', 'name' => 'Cached' ) ) );
+		$atlas_test_transients = array( Atlas\Schema::cache_key( 'front' ) => array( array( '@type' => 'Thing', 'name' => 'Cached' ) ) );
 		$out                   = self::capture( array( 'Atlas\Schema', 'print_json_ld' ) );
 
 		$results[] = array(
@@ -214,7 +214,7 @@ class Test_Seo_Schema {
 
 		$results[] = array(
 			'name'   => 'Schema: invalidate_cache clears the front-page graph',
-			'passed' => ! isset( $atlas_test_transients['atlas_schema_front'] ),
+			'passed' => ! isset( $atlas_test_transients[ Atlas\Schema::cache_key( 'front' ) ] ),
 		);
 
 		self::request( array( 'canonical' => 'https://example.com/x/' ) );

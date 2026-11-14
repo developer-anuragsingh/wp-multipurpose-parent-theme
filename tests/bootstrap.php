@@ -187,9 +187,21 @@ if ( ! function_exists( 'home_url' ) ) {
 	}
 }
 
+global $atlas_test_options;
+$atlas_test_options = array();
+
+if ( ! function_exists( 'update_option' ) ) {
+	function update_option( $option, $value, $autoload = null ) {
+		global $atlas_test_options;
+		$atlas_test_options[ $option ] = $value;
+		return true;
+	}
+}
+
 if ( ! function_exists( 'get_option' ) ) {
 	function get_option( $option, $default_value = false ) {
-		return $default_value;
+		global $atlas_test_options;
+		return $atlas_test_options[ $option ] ?? $default_value;
 	}
 }
 
@@ -418,7 +430,13 @@ if ( ! function_exists( 'get_posts' ) ) {
 
 if ( ! function_exists( 'get_post' ) ) {
 	function get_post( $post = null ) {
-		global $atlas_test_posts, $atlas_test_store;
+		global $atlas_test_posts, $atlas_test_store, $atlas_test_request;
+		if ( $post instanceof WP_Post ) {
+			return $post;
+		}
+		if ( null === $post && isset( $atlas_test_request['post'] ) ) {
+			return $atlas_test_request['post'];
+		}
 		$sid = is_object( $post ) ? ( $post->ID ?? 0 ) : (int) $post;
 		if ( isset( $atlas_test_store[ $sid ] ) ) {
 			return (object) $atlas_test_store[ $sid ];
@@ -678,6 +696,63 @@ if ( ! function_exists( 'remove_action' ) ) {
 		global $atlas_test_removed_actions;
 		$atlas_test_removed_actions[] = $hook . '|' . $callback . '|' . $priority;
 		return true;
+	}
+}
+
+// Schema doubles: WP_Post / WP_Term / WP_Post_Type and the template tags the graph reads.
+if ( ! class_exists( 'WP_Post' ) ) {
+	class WP_Post {
+		public $ID            = 0;
+		public $post_title    = '';
+		public $post_name     = '';
+		public $post_author   = 1;
+		public $post_date     = '2026-01-02 03:04:05';
+		public $post_modified = '2026-02-03 04:05:06';
+		public function __construct( array $props = array() ) {
+			foreach ( $props as $key => $value ) {
+				$this->$key = $value;
+			}
+		}
+	}
+}
+
+if ( ! class_exists( 'WP_Term' ) ) {
+	class WP_Term {
+		public $term_id = 0;
+		public $name    = '';
+		public function __construct( array $props = array() ) {
+			foreach ( $props as $key => $value ) {
+				$this->$key = $value;
+			}
+		}
+	}
+}
+
+if ( ! class_exists( 'WP_Post_Type' ) ) {
+	class WP_Post_Type {
+		public $name   = '';
+		public $labels;
+		public function __construct( string $name, string $label ) {
+			$this->name   = $name;
+			$this->labels = (object) array( 'name' => $label );
+		}
+	}
+}
+
+foreach ( array(
+	'get_queried_object'         => '$atlas_test_request["queried"] ?? null',
+	'get_the_category'          => '$atlas_test_request["categories"] ?? array()',
+	'get_category_link'         => '"https://example.com/category/" . (int) $a',
+	'get_term_link'             => '"https://example.com/term/" . (int) $a->term_id',
+	'get_post_type_archive_link' => '"https://example.com/" . $a . "/"',
+	'get_the_author_meta'       => '$atlas_test_request["author"] ?? "Jane Doe"',
+	'get_the_date'              => 'gmdate( "c", strtotime( $b->post_date ) )',
+	'get_the_modified_date'     => 'gmdate( "c", strtotime( $b->post_modified ) )',
+) as $atlas_test_fn => $atlas_test_expr ) {
+	if ( ! function_exists( $atlas_test_fn ) ) {
+		// get_the_date / get_the_modified_date take ( $format, $post ); the rest take one argument.
+		$atlas_test_sig = in_array( $atlas_test_fn, array( 'get_the_date', 'get_the_modified_date', 'get_the_author_meta' ), true ) ? '$a = null, $b = null' : '$a = null';
+		eval( 'function ' . $atlas_test_fn . '( ' . $atlas_test_sig . ' ) { global $atlas_test_request; return ' . $atlas_test_expr . '; }' ); // phpcs:ignore Squiz.PHP.Eval.Discouraged -- Test-only generated doubles.
 	}
 }
 

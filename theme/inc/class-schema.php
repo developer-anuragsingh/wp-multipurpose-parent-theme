@@ -139,6 +139,17 @@ class Schema {
 	const TRANSIENT_TTL = 43200;
 
 	/**
+	 * Option holding the cache generation.
+	 *
+	 * The generation is part of every cache key, so bumping it (flush_cache())
+	 * makes every cached graph unreachable at once, for every post, without
+	 * having to enumerate or delete them. Old entries simply expire by TTL.
+	 *
+	 * @var string
+	 */
+	const OPTION_GENERATION = 'atlas_schema_cache_gen';
+
+	/**
 	 * Register the JSON-LD WordPress hooks.
 	 *
 	 * Called once from functions.php. Hooks wp_head at priority 1 so the graph
@@ -151,7 +162,35 @@ class Schema {
 		add_action( 'wp_head', array( self::class, 'print_json_ld' ), 1 );
 		add_action( 'save_post', array( self::class, 'invalidate_cache' ), 10, 1 );
 		add_action( 'deleted_post', array( self::class, 'invalidate_cache' ), 10, 1 );
-		add_action( 'switch_theme', array( self::class, 'flush_cache' ) );
+
+		// Everything a graph reads besides the post itself. The per-post graph
+		// embeds the Organization (site name, URL, logo), the author's display
+		// name and the category, so a change to any of them must refresh ALL
+		// cached graphs, not only the saved post's.
+		$flush_on = array(
+			'switch_theme',
+			'update_option_blogname',
+			'update_option_home',
+			'update_option_siteurl',
+			'update_option_theme_mods_' . (string) get_option( 'stylesheet' ),
+			'profile_update',
+			'edited_term',
+			'delete_term',
+		);
+
+		foreach ( $flush_on as $hook ) {
+			add_action( $hook, array( self::class, 'flush_cache' ) );
+		}
+	}
+
+	/**
+	 * Build a cache key for the current generation.
+	 *
+	 * @param string $suffix Context suffix, e.g. 'front' or 'post_42'.
+	 * @return string Transient key.
+	 */
+	public static function cache_key( string $suffix ): string {
+		return self::TRANSIENT_PREFIX . (int) get_option( self::OPTION_GENERATION, 0 ) . '_' . $suffix;
 	}
 
 	/**
@@ -273,13 +312,13 @@ class Schema {
 	 */
 	private static function get_cache_key(): string {
 		if ( is_front_page() || is_home() ) {
-			return self::TRANSIENT_PREFIX . 'front';
+			return self::cache_key( 'front' );
 		}
 
 		if ( is_singular( 'post' ) ) {
 			$post_id = get_the_ID();
 			if ( $post_id ) {
-				return self::TRANSIENT_PREFIX . 'post_' . (int) $post_id;
+				return self::cache_key( 'post_' . (int) $post_id );
 			}
 		}
 
@@ -290,7 +329,8 @@ class Schema {
 	 * Invalidate schema transients when content changes.
 	 *
 	 * Hooked to save_post and deleted_post. Clears the specific post cache and
-	 * the front-page schema cache so updates take effect immediately.
+	 * the front-page schema cache so updates take effect immediately. (Site-wide
+	 * changes use flush_cache() instead.)
 	 *
 	 * @param int $post_id Post ID being saved or deleted.
 	 * @return void
@@ -298,18 +338,23 @@ class Schema {
 	public static function invalidate_cache( $post_id = 0 ): void {
 		$clean_id = (int) $post_id;
 		if ( $clean_id > 0 ) {
-			delete_transient( self::TRANSIENT_PREFIX . 'post_' . $clean_id );
+			delete_transient( self::cache_key( 'post_' . $clean_id ) );
 		}
-		delete_transient( self::TRANSIENT_PREFIX . 'front' );
+		delete_transient( self::cache_key( 'front' ) );
 	}
 
 	/**
-	 * Flush schema transients on theme switch.
+	 * Invalidate EVERY cached graph (front page and all posts).
+	 *
+	 * Bumps the cache generation, which is part of every key, so all existing
+	 * entries become unreachable immediately and expire on their own TTL. Hooked
+	 * to site-wide changes (theme switch, site title/URL, logo, an author's
+	 * profile, a category or tag edit). Accepts and ignores hook arguments.
 	 *
 	 * @return void
 	 */
 	public static function flush_cache(): void {
-		delete_transient( self::TRANSIENT_PREFIX . 'front' );
+		update_option( self::OPTION_GENERATION, (int) get_option( self::OPTION_GENERATION, 0 ) + 1 );
 	}
 
 	/**

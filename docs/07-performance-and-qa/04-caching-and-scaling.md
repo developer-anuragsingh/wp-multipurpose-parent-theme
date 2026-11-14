@@ -12,7 +12,7 @@ The theme claims "instant" loads and sub-second FCP. Those claims only hold unde
 * **Browser cache / CDN:** static assets (CSS, JS, fonts, images) are versioned (`ATLAS_THEME_VERSION`) so they can be cached long-term and busted on release.
 
 ## 3. Theme Responsibilities
-* **Fragment caching:** cache the output of expensive, reusable fragments (e.g. the generated `llms.txt`, a computed JSON-LD graph) in a transient with a sensible TTL and a clear invalidation hook (on `save_post`, `switch_theme`, etc.).
+* **Fragment caching:** cache the output of expensive, reusable fragments (e.g. the generated `llms.txt`, a computed JSON-LD graph) in a transient with a sensible TTL and a clear invalidation hook (on `save_post`, `switch_theme`, etc.). When a fragment embeds site-wide data (site name, logo, author, category), invalidating the one saved post is not enough: put a **generation number inside the key** and bump it on site-wide changes, as `Atlas\Schema` does (`03-ai-and-seo/03-json-ld-schema.md` §6).
 * **Dynamic vs. cached:** anything genuinely per-user (mini-cart count, logged-in greeting) must load via a cache-safe mechanism — a client-side Interactivity API fetch to a non-cached REST endpoint — not baked into the cached page HTML.
 * **Nonce caching trap:** nonces are user- and time-specific. Never print a nonce into page-cached HTML; fetch it client-side or exclude the fragment from cache. The contact form follows this: it seeds no nonce and refreshes its signed token from the no-store `atlas/v1/contact/token` endpoint (see `02-frontend-and-styles/05-forms-and-validation.md` §5).
 * **Avoid cache-busting patterns:** no `nocache_headers()` on normal front-end templates, no cookies set on anonymous pages (they defeat page caches).

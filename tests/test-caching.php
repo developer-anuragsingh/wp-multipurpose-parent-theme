@@ -16,19 +16,19 @@ class Test_Caching {
 			'passed' => 'atlas_schema_' === Atlas\Schema::TRANSIENT_PREFIX,
 		);
 
-		set_transient( 'atlas_schema_front', array( 'node' => 'test' ), 3600 );
-		set_transient( 'atlas_schema_post_42', array( 'node' => 'post' ), 3600 );
+		set_transient( Atlas\Schema::cache_key( 'front' ), array( 'node' => 'test' ), 3600 );
+		set_transient( Atlas\Schema::cache_key( 'post_42' ), array( 'node' => 'post' ), 3600 );
 
 		Atlas\Schema::invalidate_cache( 42 );
 
 		$results[] = array(
 			'name'   => 'Schema invalidate_cache clears specific post transient',
-			'passed' => false === get_transient( 'atlas_schema_post_42' ),
+			'passed' => false === get_transient( Atlas\Schema::cache_key( 'post_42' ) ),
 		);
 
 		$results[] = array(
 			'name'   => 'Schema invalidate_cache clears front transient',
-			'passed' => false === get_transient( 'atlas_schema_front' ),
+			'passed' => false === get_transient( Atlas\Schema::cache_key( 'front' ) ),
 		);
 
 		// Test 2: Llms_Txt transient keys and invalidation.
