@@ -49,7 +49,7 @@ describe('Atlas UI States: REST Client Classification', () => {
 });
 
 describe('Atlas Contact Form: Validation Contract', () => {
-	function validateContactForm({ name, email, message }) {
+	function validateContactForm({ name, email, phone, message }) {
 		const errors = {};
 		if (!name || name.trim().length === 0) {
 			errors.name = 'Please enter your name.';
@@ -57,6 +57,13 @@ describe('Atlas Contact Form: Validation Contract', () => {
 		const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!email || !emailPattern.test(email.trim())) {
 			errors.email = 'Please enter a valid email address.';
+		}
+		if (phone && phone.trim().length > 0) {
+			const digits = phone.trim().replace(/\D/g, '');
+			const validChars = /^[\d\s+\-().]{7,25}$/.test(phone.trim());
+			if (!validChars || digits.length < 7 || digits.length > 16) {
+				errors.phone = 'Please enter a valid phone number.';
+			}
 		}
 		if (!message || message.trim().length < 10) {
 			errors.message = 'Please enter a message of at least 10 characters.';
@@ -67,25 +74,39 @@ describe('Atlas Contact Form: Validation Contract', () => {
 		};
 	}
 
-	it('validates a complete, correctly filled form', () => {
+	it('validates a complete, correctly filled form with valid phone', () => {
 		const result = validateContactForm({
 			name: 'Test User',
 			email: 'user@example.com',
+			phone: '+91 98765 43210',
 			message: 'This is a valid inquiry message with sufficient length.',
 		});
 		assert.equal(result.isValid, true);
 		assert.deepEqual(result.errors, {});
 	});
 
-	it('rejects empty fields and invalid emails', () => {
+	it('accepts form when optional phone is omitted', () => {
+		const result = validateContactForm({
+			name: 'Test User',
+			email: 'user@example.com',
+			phone: '',
+			message: 'This is a valid inquiry message with sufficient length.',
+		});
+		assert.equal(result.isValid, true);
+		assert.deepEqual(result.errors, {});
+	});
+
+	it('rejects empty fields, invalid emails, and invalid phone numbers', () => {
 		const result = validateContactForm({
 			name: '',
 			email: 'invalid-email',
+			phone: '123-abc-bad',
 			message: 'short',
 		});
 		assert.equal(result.isValid, false);
 		assert.ok(result.errors.name);
 		assert.ok(result.errors.email);
+		assert.ok(result.errors.phone);
 		assert.ok(result.errors.message);
 	});
 });

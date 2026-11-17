@@ -206,6 +206,36 @@ class Test_Contact_Form_Security {
 				&& str_contains( $token_res->headers['Cache-Control'] ?? '', 'no-store' ),
 		);
 
+		// --- Phone Validation & Sanitization ---
+		self::reset();
+		$valid_phone_res = Atlas\Contact_Form::handle_request(
+			self::request(
+				$old,
+				array( 'phone' => '+91 98765 43210' )
+			)
+		);
+		$sent_mail = $atlas_test_mail[0] ?? array( 'message' => '' );
+
+		$results[] = array(
+			'name'   => 'Contact_Form: valid phone number is accepted and embedded in mail body',
+			'passed' => 200 === $valid_phone_res->get_status()
+				&& str_contains( $sent_mail['message'], 'Phone: +91 98765 43210' ),
+		);
+
+		self::reset();
+		$invalid_phone_res = Atlas\Contact_Form::handle_request(
+			self::request(
+				$old,
+				array( 'phone' => '123-bad-letters-#' )
+			)
+		);
+
+		$results[] = array(
+			'name'   => 'Contact_Form: invalid phone number is rejected with HTTP 400',
+			'passed' => 400 === $invalid_phone_res->get_status()
+				&& empty( $atlas_test_mail ),
+		);
+
 		return $results;
 	}
 }

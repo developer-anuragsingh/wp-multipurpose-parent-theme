@@ -82,6 +82,13 @@ class Submissions {
 	const META_EMAIL = 'atlas_email';
 
 	/**
+	 * Meta key: the submitter's phone number.
+	 *
+	 * @var string
+	 */
+	const META_PHONE = 'atlas_phone';
+
+	/**
 	 * Meta key: mail delivery status, 'sent' or 'mail_failed'.
 	 *
 	 * @var string
@@ -207,6 +214,7 @@ class Submissions {
 					'post_content' => sanitize_textarea_field( (string) ( $data['message'] ?? '' ) ),
 					'meta_input'   => array(
 						self::META_EMAIL  => $email,
+						self::META_PHONE  => sanitize_text_field( (string) ( $data['phone'] ?? '' ) ),
 						self::META_STATUS => $sent ? 'sent' : 'mail_failed',
 					),
 				)

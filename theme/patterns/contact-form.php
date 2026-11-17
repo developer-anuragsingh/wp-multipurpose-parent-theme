@@ -35,6 +35,8 @@ $atlas_name_id        = $atlas_contact_uid . '-name';
 $atlas_name_error_id  = $atlas_contact_uid . '-name-error';
 $atlas_email_id       = $atlas_contact_uid . '-email';
 $atlas_email_error_id = $atlas_contact_uid . '-email-error';
+$atlas_phone_id       = $atlas_contact_uid . '-phone';
+$atlas_phone_error_id = $atlas_contact_uid . '-phone-error';
 $atlas_message_id     = $atlas_contact_uid . '-message';
 $atlas_message_err_id = $atlas_contact_uid . '-message-error';
 $atlas_status_id      = $atlas_contact_uid . '-status';
@@ -51,6 +53,10 @@ $atlas_contact_context = wp_json_encode(
 				'touched' => false,
 			),
 			'email'   => array(
+				'valid'   => true,
+				'touched' => false,
+			),
+			'phone'   => array(
 				'valid'   => true,
 				'touched' => false,
 			),
@@ -118,7 +124,7 @@ $atlas_contact_messages = array(
 				aria-describedby="<?php echo esc_attr( $atlas_name_error_id ); ?>"
 				data-wp-bind--aria-invalid="state.nameAriaInvalid"
 				data-wp-on--blur="actions.validateField"
-				data-wp-on--input="actions.revalidateIfErrored"
+				data-wp-on--input="actions.liveValidate"
 			/>
 			<p class="atlas-contact-form__error" id="<?php echo esc_attr( $atlas_name_error_id ); ?>" role="alert" aria-live="polite" data-wp-text="state.nameErrorText"></p>
 		</div>
@@ -137,9 +143,28 @@ $atlas_contact_messages = array(
 				aria-describedby="<?php echo esc_attr( $atlas_email_error_id ); ?>"
 				data-wp-bind--aria-invalid="state.emailAriaInvalid"
 				data-wp-on--blur="actions.validateField"
-				data-wp-on--input="actions.revalidateIfErrored"
+				data-wp-on--input="actions.liveValidate"
 			/>
 			<p class="atlas-contact-form__error" id="<?php echo esc_attr( $atlas_email_error_id ); ?>" role="alert" aria-live="polite" data-wp-text="state.emailErrorText"></p>
+		</div>
+
+		<div class="atlas-contact-form__field">
+			<label class="atlas-contact-form__label" for="<?php echo esc_attr( $atlas_phone_id ); ?>"><?php echo esc_html__( 'Phone number', 'atlas-theme' ); ?></label>
+			<input
+				class="atlas-contact-form__input"
+				type="tel"
+				id="<?php echo esc_attr( $atlas_phone_id ); ?>"
+				name="phone"
+				data-field="phone"
+				maxlength="30"
+				autocomplete="tel"
+				placeholder="<?php echo esc_attr__( '+1 555 123 4567', 'atlas-theme' ); ?>"
+				aria-describedby="<?php echo esc_attr( $atlas_phone_error_id ); ?>"
+				data-wp-bind--aria-invalid="state.phoneAriaInvalid"
+				data-wp-on--blur="actions.validateField"
+				data-wp-on--input="actions.liveValidate"
+			/>
+			<p class="atlas-contact-form__error" id="<?php echo esc_attr( $atlas_phone_error_id ); ?>" role="alert" aria-live="polite" data-wp-text="state.phoneErrorText"></p>
 		</div>
 
 		<div class="atlas-contact-form__field">
@@ -156,7 +181,7 @@ $atlas_contact_messages = array(
 				aria-describedby="<?php echo esc_attr( $atlas_message_err_id ); ?>"
 				data-wp-bind--aria-invalid="state.messageAriaInvalid"
 				data-wp-on--blur="actions.validateField"
-				data-wp-on--input="actions.revalidateIfErrored"
+				data-wp-on--input="actions.liveValidate"
 			></textarea>
 			<p class="atlas-contact-form__error" id="<?php echo esc_attr( $atlas_message_err_id ); ?>" role="alert" aria-live="polite" data-wp-text="state.messageErrorText"></p>
 		</div>

@@ -236,6 +236,13 @@ class Contact_Form {
 	const EMAIL_MAX = 254;
 
 	/**
+	 * Maximum accepted length of the phone field, in characters.
+	 *
+	 * @var int
+	 */
+	const PHONE_MAX = 30;
+
+	/**
 	 * Minimum accepted length of the message field, in characters.
 	 *
 	 * @var int
@@ -500,6 +507,23 @@ class Contact_Form {
 					return sanitize_email( wp_unslash( (string) $value ) );
 				},
 			),
+			'phone'              => array(
+				'required'          => false,
+				'type'              => 'string',
+				'validate_callback' => static function ( $value ) {
+					if ( empty( $value ) || ! is_string( $value ) ) {
+						return true;
+					}
+					$value  = trim( $value );
+					$digits = preg_replace( '/\D/', '', $value );
+					$valid  = 1 === preg_match( '/^[\d\s+\-().]{7,25}$/', $value );
+					$len_ok = strlen( $digits ) >= 7 && strlen( $digits ) <= 16;
+					return mb_strlen( $value ) <= self::PHONE_MAX && $valid && $len_ok;
+				},
+				'sanitize_callback' => static function ( $value ) {
+					return sanitize_text_field( wp_unslash( (string) $value ) );
+				},
+			),
 			'message'            => array(
 				'required'          => true,
 				'type'              => 'string',
@@ -596,13 +620,21 @@ class Contact_Form {
 		// defensively so a bypassed schema still fails closed.
 		$name    = (string) $request->get_param( 'name' );
 		$email   = (string) $request->get_param( 'email' );
+		$phone   = (string) $request->get_param( 'phone' );
 		$message = (string) $request->get_param( 'message' );
 
 		if ( '' === trim( $name ) || ! is_email( $email ) || mb_strlen( trim( $message ) ) < self::MESSAGE_MIN ) {
 			return self::respond( $enhanced, 'invalid', 400 );
 		}
 
-		$sent = self::send_mail( $name, $email, $message );
+		if ( '' !== trim( $phone ) ) {
+			$phone_digits = preg_replace( '/\D/', '', $phone );
+			if ( 1 !== preg_match( '/^[\d\s+\-().]{7,25}$/', $phone ) || strlen( $phone_digits ) < 7 || strlen( $phone_digits ) > 16 ) {
+				return self::respond( $enhanced, 'invalid', 400 );
+			}
+		}
+
+		$sent = self::send_mail( $name, $email, $message, $phone );
 
 		/**
 		 * Fires after an accepted submission, whether or not the mail was sent.
@@ -610,7 +642,7 @@ class Contact_Form {
 		 * Atlas\Submissions stores it so a mail failure never loses the message.
 		 * Listeners MUST NOT log the payload (data-protection §6).
 		 *
-		 * @param array $data { name, email, message } validated and sanitized.
+		 * @param array $data { name, email, phone, message } validated and sanitized.
 		 * @param bool  $sent Whether wp_mail() accepted the message.
 		 */
 		do_action(
@@ -618,6 +650,7 @@ class Contact_Form {
 			array(
 				'name'    => $name,
 				'email'   => $email,
+				'phone'   => $phone,
 				'message' => $message,
 			),
 			$sent
@@ -749,9 +782,10 @@ class Contact_Form {
 	 * @param string $name    Sanitized submitter name.
 	 * @param string $email   Sanitized submitter email.
 	 * @param string $message Sanitized submitter message.
+	 * @param string $phone   Optional sanitized submitter phone.
 	 * @return bool True when wp_mail() accepted the message for delivery.
 	 */
-	private static function send_mail( string $name, string $email, string $message ): bool {
+	private static function send_mail( string $name, string $email, string $message, string $phone = '' ): bool {
 		/**
 		 * Filters the contact-form recipient address.
 		 *
@@ -771,11 +805,14 @@ class Contact_Form {
 			$safe_name
 		);
 
+		$phone_line = '' !== trim( $phone ) ? sprintf( "Phone: %s\n", $phone ) : '';
+
 		$body = sprintf(
-			/* translators: 1: submitter name, 2: submitter email, 3: message body. */
-			__( "Name: %1\$s\nEmail: %2\$s\n\nMessage:\n%3\$s", 'atlas-theme' ),
+			/* translators: 1: submitter name, 2: submitter email, 3: optional phone line, 4: message body. */
+			__( "Name: %1\$s\nEmail: %2\$s\n%3\$s\nMessage:\n%4\$s", 'atlas-theme' ),
 			$name,
 			$email,
+			$phone_line,
 			$message
 		);
 
@@ -865,6 +902,7 @@ class Contact_Form {
 					'invalid'      => __( 'Please check the form and try again.', 'atlas-theme' ),
 					'nameError'    => __( 'Please enter your name.', 'atlas-theme' ),
 					'emailError'   => __( 'Please enter a valid email address.', 'atlas-theme' ),
+					'phoneError'   => __( 'Please enter a valid phone number (at least 7 digits).', 'atlas-theme' ),
 					'messageError' => __( 'Please enter a message of at least 10 characters.', 'atlas-theme' ),
 				),
 			)

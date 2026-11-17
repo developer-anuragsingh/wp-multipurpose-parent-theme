@@ -27,7 +27,7 @@ import '../css/contact-form.css';
  * Local, library-free field validation. UX-only — the server is the source of
  * truth. Returns true when the field passes its local constraint.
  *
- * @param {string} field Field key ('name', 'email', 'message').
+ * @param {string} field Field key ('name', 'email', 'phone', 'message').
  * @param {string} value Current trimmed field value.
  * @return {boolean} True when the value satisfies the local constraint.
  */
@@ -35,14 +35,28 @@ const isFieldValid = ( field, value ) => {
 	const trimmed = ( value || '' ).trim();
 	switch ( field ) {
 		case 'name':
-			return trimmed.length > 0 && trimmed.length <= 100;
+			return (
+				trimmed.length >= 2 &&
+				trimmed.length <= 100 &&
+				! /<[^>]*>/.test( trimmed )
+			);
 		case 'email':
-			// Light format check only; the server runs is_email().
+			// RFC 5322 compatible format check; the server runs is_email().
 			return (
 				trimmed.length > 0 &&
 				trimmed.length <= 254 &&
 				/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test( trimmed )
 			);
+		case 'phone':
+			if ( trimmed.length === 0 ) {
+				return true; // Optional field if empty
+			}
+			// Must contain 7 to 16 digits, with allowed characters +, spaces, hyphens, parentheses, dots
+			{
+				const digits = trimmed.replace( /\D/g, '' );
+				const validChars = /^[\d\s+\-().]{7,25}$/.test( trimmed );
+				return validChars && digits.length >= 7 && digits.length <= 16;
+			}
 		case 'message':
 			return trimmed.length >= 10 && trimmed.length <= 5000;
 		default:
@@ -117,6 +131,16 @@ const { state } = store( 'atlas/contact-form', {
 		},
 
 		/**
+		 * The phone field's string aria-invalid value.
+		 *
+		 * @return {string} "true" when invalid, else "false".
+		 */
+		get phoneAriaInvalid() {
+			const entry = getContext().fields?.phone;
+			return entry && ! entry.valid ? 'true' : 'false';
+		},
+
+		/**
 		 * The message field's string aria-invalid value.
 		 *
 		 * @return {string} "true" when invalid, else "false".
@@ -143,6 +167,19 @@ const { state } = store( 'atlas/contact-form', {
 			return getContext().fields.email.valid
 				? ''
 				: state.labels.emailError;
+		},
+
+		/**
+		 * The phone field's inline error text (empty while valid).
+		 *
+		 * @return {string} Pre-translated error, or an empty string.
+		 */
+		get phoneErrorText() {
+			const entry = getContext().fields?.phone;
+			return entry && ! entry.valid
+				? state.labels.phoneError ||
+						'Please enter a valid phone number.'
+				: '';
 		},
 
 		/**
@@ -177,6 +214,43 @@ const { state } = store( 'atlas/contact-form', {
 
 	actions: {
 		/**
+		 * Live validation as the user types (real-time data validation).
+		 *
+		 * Updates valid state and data-valid attribute immediately as the user
+		 * enters or modifies data in real-time.
+		 *
+		 * @return {void}
+		 */
+		liveValidate() {
+			const { ref } = getElement();
+			const field = ref.getAttribute( 'data-field' );
+			if ( ! field ) {
+				return;
+			}
+			const context = getContext();
+			const entry = context.fields ? context.fields[ field ] : null;
+			if ( ! entry ) {
+				return;
+			}
+			const val = ref.value;
+			const trimmed = val.trim();
+
+			if ( trimmed.length > 0 ) {
+				const valid = isFieldValid( field, val );
+				entry.valid = valid;
+				if ( trimmed.length >= 2 || entry.touched ) {
+					entry.touched = true;
+				}
+				ref.setAttribute( 'data-valid', valid ? 'true' : 'false' );
+			} else {
+				if ( entry.touched ) {
+					entry.valid = isFieldValid( field, '' );
+				}
+				ref.removeAttribute( 'data-valid' );
+			}
+		},
+
+		/**
 		 * Validate a single field on blur (instant local check, no debounce).
 		 *
 		 * Reads the field key from the input's data-field attribute and writes
@@ -192,20 +266,22 @@ const { state } = store( 'atlas/contact-form', {
 				return;
 			}
 			const context = getContext();
-			const entry = context.fields[ field ];
+			const entry = context.fields ? context.fields[ field ] : null;
 			if ( ! entry ) {
 				return;
 			}
-			entry.valid = isFieldValid( field, ref.value );
-			// Mark the field as touched so revalidateIfErrored knows to run.
 			entry.touched = true;
+			const valid = isFieldValid( field, ref.value );
+			entry.valid = valid;
+			if ( ref.value.trim().length > 0 ) {
+				ref.setAttribute( 'data-valid', valid ? 'true' : 'false' );
+			} else {
+				ref.removeAttribute( 'data-valid' );
+			}
 		},
 
 		/**
-		 * Re-validate on input, but only after the field has first errored.
-		 *
-		 * Keeps typing from flashing an error before the user leaves the field,
-		 * while clearing a shown error the moment the input becomes valid again.
+		 * Re-validate on input. Kept as fallback delegating to liveValidate.
 		 *
 		 * @return {void}
 		 */
@@ -215,13 +291,18 @@ const { state } = store( 'atlas/contact-form', {
 			if ( ! field ) {
 				return;
 			}
-			const entry = getContext().fields[ field ];
-			// Only re-validate once the field has been touched AND is currently
-			// showing an error; never interrupt first-time typing.
-			if ( ! entry || entry.valid || ! entry.touched ) {
+			const entry = getContext().fields
+				? getContext().fields[ field ]
+				: null;
+			if ( ! entry ) {
 				return;
 			}
-			entry.valid = isFieldValid( field, ref.value );
+			const trimmed = ref.value.trim();
+			if ( trimmed.length > 0 || entry.touched ) {
+				const valid = isFieldValid( field, ref.value );
+				entry.valid = valid;
+				ref.setAttribute( 'data-valid', valid ? 'true' : 'false' );
+			}
 		},
 
 		/**
@@ -246,14 +327,22 @@ const { state } = store( 'atlas/contact-form', {
 			// Validate every field up front; collect current values.
 			const values = {};
 			let firstInvalid = null;
-			[ 'name', 'email', 'message' ].forEach( ( field ) => {
+			[ 'name', 'email', 'phone', 'message' ].forEach( ( field ) => {
 				const input = ref.querySelector( `[data-field="${ field }"]` );
 				const value = input ? input.value : '';
 				values[ field ] = value;
 				const valid = isFieldValid( field, value );
-				context.fields[ field ].valid = valid;
-				context.fields[ field ].touched = true;
-				if ( ! valid && ! firstInvalid ) {
+				if ( context.fields && context.fields[ field ] ) {
+					context.fields[ field ].valid = valid;
+					context.fields[ field ].touched = true;
+				}
+				if ( input && value.trim().length > 0 ) {
+					input.setAttribute(
+						'data-valid',
+						valid ? 'true' : 'false'
+					);
+				}
+				if ( ! valid && ! firstInvalid && input ) {
 					firstInvalid = input;
 				}
 			} );
@@ -281,9 +370,10 @@ const { state } = store( 'atlas/contact-form', {
 					// nonce can never cause a spurious 403.
 					credentials: 'omit',
 					body: JSON.stringify( {
-						name: values.name.trim(),
-						email: values.email.trim(),
-						message: values.message.trim(),
+						name: ( values.name || '' ).trim(),
+						email: ( values.email || '' ).trim(),
+						phone: ( values.phone || '' ).trim(),
+						message: ( values.message || '' ).trim(),
 						[ ref.getAttribute( 'data-hp-field' ) ||
 						'atlas_contact_hp' ]:
 							ref.querySelector( '[data-role="hp"]' )?.value ||
@@ -297,16 +387,21 @@ const { state } = store( 'atlas/contact-form', {
 
 				if ( response.status === 200 ) {
 					// Clear the fields and announce success; move focus to status.
-					[ 'name', 'email', 'message' ].forEach( ( field ) => {
-						const input = ref.querySelector(
-							`[data-field="${ field }"]`
-						);
-						if ( input ) {
-							input.value = '';
+					[ 'name', 'email', 'phone', 'message' ].forEach(
+						( field ) => {
+							const input = ref.querySelector(
+								`[data-field="${ field }"]`
+							);
+							if ( input ) {
+								input.value = '';
+								input.removeAttribute( 'data-valid' );
+							}
+							if ( context.fields && context.fields[ field ] ) {
+								context.fields[ field ].valid = true;
+								context.fields[ field ].touched = false;
+							}
 						}
-						context.fields[ field ].valid = true;
-						context.fields[ field ].touched = false;
-					} );
+					);
 					context.status = state.labels.success;
 					context.statusType = 'success';
 					const status = ref.querySelector( '[data-role="status"]' );
