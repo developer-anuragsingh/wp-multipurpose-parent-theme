@@ -44,7 +44,7 @@ The hook catches style and obvious secret issues before they reach CI. Per `05-c
 * **`php`** — `shivammathur/setup-php` (PHP 8.1) → `composer install` → `composer lint` → `composer test`.
 * **`node`** — `actions/setup-node` (Node LTS) → `npm ci` → `npm run lint:js` + `npm run lint:css` → `npm test`.
 * **`e2e`** — build + Playwright E2E and visual regression.
-* **`secrets`** — full-history checkout → `gitleaks/gitleaks-action` using `.gitleaks.toml`.
+* **`secrets`** — full-history checkout → `gitleaks/gitleaks-action` using `.gitleaks.toml`. On pull requests the action needs `GITHUB_TOKEN` in its `env` and the job needs `pull-requests: read` (it reads the PR's commits through the API); without them it stops with "GITHUB_TOKEN is now required to scan pull requests". Push events do not need the token, which is why this only shows up on PRs (for example Dependabot's).
 * **`Update visual baselines (Linux)`** (separate, manual `workflow_dispatch`, read-only) renders the visual-regression baselines on the CI image and uploads them as an artifact to commit (`03-testing-strategy.md` §7).
 * **`commitlint`** — Conventional Commits on the PR range or pushed commit.
 * **`package`** — runs `scripts/build-release.sh` so a broken build or a leaky zip fails the PR, not the release.
