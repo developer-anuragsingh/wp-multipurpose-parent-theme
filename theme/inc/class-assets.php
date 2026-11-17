@@ -234,12 +234,19 @@ class Assets {
 
 		// The interactivity stylesheet ships wherever the interactive markup
 		// renders so the no-JS fallback styles (and dark-mode preset re-point)
-		// are always present. Plain file from src/css, versioned by the theme.
+		// are always present. Plain file from src/css; version is derived from
+		// the file's MD5 hash so browsers cache-bust automatically whenever the
+		// file changes, even without a theme version bump (P-1 fix).
+		$interactivity_css = ATLAS_THEME_DIR . '/src/css/interactivity.css';
+		$css_version       = file_exists( $interactivity_css )
+			? substr( md5_file( $interactivity_css ), 0, 8 )
+			: ATLAS_THEME_VERSION;
+
 		wp_enqueue_style(
 			'atlas-interactivity',
 			ATLAS_THEME_URI . '/src/css/interactivity.css',
 			array( 'atlas-theme' ),
-			ATLAS_THEME_VERSION
+			$css_version
 		);
 
 		// Seed the theme-mode gettext labels into global Interactivity state so

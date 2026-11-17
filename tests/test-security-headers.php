@@ -20,9 +20,17 @@ class Test_Security_Headers {
 		);
 
 		$results[] = array(
-			'name'   => 'CSP defaults to report-only (not enforcing)',
+			'name'   => 'CSP defaults to report-only in non-production environments (auto-detect)',
 			'passed' => isset( $headers['Content-Security-Policy-Report-Only'] ) && ! isset( $headers['Content-Security-Policy'] ),
 		);
+
+		global $atlas_test_env_type;
+		$atlas_test_env_type = 'production';
+		$results[]           = array(
+			'name'   => 'CSP auto-detects and enforces in production environment',
+			'passed' => Atlas\Security_Headers::MODE_ENFORCE === Atlas\Security_Headers::csp_mode(),
+		);
+		$atlas_test_env_type = 'local';
 
 		$csp  = $headers['Content-Security-Policy-Report-Only'] ?? '';
 		$hash = "'sha256-" . base64_encode( hash( 'sha256', Atlas\Assets::theme_mode_script(), true ) ) . "'";

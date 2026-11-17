@@ -843,6 +843,18 @@ if ( ! function_exists( 'wp_using_ext_object_cache' ) ) {
 	}
 }
 
+global $atlas_test_env_type;
+$atlas_test_env_type = 'local';
+
+if ( ! function_exists( 'wp_get_environment_type' ) ) {
+	function wp_get_environment_type() {
+		global $atlas_test_env_type;
+		// In the test harness, default to 'local' so the auto-enforce logic stays
+		// in report-only mode unless explicitly testing production mode.
+		return $atlas_test_env_type ?? 'local';
+	}
+}
+
 if ( ! function_exists( 'wp_cache_add' ) ) {
 	function wp_cache_add( $key, $data, $group = '', $expire = 0 ) {
 		global $atlas_test_object_cache;

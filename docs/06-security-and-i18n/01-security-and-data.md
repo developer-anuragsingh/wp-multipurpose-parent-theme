@@ -62,14 +62,14 @@ The theme **emits** security headers itself via `Atlas\Security_Headers` (`theme
 | `Referrer-Policy` | `strict-origin-when-cross-origin` | |
 | `Permissions-Policy` | `camera=(), microphone=(), geolocation=(), payment=(self)` | |
 | `Strict-Transport-Security` | `max-age=31536000` | Sent **only over HTTPS**; no `includeSubDomains`/`preload` (opt-in). |
-| `Content-Security-Policy-Report-Only` | see below | Default mode. Switch to `enforce` when clean. |
+| `Content-Security-Policy` / `-Report-Only` | auto-detect | Enforced on production (`WP_DEBUG` false), Report-Only in dev/staging. |
 
 Rules: a header already set by the server, CDN or a plugin is **never overwritten** (case-insensitive), and any filtered value containing CR/LF is dropped (no response splitting).
 
 **Configuring**
-* Mode — `define( 'ATLAS_CSP_MODE', 'enforce' );` in `wp-config.php`, or the `atlas_csp_mode` filter. Values: `off`, `report-only` (default), `enforce`; anything else falls back to `report-only`.
+* Mode — `define( 'ATLAS_CSP_MODE', 'enforce' );` in `wp-config.php`, or the `atlas_csp_mode` filter. Values: `off`, `report-only`, `enforce`. If unset, automatically detects: enforces on production when `WP_DEBUG` is false, and reports only in development/staging.
 * Directives — `atlas_csp_directives` filter (directive ⇒ list of sources), e.g. to allow a payment or analytics origin.
-* Headers — `atlas_security_headers` filter (all added headers); `atlas_hsts_header` filter (return `''` to disable HSTS, or add `; includeSubDomains; preload`).
+* Headers — `atlas_security_headers` filter (all added headers); `atlas_hsts_header` filter (return `''` to disable HSTS, or add `; includeSubDomains; preload`). Note: `preload` is permanent across browser vendors; test thoroughly before opting in.
 
 **Default policy:** `default-src 'self'`; `script-src 'self' 'nonce-…' 'sha256-…'`; `style-src 'self' 'unsafe-inline'` (core block-support inline styles; styles cannot execute code); `img-src 'self' data: https:`; `font-src 'self' data:`; `connect-src 'self'`; `object-src 'none'`; `base-uri 'self'`; `form-action 'self'`; `frame-ancestors 'self'`.
 * **No blanket `unsafe-inline`:** a strict policy forbids inline scripts, which collides with the inline dark-mode head script (see `02-frontend-and-styles/03-dark-light-mode.md`). Reconcile this by emitting a per-request CSP nonce and attaching it to that single inline script (`<script nonce="...">` + `script-src 'nonce-...'`), or by hashing the script and allowing it via `'sha256-...'`. Never relax the whole policy to `unsafe-inline` to make one script work.

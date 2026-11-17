@@ -88,6 +88,12 @@ class Security_Headers {
 	/**
 	 * Default HSTS value: one year, no includeSubDomains/preload (opt-in).
 	 *
+	 * To add includeSubDomains and/or preload, use the atlas_hsts_header filter:
+	 *   add_filter( 'atlas_hsts_header', fn() => 'max-age=31536000; includeSubDomains; preload' );
+	 *
+	 * WARNING: preload is a permanent, browser-vendor-side commitment. Ensure ALL
+	 * subdomains serve HTTPS before enabling it. See https://hstspreload.org/.
+	 *
 	 * @var string
 	 */
 	const HSTS_DEFAULT = 'max-age=31536000';
@@ -166,10 +172,36 @@ class Security_Headers {
 	/**
 	 * Resolve the active CSP mode (constant, then filter), defaulting safely.
 	 *
+	 * Default selection order:
+	 *  1. If ATLAS_CSP_MODE constant is defined in wp-config.php, use it.
+	 *  2. Otherwise use MODE_ENFORCE for production (WP_DEBUG off, WP_ENVIRONMENT_TYPE
+	 *     is 'production' or unset) and MODE_REPORT_ONLY for development/staging, so
+	 *     local development never hard-blocks a violated rule while production is
+	 *     always protected. Operators may override via the atlas_csp_mode filter.
+	 *
+	 * To pin a specific mode regardless of environment:
+	 *   define( 'ATLAS_CSP_MODE', 'enforce' );   // in wp-config.php
+	 *   define( 'ATLAS_CSP_MODE', 'report-only' );
+	 *   define( 'ATLAS_CSP_MODE', 'off' );
+	 *
 	 * @return string One of the MODE_* constants.
 	 */
 	public static function csp_mode(): string {
-		$mode = defined( self::CONSTANT_CSP_MODE ) ? (string) constant( self::CONSTANT_CSP_MODE ) : self::MODE_REPORT_ONLY;
+		if ( defined( self::CONSTANT_CSP_MODE ) ) {
+			$mode = (string) constant( self::CONSTANT_CSP_MODE );
+		} else {
+			// Auto-detect: enforce on production, report-only elsewhere.
+			$env  = function_exists( 'wp_get_environment_type' ) ? wp_get_environment_type() : 'production';
+			$mode = ( 'production' === $env && ( ! defined( 'WP_DEBUG' ) || ! WP_DEBUG ) )
+				? self::MODE_ENFORCE
+				: self::MODE_REPORT_ONLY;
+		}
+
+		/**
+		 * Filters the active CSP mode.
+		 *
+		 * @param string $mode One of 'off', 'report-only', 'enforce'.
+		 */
 		$mode = (string) apply_filters( self::FILTER_CSP_MODE, $mode );
 
 		return in_array( $mode, array( self::MODE_OFF, self::MODE_REPORT_ONLY, self::MODE_ENFORCE ), true )
