@@ -135,6 +135,12 @@ if ( ! function_exists( '__' ) ) {
 	}
 }
 
+if ( ! function_exists( '_x' ) ) {
+	function _x( $text, $context, $domain = 'default' ) {
+		return $text;
+	}
+}
+
 if ( ! function_exists( '_e' ) ) {
 	function _e( $text, $domain = 'default' ) {
 		echo $text;

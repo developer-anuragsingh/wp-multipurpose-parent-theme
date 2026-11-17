@@ -48,7 +48,10 @@
 	width: 100%;
 	max-width: 100%;
 	padding: var(--wp--preset--spacing--20) var(--wp--preset--spacing--30);
-	font-size: var(--wp--preset--font-size--medium);
+
+	/* Never below 16px: iOS Safari zooms the whole page when a focused field is
+	   smaller, which breaks the layout on phones. The body scale is 14-15px. */
+	font-size: 1rem;
 	color: var(--wp--preset--color--dark);
 	background-color: var(--wp--preset--color--white);
 	border: 1px solid var(--wp--preset--color--dark);

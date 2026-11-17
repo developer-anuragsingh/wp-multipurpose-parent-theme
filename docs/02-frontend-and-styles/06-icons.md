@@ -17,9 +17,9 @@ Registered icons: `menu`, `close`, `copy`, `check`, `sun`, `moon`, `refresh`, `c
 |---|---|---|
 | **Icon only** | Actions that are universally recognised and repeated | menu toggle, close menu, theme toggle, copy quote |
 | **Icon + visible text** | Actions where the word carries meaning or the user might hesitate | Retry, Sign in again, Load more posts, Send message |
-| **Text only** | Marketing calls to action, language names, skip link | pattern buttons ("Get started"), `EN / हिन्दी`, "Skip to content" |
+| **Text only** | Marketing calls to action, the language switcher, skip link | pattern buttons ("Get started"), `EN / HI`, "Skip to content" |
 
-Reasons for the exceptions: a language is identified by its own name (flags represent countries, not languages, and are ambiguous), the skip link is for keyboard users who need to see exactly what it does, and pattern CTAs are editorial copy that site owners rewrite.
+Reasons for the exceptions: a language is shown as a short code, not a flag (flags represent countries, not languages, and are ambiguous; the full native name is in its `aria-label` and tooltip, see `07-typography-and-layout.md` §4), the skip link is for keyboard users who need to see exactly what it does, and pattern CTAs are editorial copy that site owners rewrite.
 
 ## 3. Rules for Icon-Only Controls (all mandatory)
 1. **An accessible name.** `aria-label` on the control. The icon never provides the name. (`tests/test-icons.php` fails the build for any unnamed icon-only `a`/`button` in the theme's markup, and axe flags it in the browser.)

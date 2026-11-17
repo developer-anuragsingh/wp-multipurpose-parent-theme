@@ -59,6 +59,24 @@ class Test_Fixtures {
 				&& str_contains( $header, 'class="atlas-nav" id="atlas-nav"' ),
 		);
 
+		// --- The notifications part exists once per page and is not a flex child. ---
+		$footer = (string) file_get_contents( ATLAS_THEME_DIR . '/parts/footer.html' );
+		$landing = (string) file_get_contents( ATLAS_THEME_DIR . '/parts/footer-landing.html' );
+		$tag     = '<!-- wp:template-part {"slug":"notifications"} /-->';
+
+		$results[] = array(
+			'name'   => 'Header: the notifications part is included exactly once on a page (header only), so its ids and live regions are not duplicated',
+			'passed' => 1 === substr_count( $header, $tag ) && 0 === substr_count( $footer, $tag ) && 0 === substr_count( $landing, $tag ),
+		);
+
+		$tag_pos   = strpos( $header, $tag );
+		$group_pos = strpos( $header, '<!-- wp:group' );
+
+		$results[] = array(
+			'name'   => 'Header: the notifications part sits before the flex group, never inside it (an empty flex child adds a gap and shifts the title)',
+			'passed' => false !== $tag_pos && false !== $group_pos && $tag_pos < $group_pos,
+		);
+
 		$css = (string) file_get_contents( ATLAS_THEME_DIR . '/src/css/interactivity.css' );
 
 		$results[] = array(

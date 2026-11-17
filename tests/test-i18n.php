@@ -87,6 +87,30 @@ class Test_I18n {
 			'passed' => $has_nav && $has_en_link && $has_hi_link && $has_separator,
 		);
 
+		// Test 7b: compact visible labels with a full accessible name.
+		preg_match_all( '#<a [^>]*data-lang="([a-z_A-Z]+)"[^>]*>([^<]*)</a>#u', $html, $links, PREG_SET_ORDER );
+		$visible = array();
+		foreach ( $links as $link ) {
+			$visible[ $link[1] ] = $link[2];
+		}
+		$results[] = array(
+			'name'   => 'I18n render_switcher shows the short labels EN / HI, not the full language names',
+			'passed' => array(
+				'en_US' => 'EN',
+				'hi_IN' => 'HI',
+			) === $visible,
+		);
+		$results[] = array(
+			'name'   => 'I18n render_switcher keeps the full name in aria-label and title; the name contains the visible text (WCAG 2.5.3)',
+			'passed' => str_contains( $html, 'aria-label="EN (English)"' )
+				&& str_contains( $html, 'aria-label="HI (हिन्दी)"' )
+				&& str_contains( $html, 'title="हिन्दी"' )
+				&& str_contains( $html, 'title="English"' ),
+		);
+		$results[] = array(
+			'name'   => 'I18n render_switcher still marks each link with its own language (lang/hreflang) and the current one with aria-current',
+			'passed' => str_contains( $html, 'hreflang="hi" lang="hi"' ) && str_contains( $html, 'aria-current="true"' ),
+		);
 		// Test 8: filter_header_template_part dynamically updates switcher.
 		$dummy_header = '<header><div class="logo"></div><nav class="atlas-lang-switcher"><a href="?lang=old">Old</a></nav></header>';
 		$filtered     = Atlas\I18n::filter_header_template_part( $dummy_header, array( 'attrs' => array( 'slug' => 'header' ) ) );

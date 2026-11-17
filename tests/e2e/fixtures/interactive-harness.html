@@ -13,11 +13,6 @@
 			--wp--preset--spacing--40: 1rem;
 			--wp--preset--spacing--50: 1.5rem;
 			--wp--preset--spacing--60: 2rem;
-			--wp--preset--font-size--small: 0.875rem;
-			--wp--preset--font-size--medium: 1rem;
-			--wp--preset--font-size--large: 1.25rem;
-			--wp--preset--font-size--x-large: 1.5rem;
-			--wp--preset--font-size--xx-large: 2rem;
 		}
 
 		body {
@@ -25,6 +20,8 @@
 			font-family: system-ui, -apple-system, sans-serif;
 			background-color: var(--wp--preset--color--light);
 			color: var(--wp--preset--color--dark);
+			font-size: var(--wp--preset--font-size--medium);
+			line-height: 1.6;
 		}
 	</style>
 
@@ -76,9 +73,9 @@
 
 		<div class="atlas-header-actions" style="display:flex;align-items:center;gap:0.75rem;">
 			<nav class="atlas-lang-switcher" aria-label="Language selector">
-				<a href="?lang=en_US" class="atlas-lang-switcher__item is-active" data-lang="en_US" hreflang="en" lang="en" aria-current="true">EN</a>
+				<a href="?lang=en_US" class="atlas-lang-switcher__item is-active" data-lang="en_US" hreflang="en" lang="en" aria-label="EN (English)" title="English" aria-current="true">EN</a>
 				<span class="atlas-lang-switcher__separator" aria-hidden="true">/</span>
-				<a href="?lang=hi_IN" class="atlas-lang-switcher__item" data-lang="hi_IN" hreflang="hi" lang="hi">हिन्दी</a>
+				<a href="?lang=hi_IN" class="atlas-lang-switcher__item" data-lang="hi_IN" hreflang="hi" lang="hi" aria-label="HI (हिन्दी)" title="हिन्दी">HI</a>
 			</nav>
 
 			<button type="button" class="atlas-theme-toggle" hidden data-wp-interactive="atlas/theme-mode" data-wp-init="callbacks.init" data-wp-on--click="actions.toggleTheme" data-wp-bind--aria-pressed="state.ariaPressed" data-wp-bind--aria-label="state.toggleLabel" data-wp-bind--title="state.toggleLabel" aria-label="Toggle colour theme" title="Toggle colour theme">

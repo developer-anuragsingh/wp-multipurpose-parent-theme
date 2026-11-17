@@ -37,9 +37,15 @@ function paletteCss() {
 		fs.readFileSync( path.join( THEME_DIR, 'theme.json' ), 'utf8' )
 	);
 	const palette = themeJson.settings.color.palette;
-	const vars = palette
-		.map( ( c ) => `--wp--preset--color--${ c.slug }:${ c.color };` )
+	// Font-size presets too (base size, so visual snapshots stay deterministic;
+	// WordPress itself interpolates between each preset's fluid min and max).
+	const fontVars = themeJson.settings.typography.fontSizes
+		.map( ( f ) => `--wp--preset--font-size--${ f.slug }:${ f.size };` )
 		.join( '' );
+	const vars =
+		palette
+			.map( ( c ) => `--wp--preset--color--${ c.slug }:${ c.color };` )
+			.join( '' ) + fontVars;
 	const classes = palette
 		.map(
 			( c ) =>

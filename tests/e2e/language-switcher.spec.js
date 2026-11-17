@@ -6,7 +6,7 @@ test.describe( 'Atlas Language Switcher E2E', () => {
 		await page.goto( '/interactive' );
 	} );
 
-	test( 'language switcher is visible in header with both EN and Hindi options', async ( {
+	test( 'language switcher is visible in header with the short EN and HI options', async ( {
 		page,
 	} ) => {
 		const switcher = page.locator( '.atlas-lang-switcher' );
@@ -22,7 +22,11 @@ test.describe( 'Atlas Language Switcher E2E', () => {
 		await expect( enLink ).toHaveClass( /is-active/ );
 
 		await expect( hiLink ).toBeVisible();
-		await expect( hiLink ).toHaveText( 'हिन्दी' );
+		await expect( hiLink ).toHaveText( 'HI' );
+		// Compact label on screen, full name for assistive tech and as the tooltip.
+		await expect( hiLink ).toHaveAttribute( 'aria-label', 'HI (हिन्दी)' );
+		await expect( hiLink ).toHaveAttribute( 'title', 'हिन्दी' );
+		await expect( enLink ).toHaveAttribute( 'aria-label', 'EN (English)' );
 		await expect( hiLink ).toHaveAttribute( 'hreflang', 'hi' );
 	} );
 } );

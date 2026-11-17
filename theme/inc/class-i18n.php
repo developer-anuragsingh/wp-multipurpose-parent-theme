@@ -253,14 +253,26 @@ class I18n {
 
 			$current_attr = $is_active ? ' aria-current="true"' : '';
 
+			// Compact visible label (EN / HI). The accessible name still contains the
+			// visible text (WCAG 2.5.3 Label in Name) and adds the full native
+			// language name, which also serves as the tooltip: "HI (हिन्दी)".
+			$name = sprintf(
+				/* translators: 1: short language code shown on screen, 2: language name in its own language. */
+				_x( '%1$s (%2$s)', 'language switcher accessible name', 'atlas-theme' ),
+				$short,
+				$native
+			);
+
 			$output .= sprintf(
-				'<a href="%1$s" class="%2$s" data-lang="%3$s" hreflang="%4$s" lang="%4$s"%5$s>%6$s</a>',
+				'<a href="%1$s" class="%2$s" data-lang="%3$s" hreflang="%4$s" lang="%4$s" aria-label="%7$s" title="%8$s"%5$s>%6$s</a>',
 				$url,
 				esc_attr( $classes ),
 				esc_attr( $code ),
 				esc_attr( $hreflang ),
 				$current_attr,
-				esc_html( $native )
+				esc_html( $short ),
+				esc_attr( $name ),
+				esc_attr( $native )
 			);
 
 			++$index;

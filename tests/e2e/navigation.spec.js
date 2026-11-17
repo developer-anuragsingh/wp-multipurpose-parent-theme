@@ -42,10 +42,16 @@ test.describe( 'Atlas Mobile Navigation Drawer E2E', () => {
 		await expect( toggle ).toHaveAttribute( 'aria-expanded', 'false' );
 		await expect( toggle ).toBeFocused();
 
-		// Clicking toggle opens and clicking again closes
+		// Re-open with the toggle, then close with the in-panel close control.
+		// The open panel is position:fixed and covers the header toggle, so a
+		// user cannot press the toggle a second time (a test that tried to was
+		// only passing while the 0.3s slide-in was still in progress). The close
+		// control is the real way out, besides Escape.
 		await toggle.click();
 		await expect( toggle ).toHaveAttribute( 'aria-expanded', 'true' );
-		await toggle.click();
+		await expect( page.locator( '#atlas-nav-panel' ) ).toBeVisible();
+		await page.locator( '.atlas-nav__close' ).click();
 		await expect( toggle ).toHaveAttribute( 'aria-expanded', 'false' );
+		await expect( toggle ).toBeFocused();
 	} );
 } );
