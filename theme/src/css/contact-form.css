@@ -180,3 +180,173 @@
 		transition: none;
 	}
 }
+
+/* -------------------------------------------------------------------------
+ * Contact Page Suite — Direct chat, info cards, map, social & share bar
+ * ------------------------------------------------------------------------- */
+.atlas-contact-page {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--preset--spacing--50);
+	margin-block: var(--wp--preset--spacing--50);
+}
+
+.atlas-contact-layout {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--wp--preset--spacing--50);
+}
+
+@media (min-width: 48rem) {
+
+	.atlas-contact-layout {
+		grid-template-columns: 1fr 1fr;
+		align-items: start;
+	}
+}
+
+/* Direct Chat Grid */
+.atlas-direct-chat {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--preset--spacing--30);
+	margin-block: var(--wp--preset--spacing--30);
+}
+
+.atlas-direct-chat__grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+	gap: var(--wp--preset--spacing--30);
+}
+
+.atlas-chat-card {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--wp--preset--spacing--20);
+	padding: var(--wp--preset--spacing--30);
+	font-weight: 600;
+	text-decoration: none;
+	color: var(--wp--preset--color--dark);
+	background: var(--wp--preset--color--light);
+	border: 1px solid var(--wp--preset--color--dark);
+	border-radius: 0.5rem;
+	transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.atlas-chat-card:hover,
+.atlas-chat-card:focus-visible {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+	outline: 2px solid var(--wp--preset--color--primary);
+	outline-offset: 2px;
+}
+
+.atlas-chat-card .atlas-icon {
+	flex-shrink: 0;
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
+/* Contact Info Cards */
+.atlas-contact-info-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--wp--preset--spacing--30);
+}
+
+@media (min-width: 36rem) {
+
+	.atlas-contact-info-grid {
+		grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+	}
+}
+
+.atlas-info-card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--preset--spacing--20);
+	padding: var(--wp--preset--spacing--30);
+	background: var(--wp--preset--color--white);
+	border: 1px solid var(--wp--preset--color--dark);
+	border-radius: 0.5rem;
+}
+
+.atlas-info-card__header {
+	display: flex;
+	align-items: center;
+	gap: var(--wp--preset--spacing--20);
+	font-weight: 700;
+	font-size: var(--wp--preset--font-size--small);
+	color: var(--wp--preset--color--primary);
+}
+
+.atlas-info-card__body {
+	font-size: var(--wp--preset--font-size--medium);
+	line-height: 1.5;
+}
+
+.atlas-info-card__body a {
+	color: inherit;
+	text-decoration: underline;
+}
+
+/* Google Maps Container */
+.atlas-map-wrapper {
+	position: relative;
+	width: 100%;
+	min-height: 22rem;
+	overflow: hidden;
+	border: 1px solid var(--wp--preset--color--dark);
+	border-radius: 0.5rem;
+	background: var(--wp--preset--color--light);
+}
+
+.atlas-map-wrapper iframe {
+	width: 100%;
+	height: 100%;
+	min-height: 22rem;
+	border: 0;
+	display: block;
+}
+
+/* Social & Share Bar */
+.atlas-social-share-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--wp--preset--spacing--30);
+	padding: var(--wp--preset--spacing--30);
+	background: var(--wp--preset--color--light);
+	border-radius: 0.5rem;
+	margin-block: var(--wp--preset--spacing--30);
+}
+
+.atlas-icon-pills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--wp--preset--spacing--20);
+	align-items: center;
+}
+
+.atlas-icon-pill {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 50%;
+	border: 1px solid var(--wp--preset--color--dark);
+	background: var(--wp--preset--color--white);
+	color: var(--wp--preset--color--dark);
+	text-decoration: none;
+	transition: background 120ms ease, color 120ms ease;
+}
+
+.atlas-icon-pill:hover,
+.atlas-icon-pill:focus-visible {
+	background: var(--wp--preset--color--primary);
+	color: var(--wp--preset--color--white);
+	outline: 2px solid var(--wp--preset--color--primary);
+	outline-offset: 2px;
+}

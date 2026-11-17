@@ -58,6 +58,7 @@ Atlas\UI_States::init();
 Atlas\Bindings::init();
 Atlas\Contact_Form::init();
 Atlas\Submissions::init();
+Atlas\Contact_Settings::init();
 Atlas\Schema::init();
 Atlas\Seo::init();
 Atlas\Robots::init();

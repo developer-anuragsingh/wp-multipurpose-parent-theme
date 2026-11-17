@@ -20,6 +20,7 @@ require_once __DIR__ . '/test-llms-txt.php';
 require_once __DIR__ . '/test-i18n.php';
 require_once __DIR__ . '/test-security-headers.php';
 require_once __DIR__ . '/test-contact-form-security.php';
+require_once __DIR__ . '/test-contact-settings.php';
 require_once __DIR__ . '/test-markdown-endpoint.php';
 require_once __DIR__ . '/test-assets.php';
 require_once __DIR__ . '/test-submissions.php';
@@ -46,6 +47,7 @@ $suites = array(
 	'i18n & Language'    => Test_I18n::run(),
 	'Security Headers'   => Test_Security_Headers::run(),
 	'Contact Form Security' => Test_Contact_Form_Security::run(),
+	'Contact Settings & Channels' => Test_Contact_Settings::run(),
 	'Markdown Endpoint'  => Test_Markdown_Endpoint::run(),
 	'Assets & CSP Nonce' => Test_Assets::run(),
 	'Submissions & Privacy' => Test_Submissions::run(),

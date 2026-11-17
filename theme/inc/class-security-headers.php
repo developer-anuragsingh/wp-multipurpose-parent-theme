@@ -230,6 +230,7 @@ class Security_Headers {
 			'base-uri'        => array( "'self'" ),
 			'form-action'     => array( "'self'" ),
 			'frame-ancestors' => array( "'self'" ),
+			'frame-src'       => array( "'self'", 'https://www.google.com', 'https://maps.google.com' ),
 		);
 
 		/**
