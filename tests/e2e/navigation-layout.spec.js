@@ -90,10 +90,42 @@ test.describe( 'Mobile navigation: no layout shift on hydration', () => {
 				}
 			} ).observe( { type: 'layout-shift', buffered: true } );
 		} );
-		await page.goto( '/interactive' );
+		// Isolate hydration from font loading: the fixtures use the theme's real
+		// webfonts, and on a slow CI runner they can arrive after first paint,
+		// which reflows text for reasons unrelated to hydration. Hold every
+		// theme module until the fonts are in, reset the counter, then release
+		// the modules and measure only what hydration itself moves.
+		let release = () => {};
+		const gate = new Promise( ( resolve ) => {
+			release = resolve;
+		} );
+		await page.route( '**/theme/build/*.js', async ( route ) => {
+			await gate;
+			await route.continue();
+		} );
+
+		// 'load' (and DOMContentLoaded) wait for module scripts, which are held,
+		// so only wait for the response, then for the parsed DOM and the fonts.
+		await page.goto( '/interactive', { waitUntil: 'commit' } );
+		await page.waitForFunction( () => document.readyState !== 'loading' );
+		await page.evaluate( () =>
+			Promise.all( [
+				document.fonts.load( '400 16px Inter' ),
+				document.fonts.load( '700 16px Sora' ),
+			] )
+		);
+		await page.waitForTimeout( 200 );
+		await expect( page.locator( '.atlas-nav' ) ).not.toHaveClass(
+			/is-atlas-interactive/
+		);
+		// @ts-ignore Test-only global.
+		await page.evaluate( () => ( window.__navShift = 0 ) );
+
+		release();
 		await expect( page.locator( '.atlas-nav' ) ).toHaveClass(
 			/is-atlas-interactive/
 		);
+		await expect( page.locator( '.atlas-theme-toggle' ) ).toBeVisible();
 		await page.waitForTimeout( 500 );
 		// @ts-ignore Test-only global.
 		const shift = await page.evaluate( () => window.__navShift );
@@ -111,16 +143,18 @@ test.describe( 'JS-only header controls reserve their space', () => {
 			route.abort()
 		);
 		await page.goto( '/interactive' );
-		const info = await page.locator( '.atlas-theme-toggle' ).evaluate( ( el ) => {
-			const box = el.getBoundingClientRect();
-			const style = getComputedStyle( el );
-			return {
-				hiddenAttr: el.hasAttribute( 'hidden' ),
-				width: box.width,
-				height: box.height,
-				visibility: style.visibility,
-			};
-		} );
+		const info = await page
+			.locator( '.atlas-theme-toggle' )
+			.evaluate( ( el ) => {
+				const box = el.getBoundingClientRect();
+				const style = window.getComputedStyle( el );
+				return {
+					hiddenAttr: el.hasAttribute( 'hidden' ),
+					width: box.width,
+					height: box.height,
+					visibility: style.visibility,
+				};
+			} );
 		// Still [hidden] (module blocked), yet occupying layout space...
 		expect( info.hiddenAttr ).toBe( true );
 		expect( info.width ).toBeGreaterThan( 0 );
@@ -147,7 +181,9 @@ async function expectCssOnlyMenuWorks( page ) {
 	// Following the link opens it through :target.
 	await toggle.click();
 	await expect( panel ).toBeVisible();
-	await expect( page.locator( '#atlas-nav-panel a[href="#contact"]' ) ).toBeVisible();
+	await expect(
+		page.locator( '#atlas-nav-panel a[href="#contact"]' )
+	).toBeVisible();
 
 	// The in-panel close link closes it again.
 	await page.locator( '.atlas-nav__close' ).click();
