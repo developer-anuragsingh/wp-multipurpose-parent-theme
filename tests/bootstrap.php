@@ -37,6 +37,16 @@ if ( ! function_exists( '__return_false' ) ) {
 	}
 }
 
+if ( ! function_exists( 'checked' ) ) {
+	function checked( $checked, $current = true, $display = true ) {
+		$result = ( (string) $checked === (string) $current ) ? " checked='checked'" : '';
+		if ( $display ) {
+			echo $result;
+		}
+		return $result;
+	}
+}
+
 // Global filter/hook mocks.
 global $atlas_test_filters, $atlas_test_actions;
 $atlas_test_filters = array();
@@ -939,6 +949,53 @@ if ( ! class_exists( 'WP_REST_Request' ) ) {
 		}
 		public function get_header( $key ) {
 			return $this->headers[ strtolower( $key ) ] ?? null;
+		}
+	}
+}
+
+if ( ! class_exists( 'WP_Customize_Control' ) ) {
+	class WP_Customize_Control {
+		public $manager;
+		public $id;
+		public $label = '';
+		public $description = '';
+		public $section = '';
+		public $type = 'text';
+		public $settings = '';
+		public function __construct( $manager, $id, array $args = array() ) {
+			$this->manager = $manager;
+			$this->id      = $id;
+			foreach ( $args as $k => $v ) {
+				$this->$k = $v;
+			}
+		}
+		public function value() {
+			return '1';
+		}
+		public function link() {
+			echo 'data-customize-setting-link="' . esc_attr( $this->id ) . '"';
+		}
+		public function render_content() {}
+	}
+}
+
+if ( ! class_exists( 'WP_Customize_Manager' ) ) {
+	class WP_Customize_Manager {
+		public $sections = array();
+		public $settings = array();
+		public $controls = array();
+		public function add_section( $id, array $args = array() ) {
+			$this->sections[ $id ] = $args;
+		}
+		public function add_setting( $id, array $args = array() ) {
+			$this->settings[ $id ] = $args;
+		}
+		public function add_control( $id_or_control, array $args = array() ) {
+			if ( $id_or_control instanceof WP_Customize_Control ) {
+				$this->controls[ $id_or_control->id ] = $id_or_control;
+			} else {
+				$this->controls[ $id_or_control ] = $args;
+			}
 		}
 	}
 }

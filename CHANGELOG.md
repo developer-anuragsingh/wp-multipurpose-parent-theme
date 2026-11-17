@@ -181,7 +181,7 @@ Hand-written notes for the changes in this release (written before the changelog
   - `theme-mode.spec.js`: Dark/light toggle, `data-theme` attribute mutation, and `localStorage` persistence across page reloads without flicker.
   - `copy-quote.spec.js`: Progressive hydration check, clipboard copy execution, visible label flip ("Copied!"), and accessible `role="status"` `aria-live` announcement.
   - `contact-form.spec.js`: Client-side required field validations, email format regex checking, honeypot anti-spam behavior, and error message cleanup.
-- **PHP Unit Test Suite:** Lightweight, database-free unit test environment (`tests/bootstrap.php`, `tests/run-tests.php`) covering Speculation Rules, Robots AI policies, Block Bindings, Contact Form security, Transient Caching, 503 Maintenance, Niche Patterns, Zero-PHP Child Theme architecture, Archive Infinite Scroll, GEO & llms.txt catalogs, and Contact Settings (247 tests total across 23 suites).
+- **PHP Unit Test Suite:** Lightweight, database-free unit test environment (`tests/bootstrap.php`, `tests/run-tests.php`) covering Speculation Rules, Robots AI policies, Block Bindings, Contact Form security, Transient Caching, 503 Maintenance, Niche Patterns, Zero-PHP Child Theme architecture, Archive Infinite Scroll, GEO & llms.txt catalogs, and Contact Settings (249 tests total across 23 suites).
 - **PHPUnit Configuration:** Standard `phpunit.xml.dist` configuration file.
 - **JavaScript Unit Tests:** Native Node.js test runner suite (`tests/js/ui-states.test.js`) validating REST client outcome classification and contact form client-side contracts.
 - **CI Workflow Integration:** Updated `.github/workflows/ci.yml` with automated Playwright Chromium E2E testing alongside PHPCS, PHPUnit, ESLint, Stylelint, and gitleaks scans on every push and pull request.
@@ -202,7 +202,7 @@ Hand-written notes for the changes in this release (written before the changelog
 
 #### Modern Core Features & Form Security
 - **Default Contact Us Page Suite (`atlas/contact-page` & `page-contact.html`):** Complete production-ready Contact Us FSE template and block pattern. Integrates hero section, 1-click instant messaging cards, contact details grid, secured contact form, responsive Google Maps embedder, and social sharing bar.
-- **Contact Settings Manager (`Atlas\Contact_Settings`):** Centralized options controller with individual On/Off toggles for all contact page modules (`map`, `chat`, `social`, `share`, `form`, `info`). Features configurable forward/recipient email routing (`filter_recipient_email`), flexible Google Map embedder accepting both URLs and `lat,lng` coordinates with CSP whitelist integration, direct messaging deep links (WhatsApp, Telegram, Instagram, Messenger), 1-click social sharing links, and Cloudflare Turnstile token verification (`verify_turnstile_challenge`).
+- **Contact Settings Manager (`Atlas\Contact_Settings`):** Centralized options controller with individual iOS/Gutenberg-style animated Toggle Switches (`Atlas\Customize_Switch_Control`) for all contact page modules (`map`, `chat`, `social`, `share`, `form`, `info`). Features configurable forward/recipient email routing (`filter_recipient_email`), flexible Google Map embedder accepting both URLs and `lat,lng` coordinates with CSP whitelist integration, direct messaging deep links (WhatsApp, Telegram, Instagram, Messenger), 1-click social sharing links, and Cloudflare Turnstile token verification (`verify_turnstile_challenge`).
 - **Block Bindings API (`Atlas\Bindings`):** Registered `atlas/post-meta` source allowing inline editing of `atlas_subtitle` in WordPress 6.7+ Site Editor.
 - **Secured Contact Form (`Atlas\Contact_Form`):** Public REST endpoint (`/wp-json/atlas/v1/contact`) featuring transient-backed IP rate-limiting (HTTP 429 + `Retry-After`), honeypot field, and submit timing validation.
 - **Block Patterns Catalog:** Expanded to 15 production-ready patterns (Answer-First Hero, Key Takeaways, Stats Band, Feature Grid, Pricing Table, Testimonials, FAQ, Contact Form, Empty States, Quotes Masonry, NGO Impact Metrics, Editorial ToC, Contact Page).
@@ -214,6 +214,6 @@ Hand-written notes for the changes in this release (written before the changelog
 - **Accessible UI States:** Standardized async notification system (`parts/notifications.html`, `ui-states.css`) supporting offline banners, slow-request notices (8s), loading skeletons, and session expiration modals.
 
 ### Compliance & Quality Gates
-- **PHPCS:** 100% compliant with `WordPress` and `WordPress-Extra` rulesets (0 errors, 0 warnings across all 34 PHP files).
+- **PHPCS:** 100% compliant with `WordPress` and `WordPress-Extra` rulesets (0 errors, 0 warnings across all 35 PHP files).
 - **Linters:** ESLint and Stylelint pass with 0 errors.
 - **Accessibility:** Conforms to WCAG 2.2 Level AA guidelines.

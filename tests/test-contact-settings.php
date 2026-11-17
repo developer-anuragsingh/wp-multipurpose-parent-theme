@@ -113,6 +113,29 @@ class Test_Contact_Settings {
 			'passed' => file_exists( $template_file ),
 		);
 
+		// 11. Customizer registers switch controls.
+		$mgr = new WP_Customize_Manager();
+		\Atlas\Contact_Settings::register_customizer( $mgr );
+
+		$map_ctrl = $mgr->controls[ \Atlas\Contact_Settings::OPT_SHOW_MAP ] ?? null;
+		$results[] = array(
+			'name'   => 'Contact_Settings: Customizer registers toggle switch controls',
+			'passed' => $map_ctrl instanceof \Atlas\Customize_Switch_Control
+				&& 'atlas_switch' === $map_ctrl->type,
+		);
+
+		// 12. Switch control renders accessible switch markup.
+		ob_start();
+		$map_ctrl->render_content();
+		$rendered_switch = ob_get_clean();
+
+		$results[] = array(
+			'name'   => 'Contact_Settings: Customize_Switch_Control renders slider track and status',
+			'passed' => str_contains( $rendered_switch, 'atlas-switch' )
+				&& str_contains( $rendered_switch, 'atlas-switch-track' )
+				&& str_contains( $rendered_switch, 'atlas-switch-status' ),
+		);
+
 		// Reset options.
 		$atlas_test_options = array();
 

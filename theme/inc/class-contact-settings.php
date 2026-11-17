@@ -64,6 +64,8 @@ class Contact_Settings {
 	 */
 	public static function init(): void {
 		add_action( 'customize_register', array( self::class, 'register_customizer' ) );
+		add_action( 'customize_controls_print_styles', array( self::class, 'print_customizer_styles' ) );
+		add_action( 'customize_controls_print_footer_scripts', array( self::class, 'print_customizer_scripts' ) );
 		add_filter( 'atlas_contact_form_recipient', array( self::class, 'filter_recipient_email' ) );
 		add_filter( 'atlas_contact_form_verify_challenge', array( self::class, 'verify_turnstile_challenge' ), 10, 2 );
 	}
@@ -390,7 +392,7 @@ class Contact_Settings {
 		$settings = array(
 			self::OPT_SHOW_MAP         => array(
 				'label'   => __( 'Show Google Maps Section', 'atlas-theme' ),
-				'type'    => 'checkbox',
+				'type'    => 'switch',
 				'default' => '1',
 			),
 			self::OPT_MAP_TYPE         => array(
@@ -410,7 +412,7 @@ class Contact_Settings {
 			),
 			self::OPT_SHOW_FORM        => array(
 				'label'   => __( 'Show Interactive Contact Form', 'atlas-theme' ),
-				'type'    => 'checkbox',
+				'type'    => 'switch',
 				'default' => '1',
 			),
 			self::OPT_RECIPIENT_EMAIL  => array(
@@ -420,7 +422,7 @@ class Contact_Settings {
 			),
 			self::OPT_SHOW_CHAT        => array(
 				'label'   => __( 'Show Direct Chat Channels', 'atlas-theme' ),
-				'type'    => 'checkbox',
+				'type'    => 'switch',
 				'default' => '1',
 			),
 			self::OPT_WHATSAPP         => array(
@@ -445,7 +447,7 @@ class Contact_Settings {
 			),
 			self::OPT_SHOW_SOCIAL      => array(
 				'label'   => __( 'Show Social Media Profile Links', 'atlas-theme' ),
-				'type'    => 'checkbox',
+				'type'    => 'switch',
 				'default' => '1',
 			),
 			self::OPT_SOCIAL_X         => array(
@@ -465,12 +467,12 @@ class Contact_Settings {
 			),
 			self::OPT_SHOW_SHARE       => array(
 				'label'   => __( 'Show 1-Click Page Share Bar', 'atlas-theme' ),
-				'type'    => 'checkbox',
+				'type'    => 'switch',
 				'default' => '1',
 			),
 			self::OPT_SHOW_INFO        => array(
 				'label'   => __( 'Show Address & Office Hours', 'atlas-theme' ),
-				'type'    => 'checkbox',
+				'type'    => 'switch',
 				'default' => '1',
 			),
 			self::OPT_ADDRESS          => array(
@@ -502,7 +504,7 @@ class Contact_Settings {
 
 		foreach ( $settings as $key => $meta ) {
 			$sanitize = 'sanitize_text_field';
-			if ( 'checkbox' === $meta['type'] ) {
+			if ( 'switch' === $meta['type'] || 'checkbox' === $meta['type'] ) {
 				$sanitize = static fn( $val ) => $val ? '1' : '0';
 			} elseif ( 'email' === $meta['type'] ) {
 				$sanitize = 'sanitize_email';
@@ -518,15 +520,146 @@ class Contact_Settings {
 				)
 			);
 
-			$wp_customize->add_control(
-				$key,
-				array(
-					'label'    => $meta['label'],
-					'section'  => self::SECTION,
-					'type'     => $meta['type'],
-					'settings' => $key,
-				)
-			);
+			if ( 'switch' === $meta['type'] && class_exists( 'Atlas\Customize_Switch_Control' ) ) {
+				$wp_customize->add_control(
+					new Customize_Switch_Control(
+						$wp_customize,
+						$key,
+						array(
+							'label'    => $meta['label'],
+							'section'  => self::SECTION,
+							'settings' => $key,
+						)
+					)
+				);
+			} else {
+				$wp_customize->add_control(
+					$key,
+					array(
+						'label'    => $meta['label'],
+						'section'  => self::SECTION,
+						'type'     => $meta['type'],
+						'settings' => $key,
+					)
+				);
+			}
 		}
+	}
+
+	/**
+	 * Print inline CSS styles for Customizer toggle switches.
+	 *
+	 * @return void
+	 */
+	public static function print_customizer_styles(): void {
+		?>
+		<style id="atlas-customizer-switch-styles">
+			.atlas-switch-control {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 12px;
+				margin-bottom: 12px;
+				padding: 10px 0;
+				border-bottom: 1px solid #f0f0f1;
+			}
+			.atlas-switch-info {
+				flex: 1;
+			}
+			.atlas-switch-control .customize-control-title {
+				margin-bottom: 0;
+				font-weight: 600;
+				font-size: 13px;
+				cursor: pointer;
+			}
+			.atlas-switch {
+				position: relative;
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+				cursor: pointer;
+				user-select: none;
+			}
+			.atlas-switch-input {
+				position: absolute;
+				opacity: 0;
+				width: 0;
+				height: 0;
+				margin: 0;
+				pointer-events: none;
+			}
+			.atlas-switch-track {
+				position: relative;
+				display: inline-block;
+				width: 44px;
+				height: 24px;
+				background-color: #cbd5e1;
+				border-radius: 24px;
+				transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+			}
+			.atlas-switch-thumb {
+				position: absolute;
+				top: 2px;
+				left: 2px;
+				width: 20px;
+				height: 20px;
+				background-color: #ffffff;
+				border-radius: 50%;
+				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+				transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+			}
+			.atlas-switch-input:checked + .atlas-switch-track {
+				background-color: #2271b1;
+			}
+			.atlas-switch-input:checked + .atlas-switch-track .atlas-switch-thumb {
+				transform: translateX(20px);
+			}
+			.atlas-switch-input:focus-visible + .atlas-switch-track {
+				box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #2271b1;
+			}
+			.atlas-switch-status {
+				font-size: 11px;
+				font-weight: 700;
+				letter-spacing: 0.05em;
+				color: #64748b;
+				min-width: 26px;
+				text-transform: uppercase;
+			}
+			.atlas-switch-input:checked ~ .atlas-switch-status {
+				color: #2271b1;
+			}
+		</style>
+		<?php
+	}
+
+	/**
+	 * Print inline JavaScript for Customizer toggle switches.
+	 *
+	 * Dynamically toggles the visual ON / OFF text when an administrator flips the switch.
+	 *
+	 * @return void
+	 */
+	public static function print_customizer_scripts(): void {
+		?>
+		<script id="atlas-customizer-switch-scripts">
+			(function() {
+				if (typeof wp === 'undefined' || !wp.customize) {
+					return;
+				}
+				wp.customize.bind('ready', function() {
+					document.addEventListener('change', function(e) {
+						if (e.target && e.target.classList.contains('atlas-switch-input')) {
+							var container = e.target.closest('.atlas-switch');
+							if (!container) return;
+							var status = container.querySelector('.atlas-switch-status');
+							if (status) {
+								status.textContent = e.target.checked ? 'ON' : 'OFF';
+							}
+						}
+					});
+				});
+			})();
+		</script>
+		<?php
 	}
 }
