@@ -45,6 +45,7 @@ The hook catches style and obvious secret issues before they reach CI. Per `05-c
 * **`node`** — `actions/setup-node` (Node LTS) → `npm ci` → `npm run lint:js` + `npm run lint:css` → `npm test`.
 * **`e2e`** — build + Playwright E2E and visual regression.
 * **`secrets`** — full-history checkout → `gitleaks/gitleaks-action` using `.gitleaks.toml`.
+* **`Update visual baselines (Linux)`** (separate, manual `workflow_dispatch`, read-only) renders the visual-regression baselines on the CI image and uploads them as an artifact to commit (`03-testing-strategy.md` §7).
 * **`commitlint`** — Conventional Commits on the PR range or pushed commit.
 * **`package`** — runs `scripts/build-release.sh` so a broken build or a leaky zip fails the PR, not the release.
 * **`audit`** — `composer audit --locked` (blocking); `npm audit --omit=dev` (blocking: the theme ships no npm runtime dependencies, so this must stay at 0); `npm audit --audit-level=critical` (blocking); `npm audit --audit-level=high` (informational, `continue-on-error`) because build-tool (`@wordpress/scripts`) advisories can only be fixed upstream and never ship to visitors.

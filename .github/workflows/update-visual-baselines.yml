@@ -1,0 +1,35 @@
+name: Update visual baselines (Linux)
+# Run manually after an intentional design change. Renders the visual-regression
+# baselines on the same Linux image CI uses and uploads them as an artifact.
+# Download it and commit the *-linux.png files (see
+# docs/07-performance-and-qa/03-testing-strategy.md §7). Read-only: it never
+# pushes to the repository.
+"on":
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  baselines:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 'lts/*'
+          cache: npm
+      - name: Install npm dependencies
+        run: npm ci
+      - name: Build theme assets
+        run: npm run build
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Render Linux baselines
+        run: npx playwright test tests/e2e/visual-regression.spec.js --update-snapshots=all
+      - name: Upload baselines
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: visual-baselines-linux
+          path: tests/e2e/visual-regression.spec.js-snapshots/*-linux.png
+          if-no-files-found: error

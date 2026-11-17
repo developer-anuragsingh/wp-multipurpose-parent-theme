@@ -65,11 +65,64 @@ function paletteCss() {
 	const hoverColor = toVar( link?.[ ':hover' ]?.color?.text );
 	const linkCss = linkColor
 		? `:root :where(a:where(:not(.wp-element-button))){color:${ linkColor };text-decoration:underline}` +
-		  ( hoverColor
+			( hoverColor
 				? `:root :where(a:where(:not(.wp-element-button)):hover){color:${ hoverColor }}`
 				: '' )
 		: '';
-	return `:root{${ vars }}${ classes }${ linkCss }`;
+	// Self-hosted fonts exactly as the theme declares them, so every OS renders
+	// the same glyph metrics (a system-font stack such as -apple-system or
+	// "Segoe UI" falls back to different fonts on macOS and on the Linux CI
+	// runner, which changed element heights and broke the visual baselines).
+	const families = themeJson.settings.typography.fontFamilies;
+	const fontFaces = families
+		.flatMap( ( fam ) => fam.fontFace || [] )
+		.map( ( ff ) => {
+			const src = String( ff.src[ 0 ] ).replace(
+				/^file:\.\//,
+				'/theme/'
+			);
+			return (
+				`@font-face{font-family:"${ ff.fontFamily }";font-style:${ ff.fontStyle || 'normal' };` +
+				`font-weight:${ ff.fontWeight };font-display:block;src:url(${ src }) format("woff2")}`
+			);
+		} )
+		.join( '' );
+	const familyVars = families
+		.map(
+			( fam ) =>
+				`--wp--preset--font-family--${ fam.slug }:${ fam.fontFamily };`
+		)
+		.join( '' );
+
+	// Heading element typography (family, weight, line height, size preset).
+	const resolve = ( ref ) => {
+		if ( typeof ref !== 'string' ) {
+			return null;
+		}
+		const m = ref.match( /^var:preset\|([a-z-]+)\|(.+)$/ );
+		return m ? `var(--wp--preset--${ m[ 1 ] }--${ m[ 2 ] })` : ref;
+	};
+	const headings = [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ]
+		.map( ( tag ) => {
+			const t = themeJson.styles?.elements?.[ tag ]?.typography;
+			if ( ! t ) {
+				return '';
+			}
+			const decl = [
+				[ 'font-family', resolve( t.fontFamily ) ],
+				[ 'font-weight', t.fontWeight ],
+				[ 'line-height', t.lineHeight ],
+				[ 'font-size', resolve( t.fontSize ) ],
+				[ 'text-transform', t.textTransform ],
+			]
+				.filter( ( [ , v ] ) => v )
+				.map( ( [ k, v ] ) => `${ k }:${ v }` )
+				.join( ';' );
+			return `:root :where(${ tag }){${ decl }}`;
+		} )
+		.join( '' );
+
+	return `${ fontFaces }:root{${ vars }${ familyVars }}${ classes }${ linkCss }${ headings }`;
 }
 
 const server = http.createServer( ( req, res ) => {

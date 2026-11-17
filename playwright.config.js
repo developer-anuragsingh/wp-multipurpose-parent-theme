@@ -15,7 +15,12 @@ module.exports = defineConfig( {
 	workers: process.env.CI ? 1 : undefined,
 	reporter: process.env.CI ? [ [ 'github' ], [ 'list' ] ] : 'list',
 	timeout: 30000,
-	snapshotPathTemplate: '{testDir}/visual-regression.spec.js-snapshots/{arg}-{projectName}{ext}',
+	// One baseline set per OS: macOS (local) and Linux (CI) rasterise text
+	// differently, so a macOS baseline can never match a Linux render pixel for
+	// pixel. Linux baselines are produced in CI by the "Update visual baselines"
+	// workflow (docs/07-performance-and-qa/03-testing-strategy.md §7).
+	snapshotPathTemplate:
+		'{testDir}/visual-regression.spec.js-snapshots/{arg}-{projectName}-{platform}{ext}',
 	expect: {
 		toHaveScreenshot: {
 			maxDiffPixelRatio: 0.05,

@@ -4,6 +4,17 @@ const { test, expect } = require( '@playwright/test' );
 test.describe( 'Atlas Block Patterns Visual Regression', () => {
 	test.beforeEach( async ( { page } ) => {
 		await page.goto( '/patterns' );
+		// Screenshots must use the theme's real fonts (Inter/Sora, served by the
+		// fixture server from theme.json), never a fallback that differs per OS.
+		await page.evaluate( () => document.fonts.ready );
+		const loaded = await page.evaluate( () =>
+			[ ...document.fonts ]
+				.filter( ( f ) => f.status === 'loaded' )
+				.map( ( f ) => f.family )
+		);
+		expect( loaded ).toEqual(
+			expect.arrayContaining( [ 'Inter', 'Sora' ] )
+		);
 	} );
 
 	test( 'hero answer-first pattern visual layout', async ( { page } ) => {
