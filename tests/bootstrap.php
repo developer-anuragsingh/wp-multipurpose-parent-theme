@@ -661,6 +661,22 @@ if ( ! function_exists( 'get_the_ID' ) ) {
 	}
 }
 
+if ( ! function_exists( 'get_query_var' ) ) {
+	function get_query_var( $var, $default = '' ) {
+		global $wp_query, $atlas_test_request;
+		if ( isset( $atlas_test_request[ $var ] ) ) {
+			return $atlas_test_request[ $var ];
+		}
+		if ( is_object( $wp_query ) && isset( $wp_query->$var ) ) {
+			return $wp_query->$var;
+		}
+		if ( is_object( $wp_query ) && isset( $wp_query->query_vars[ $var ] ) ) {
+			return $wp_query->query_vars[ $var ];
+		}
+		return $default;
+	}
+}
+
 if ( ! function_exists( 'wp_get_document_title' ) ) {
 	function wp_get_document_title() {
 		global $atlas_test_request;
@@ -711,6 +727,7 @@ if ( ! class_exists( 'WP_Post' ) ) {
 		public $ID            = 0;
 		public $post_title    = '';
 		public $post_name     = '';
+		public $post_content  = '';
 		public $post_author   = 1;
 		public $post_date     = '2026-01-02 03:04:05';
 		public $post_modified = '2026-02-03 04:05:06';

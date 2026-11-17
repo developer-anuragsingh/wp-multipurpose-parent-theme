@@ -22,11 +22,14 @@ class Test_Robots {
 		$public_output = Atlas\Robots::filter_robots_txt( $initial_text, true );
 		$has_gptbot    = str_contains( $public_output, 'User-agent: GPTBot' ) && str_contains( $public_output, 'Allow: /' );
 		$has_claude    = str_contains( $public_output, 'User-agent: ClaudeBot' ) && str_contains( $public_output, 'Allow: /' );
+		$has_apple     = str_contains( $public_output, 'User-agent: Applebot-Extended' ) && str_contains( $public_output, 'Allow: /' );
+		$has_bytes     = str_contains( $public_output, 'User-agent: Bytespider' ) && str_contains( $public_output, 'Allow: /' );
+		$has_bing      = str_contains( $public_output, 'User-agent: Bingbot' ) && str_contains( $public_output, 'Allow: /' );
 		$has_ajax      = str_contains( $public_output, 'Allow: /wp-admin/admin-ajax.php' );
 
 		$results[] = array(
 			'name'   => 'Robots appends default AI crawler allow lines and admin-ajax',
-			'passed' => $has_gptbot && $has_claude && $has_ajax,
+			'passed' => $has_gptbot && $has_claude && $has_apple && $has_bytes && $has_bing && $has_ajax,
 		);
 
 		return $results;

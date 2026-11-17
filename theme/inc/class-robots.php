@@ -60,6 +60,11 @@ class Robots {
 		'ClaudeBot',
 		'PerplexityBot',
 		'Google-Extended',
+		'Applebot-Extended',
+		'Bytespider',
+		'Amazonbot',
+		'FacebookBot',
+		'Bingbot',
 	);
 
 	/**

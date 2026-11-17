@@ -83,6 +83,26 @@ class Schema {
 	const FILTER_GRAPH = 'atlas_schema_graph';
 
 	/**
+	 * Filter: override the computed word count for a BlogPosting node.
+	 *
+	 * Receives the integer word count computed from the stripped post content.
+	 * Return 0 to suppress the wordCount property entirely.
+	 *
+	 * @var string
+	 */
+	const FILTER_WORD_COUNT = 'atlas_schema_word_count';
+
+	/**
+	 * Filter: override the CSS selectors used in the Speakable node.
+	 *
+	 * Receives an array of CSS selector strings. Return an empty array to
+	 * suppress the speakable property entirely.
+	 *
+	 * @var string
+	 */
+	const FILTER_SPEAKABLE_SELECTORS = 'atlas_schema_speakable_selectors';
+
+	/**
 	 * The schema.org @type for the brand entity node.
 	 *
 	 * @var string
@@ -322,6 +342,37 @@ class Schema {
 			}
 		}
 
+		// Archive contexts: term archives (category, tag, custom taxonomy)
+		// and post-type archives each get a stable, context-specific key so
+		// their graphs are cached independently and invalidated on term edits.
+		if ( is_category() || is_tag() || is_tax() ) {
+			$term = get_queried_object();
+			if ( $term instanceof \WP_Term && isset( $term->term_id ) && (int) $term->term_id > 0 ) {
+				return self::cache_key( 'term_' . (int) $term->term_id );
+			}
+			if ( function_exists( 'get_queried_object_id' ) ) {
+				$term_id = (int) get_queried_object_id();
+				if ( $term_id > 0 ) {
+					return self::cache_key( 'term_' . $term_id );
+				}
+			}
+		}
+
+		if ( is_post_type_archive() ) {
+			$object = get_queried_object();
+			if ( $object instanceof \WP_Post_Type && ! empty( $object->name ) ) {
+				$clean_name = function_exists( 'sanitize_key' ) ? sanitize_key( $object->name ) : preg_replace( '/[^a-z0-9_\-]/', '', strtolower( (string) $object->name ) );
+				return self::cache_key( 'archive_' . $clean_name );
+			}
+			if ( function_exists( 'get_query_var' ) ) {
+				$post_type = get_query_var( 'post_type' );
+				if ( is_string( $post_type ) && '' !== $post_type ) {
+					$clean_type = function_exists( 'sanitize_key' ) ? sanitize_key( $post_type ) : preg_replace( '/[^a-z0-9_\-]/', '', strtolower( $post_type ) );
+					return self::cache_key( 'archive_' . $clean_type );
+				}
+			}
+		}
+
 		return '';
 	}
 
@@ -484,6 +535,61 @@ class Schema {
 
 		if ( is_string( $image ) && '' !== $image ) {
 			$article['image'] = $image;
+		}
+
+		// wordCount — prefer str_word_count() on ASCII-rich content; fall back
+		// to a rough mb_strlen-based estimate for multibyte (CJK, Arabic, etc.)
+		// locales where str_word_count returns 0 or 1 for the whole content.
+		$plain_content = isset( $post->post_content ) ? wp_strip_all_tags( (string) $post->post_content ) : '';
+		$word_count    = 0;
+
+		if ( '' !== $plain_content ) {
+			$ascii_count = str_word_count( $plain_content );
+			if ( $ascii_count > 1 ) {
+				$word_count = $ascii_count;
+			} else {
+				// Multibyte fallback: treat every ~5 characters as one word,
+				// which approximates CJK density reasonably well.
+				$char_count = mb_strlen( $plain_content, 'UTF-8' );
+				$word_count = (int) ceil( $char_count / 5 );
+			}
+		}
+
+		/**
+		 * Filter the word count embedded in the BlogPosting node.
+		 *
+		 * @param int      $word_count Computed word count (0 = suppress).
+		 * @param \WP_Post $post       The current post object.
+		 */
+		$word_count = (int) apply_filters( self::FILTER_WORD_COUNT, $word_count, $post );
+
+		if ( $word_count > 0 ) {
+			$article['wordCount'] = $word_count;
+		}
+
+		// Speakable — only when no SEO plugin owns structured data (checked in
+		// print_json_ld, but duplicated here for self-contained safety).
+		if ( ! self::seo_plugin_active() ) {
+			/**
+			 * Filter the CSS selectors for the Speakable property.
+			 *
+			 * Return an empty array to suppress the speakable block entirely.
+			 *
+			 * @param string[] $selectors CSS selector strings.
+			 * @param \WP_Post $post      The current post object.
+			 */
+			$speakable_selectors = apply_filters(
+				self::FILTER_SPEAKABLE_SELECTORS,
+				array( 'article', 'h1', '.entry-summary' ),
+				$post
+			);
+
+			if ( is_array( $speakable_selectors ) && ! empty( $speakable_selectors ) ) {
+				$article['speakable'] = array(
+					'@type'       => 'SpeakableSpecification',
+					'cssSelector' => array_values( array_filter( $speakable_selectors, 'is_string' ) ),
+				);
+			}
 		}
 
 		return $article;

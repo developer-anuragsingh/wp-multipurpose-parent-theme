@@ -104,6 +104,16 @@ class Llms_Txt {
 	const FILTER_FULL_MAX_PAGES = 'atlas_llms_txt_full_max_pages';
 
 	/**
+	 * Filter: allow operators to disable blog post inclusion in /llms.txt.
+	 *
+	 * Defaults TRUE — blog posts are included when the master gate is on.
+	 * Return false to suppress the "## Posts" section entirely.
+	 *
+	 * @var string
+	 */
+	const FILTER_INCLUDE_POSTS = 'atlas_llms_txt_include_posts';
+
+	/**
 	 * Hard cap on the number of concise catalog entries.
 	 *
 	 * Applied both to the default query and again after the entries filter so the
@@ -112,6 +122,16 @@ class Llms_Txt {
 	 * @var int
 	 */
 	const MAX_ENTRIES = 50;
+
+	/**
+	 * Hard cap on the number of blog post entries in the concise catalog.
+	 *
+	 * Applied both to the default query and again after any post-list filtering
+	 * so the "## Posts" section can never balloon.
+	 *
+	 * @var int
+	 */
+	const MAX_POST_ENTRIES = 20;
 
 	/**
 	 * Default cap on the number of full catalog pages.
@@ -340,6 +360,28 @@ class Llms_Txt {
 
 		$lines = array_merge( $lines, $entry_lines );
 
+		// --- Posts section ---------------------------------------------------
+		if ( apply_filters( self::FILTER_INCLUDE_POSTS, true ) ) {
+			$post_entries = self::collect_post_entries();
+
+			$post_lines = array();
+
+			foreach ( $post_entries as $entry ) {
+				$line = self::format_entry( $entry );
+
+				if ( '' !== $line ) {
+					$post_lines[] = $line;
+				}
+			}
+
+			if ( ! empty( $post_lines ) ) {
+				$lines[] = '';
+				$lines[] = '## Posts';
+				$lines[] = '';
+				$lines   = array_merge( $lines, $post_lines );
+			}
+		}
+
 		return implode( "\n", $lines ) . "\n";
 	}
 
@@ -479,7 +521,35 @@ class Llms_Txt {
 			return '';
 		}
 
+		// --- YAML-style metadata block ---------------------------------------
+		$meta_lines = array();
+
+		if ( isset( $post->post_date ) && '' !== $post->post_date ) {
+			$post_date = get_the_date( 'c', $post );
+			if ( is_string( $post_date ) && '' !== $post_date ) {
+				$meta_lines[] = 'Date: ' . $post_date;
+			}
+		}
+
+		$author_id   = isset( $post->post_author ) ? (int) $post->post_author : 0;
+		$author_name = '';
+		if ( $author_id > 0 ) {
+			$author_name = trim( (string) get_the_author_meta( 'display_name', $author_id ) );
+		}
+		if ( '' !== $author_name ) {
+			$meta_lines[] = 'Author: ' . $author_name;
+		}
+
+		$permalink = esc_url_raw( (string) get_permalink( $post_id ) );
+		if ( '' !== $permalink ) {
+			$meta_lines[] = 'URL: ' . $permalink;
+		}
+
 		$markdown = Markdown_Endpoint::blocks_to_markdown( (string) $post->post_content, $title );
+
+		if ( ! empty( $meta_lines ) ) {
+			$markdown = implode( "\n", $meta_lines ) . "\n\n" . $markdown;
+		}
 
 		return trim( $markdown );
 	}
@@ -518,6 +588,45 @@ class Llms_Txt {
 				'title' => (string) get_the_title( $page->ID ),
 				'url'   => esc_url_raw( (string) get_permalink( $page->ID ) ),
 				'desc'  => self::entry_description( $page->ID ),
+			);
+		}
+
+		return $entries;
+	}
+
+	/**
+	 * Build the default entry list from published blog posts for the concise catalog.
+	 *
+	 * Mirrors collect_entries() but queries post_type=post, ordered by date
+	 * (newest first), and capped at MAX_POST_ENTRIES. Validation is deferred to
+	 * format_entry() so the same public-content rules apply uniformly.
+	 *
+	 * @return array[] The default post entry list.
+	 */
+	private static function collect_post_entries(): array {
+		$posts = get_posts(
+			array(
+				'post_type'        => 'post',
+				'post_status'      => 'publish',
+				'posts_per_page'   => self::MAX_POST_ENTRIES,
+				'orderby'          => 'date',
+				'order'            => 'DESC',
+				'suppress_filters' => false,
+			)
+		);
+
+		if ( ! is_array( $posts ) || empty( $posts ) ) {
+			return array();
+		}
+
+		$entries = array();
+
+		foreach ( $posts as $post ) {
+			$entries[] = array(
+				'id'    => (int) $post->ID,
+				'title' => (string) get_the_title( $post->ID ),
+				'url'   => esc_url_raw( (string) get_permalink( $post->ID ) ),
+				'desc'  => self::entry_description( $post->ID ),
 			);
 		}
 

@@ -116,6 +116,28 @@ class Test_Schema_Nodes {
 		);
 
 		self::reset();
+		self::single_post(
+			array(
+				'post' => new WP_Post(
+					array(
+						'ID'           => 42,
+						'post_title'   => 'Article With Content',
+						'post_name'    => 'article-content',
+						'post_content' => 'One two three four five six seven eight nine ten.',
+					)
+				),
+			)
+		);
+		$article = self::node( self::render()['graph'], 'BlogPosting' );
+
+		$results[] = array(
+			'name'   => 'Schema article: includes wordCount and SpeakableSpecification',
+			'passed' => null !== $article && isset( $article['wordCount'] ) && 10 === $article['wordCount']
+				&& isset( $article['speakable']['@type'] ) && 'SpeakableSpecification' === $article['speakable']['@type']
+				&& array( 'article', 'h1', '.entry-summary' ) === $article['speakable']['cssSelector'],
+		);
+
+		self::reset();
 		self::single_post( array( 'post' => new WP_Post( array( 'ID' => 42, 'post_title' => '   ', 'post_name' => 'x' ) ) ) );
 		$r = self::render();
 

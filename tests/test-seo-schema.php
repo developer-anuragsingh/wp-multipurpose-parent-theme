@@ -111,6 +111,29 @@ class Test_Seo_Schema {
 			'passed' => str_contains( $out, 'og-default.png' ) && str_contains( $out, 'name="twitter:card" content="summary_large_image"' ),
 		);
 
+		$results[] = array(
+			'name'   => 'Seo: og:locale is emitted from WordPress locale',
+			'passed' => str_contains( $out, 'property="og:locale" content="en_US"' ),
+		);
+
+		self::filter(
+			'atlas_seo_og_image_dims',
+			static function () {
+				return array(
+					'width'  => 1200,
+					'height' => 630,
+				);
+			}
+		);
+		$dim_out = self::capture( array( 'Atlas\Seo', 'print_meta' ) );
+		self::unfilter( 'atlas_seo_og_image_dims' );
+
+		$results[] = array(
+			'name'   => 'Seo: og:image:width and og:image:height are emitted when dimensions are resolved',
+			'passed' => str_contains( $dim_out, 'property="og:image:width" content="1200"' )
+				&& str_contains( $dim_out, 'property="og:image:height" content="630"' ),
+		);
+
 		$atlas_test_bloginfo['description'] = '"><script>alert(1)</script>';
 		$out                                 = self::capture( array( 'Atlas\Seo', 'print_meta' ) );
 
@@ -163,6 +186,22 @@ class Test_Seo_Schema {
 		$results[] = array(
 			'name'   => 'Seo: the master gate filter disables all output',
 			'passed' => '' === $out,
+		);
+
+		// Pagination links test.
+		if ( ! function_exists( 'get_pagenum_link' ) ) {
+			eval( 'function get_pagenum_link( $pagenum = 1 ) { return "https://example.com/page/" . (int) $pagenum; }' ); // phpcs:ignore Squiz.PHP.Eval.Discouraged -- Test-only double.
+		}
+
+		global $wp_query;
+		$wp_query = (object) array( 'max_num_pages' => 3 );
+		self::request( array( 'is_archive' => true, 'paged' => 2 ) );
+		$pag_out = self::capture( array( 'Atlas\Seo', 'print_pagination_links' ) );
+
+		$results[] = array(
+			'name'   => 'Seo: archive pages with multiple pages emit rel="prev" and rel="next" links',
+			'passed' => str_contains( $pag_out, '<link rel="prev" href="https://example.com/page/1">' )
+				&& str_contains( $pag_out, '<link rel="next" href="https://example.com/page/3">' ),
 		);
 
 		// --- Schema. ---

@@ -131,6 +131,38 @@ class Test_Llms_Txt {
 			'passed' => $capped_pass,
 		);
 
+		// Test 6: Concise catalog includes ## Posts when blog posts exist.
+		$atlas_test_posts[50] = array(
+			'ID'            => 50,
+			'post_title'    => 'First Blog Post',
+			'post_name'     => 'first-blog-post',
+			'post_status'   => 'publish',
+			'post_type'     => 'post',
+			'post_excerpt'  => 'Exciting news from Atlas.',
+			'post_content'  => '<!-- wp:paragraph --><p>Blog body text.</p><!-- /wp:paragraph -->',
+			'post_password' => '',
+			'post_date'     => '2026-11-17 10:00:00',
+			'post_author'   => 1,
+		);
+
+		$concise_with_posts = Atlas\Llms_Txt::build_catalog();
+		$has_posts_section  = false !== strpos( $concise_with_posts, '## Posts' )
+			&& false !== strpos( $concise_with_posts, '- [First Blog Post](https://example.com/first-blog-post/): Exciting news from Atlas.' );
+
+		$results[] = array(
+			'name'   => 'Llms_Txt build_catalog includes ## Posts section when blog posts exist',
+			'passed' => $has_posts_section,
+		);
+
+		// Test 7: Full catalog embeds URL in metadata block.
+		$full_meta    = Atlas\Llms_Txt::build_full_catalog();
+		$has_meta_url = false !== strpos( $full_meta, 'URL: https://example.com/about/' );
+
+		$results[] = array(
+			'name'   => 'Llms_Txt build_full_catalog embeds metadata block with URL',
+			'passed' => $has_meta_url,
+		);
+
 		return $results;
 	}
 }

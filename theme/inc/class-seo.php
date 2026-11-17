@@ -69,6 +69,18 @@ class Seo {
 	const FILTER_OG_IMAGE = 'atlas_seo_default_og_image';
 
 	/**
+	 * Filter: override the og:image dimensions array.
+	 *
+	 * Receives an associative array with 'width' and 'height' keys (integers)
+	 * resolved from the featured image attachment metadata. A site may replace
+	 * or augment the values before they are printed as og:image:width /
+	 * og:image:height. Return an empty array to suppress the dimension tags.
+	 *
+	 * @var string
+	 */
+	const FILTER_OG_IMAGE_DIMS = 'atlas_seo_og_image_dims';
+
+	/**
 	 * Filter: supply the hreflang alternates map (locale => URL).
 	 *
 	 * Defaults to an empty array so NO hreflang links are emitted unless a site
@@ -131,6 +143,7 @@ class Seo {
 	 */
 	public static function init(): void {
 		add_action( 'wp_head', array( self::class, 'print_meta' ), 1 );
+		add_action( 'wp_head', array( self::class, 'print_pagination_links' ), 1 );
 	}
 
 	/**
@@ -231,11 +244,41 @@ class Seo {
 	 * @return void
 	 */
 	private static function print_open_graph(): void {
-		$image = get_the_post_thumbnail_url( null, 'full' );
+		$image      = get_the_post_thumbnail_url( null, 'full' );
+		$thumb_id   = function_exists( 'get_post_thumbnail_id' ) ? get_post_thumbnail_id() : 0;
+		$image_dims = array();
+
+		if ( is_string( $image ) && '' !== $image && $thumb_id && function_exists( 'wp_get_attachment_metadata' ) ) {
+			$meta = wp_get_attachment_metadata( (int) $thumb_id );
+
+			if ( is_array( $meta ) && ! empty( $meta['width'] ) && ! empty( $meta['height'] ) ) {
+				$image_dims = array(
+					'width'  => (int) $meta['width'],
+					'height' => (int) $meta['height'],
+				);
+			}
+		}
 
 		if ( ! is_string( $image ) || '' === $image ) {
-			$image = apply_filters( self::FILTER_OG_IMAGE, ATLAS_THEME_URI . '/assets/images/og-default.png' );
+			$image      = apply_filters( self::FILTER_OG_IMAGE, ATLAS_THEME_URI . '/assets/images/og-default.png' );
+			$image_dims = array(); // Dimensions only known for attachment images.
 		}
+
+		/**
+		 * Filter the og:image dimension array before printing.
+		 *
+		 * Receives an associative array with integer 'width' and 'height' keys,
+		 * or an empty array when dimensions could not be resolved. Return an
+		 * empty array to suppress og:image:width / og:image:height output.
+		 *
+		 * @param array $image_dims Resolved dimensions, or [] when unknown.
+		 */
+		$image_dims = apply_filters( self::FILTER_OG_IMAGE_DIMS, $image_dims );
+
+		// og:locale — convert WordPress locale (e.g. "en_US", "hi_IN") to
+		// underscore format, which is already the native format; kept explicit
+		// for clarity and future-proofing.
+		$locale = str_replace( '-', '_', get_locale() );
 
 		$tags = array(
 			'og:title'       => wp_get_document_title(),
@@ -243,6 +286,7 @@ class Seo {
 			'og:url'         => self::current_url(),
 			'og:type'        => is_singular( 'post' ) ? 'article' : 'website',
 			'og:image'       => $image,
+			'og:locale'      => $locale,
 			'twitter:card'   => 'summary_large_image',
 		);
 
@@ -255,6 +299,16 @@ class Seo {
 
 		if ( ! is_array( $tags ) ) {
 			return;
+		}
+
+		// Merge validated image dimensions into the tag map after the main filter.
+		if ( is_array( $image_dims )
+			&& isset( $image_dims['width'], $image_dims['height'] )
+			&& (int) $image_dims['width'] > 0
+			&& (int) $image_dims['height'] > 0
+		) {
+			$tags['og:image:width']  = (int) $image_dims['width'];
+			$tags['og:image:height'] = (int) $image_dims['height'];
 		}
 
 		foreach ( $tags as $key => $value ) {
@@ -336,6 +390,54 @@ class Seo {
 			}
 
 			echo '<link rel="alternate" hreflang="' . esc_attr( $locale ) . '" href="' . esc_url( $url ) . '">' . "\n";
+		}
+	}
+
+	/**
+	 * Print rel="prev" and rel="next" pagination link elements.
+	 *
+	 * Emitted on archive pages (is_archive(), is_home(), is_search()) only when
+	 * there are paged results — a previous or next page exists. Each link uses
+	 * get_pagenum_link() so it respects permalink structure. Output is suppressed
+	 * when a known SEO plugin is active (they handle pagination links). Empty
+	 * URLs are skipped (fail closed). URLs are escaped with esc_url().
+	 *
+	 * Hooked to wp_head at priority 1 (same as print_meta).
+	 *
+	 * @return void
+	 */
+	public static function print_pagination_links(): void {
+		if ( self::seo_plugin_active() || ! function_exists( 'get_pagenum_link' ) ) {
+			return;
+		}
+
+		// Only meaningful on paged list contexts.
+		if ( ! ( is_archive() || is_home() || is_search() ) ) {
+			return;
+		}
+
+		global $wp_query;
+
+		$paged     = function_exists( 'get_query_var' ) ? (int) get_query_var( 'paged' ) : 1;
+		$paged     = $paged > 0 ? $paged : 1;
+		$max_pages = isset( $wp_query->max_num_pages ) ? (int) $wp_query->max_num_pages : 1;
+
+		// rel="prev" — only when we are on page 2+.
+		if ( $paged > 1 ) {
+			$prev_url = get_pagenum_link( $paged - 1 );
+
+			if ( is_string( $prev_url ) && '' !== $prev_url ) {
+				echo '<link rel="prev" href="' . esc_url( $prev_url ) . '">' . "\n";
+			}
+		}
+
+		// rel="next" — only when a next page exists.
+		if ( $paged < $max_pages ) {
+			$next_url = get_pagenum_link( $paged + 1 );
+
+			if ( is_string( $next_url ) && '' !== $next_url ) {
+				echo '<link rel="next" href="' . esc_url( $next_url ) . '">' . "\n";
+			}
 		}
 	}
 

@@ -100,13 +100,45 @@ class Infinite_Scroll {
 			return $block_content;
 		}
 
-		$matches = array();
-		$matched = preg_match( '/wp-block-query-pagination-next[^>]*>.*?<a[^>]+href=([\'"])(.*?)\1/is', $block_content, $matches );
-		if ( ! $matched || empty( $matches[2] ) ) {
-			return $block_content;
+		$next_url = '';
+
+		if ( class_exists( 'WP_HTML_Tag_Processor' ) ) {
+			// Use WP_HTML_Tag_Processor (WP 6.2+) for reliable HTML parsing.
+			$processor     = new \WP_HTML_Tag_Processor( $block_content );
+			$in_pagination = false;
+
+			while ( $processor->next_tag() ) {
+				$class = $processor->get_attribute( 'class' );
+
+				if ( ! $in_pagination ) {
+					// Look for the pagination-next container.
+					if ( is_string( $class ) && str_contains( $class, 'wp-block-query-pagination-next' ) ) {
+						$in_pagination = true;
+					}
+					continue;
+				}
+
+				// First tag after the pagination-next container: expect the <a> anchor.
+				if ( 'A' === $processor->get_tag() ) {
+					$href = $processor->get_attribute( 'href' );
+					if ( is_string( $href ) && '' !== $href ) {
+						$next_url = $href;
+					}
+				}
+				break;
+			}
+		} else {
+			// Fallback: brittle regex for WP < 6.2.
+			$matches = array();
+			$matched = preg_match( '/wp-block-query-pagination-next[^>]*>.*?<a[^>]+href=([\'"])(.*?)\1/is', $block_content, $matches );
+			if ( $matched && ! empty( $matches[2] ) ) {
+				$next_url = $matches[2];
+			}
 		}
 
-		$next_url = $matches[2];
+		if ( empty( $next_url ) ) {
+			return $block_content;
+		}
 
 		if ( function_exists( 'wp_enqueue_script_module' ) ) {
 			wp_enqueue_script_module( self::HANDLE );
