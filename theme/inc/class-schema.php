@@ -326,7 +326,7 @@ class Schema {
 			}
 		}
 
-		if ( is_singular( 'product' ) || ( function_exists( 'is_product' ) && is_product() ) ) {
+		if ( self::woocommerce_active() && ( is_singular( 'product' ) || ( function_exists( 'is_product' ) && is_product() ) ) ) {
 			$product = self::build_product();
 
 			if ( ! empty( $product ) ) {
@@ -357,7 +357,7 @@ class Schema {
 			return self::cache_key( 'front' );
 		}
 
-		if ( is_singular( 'post' ) || is_singular( 'product' ) || ( function_exists( 'is_product' ) && is_product() ) ) {
+		if ( is_singular( 'post' ) || ( self::woocommerce_active() && ( is_singular( 'product' ) || ( function_exists( 'is_product' ) && is_product() ) ) ) ) {
 			$post_id = get_the_ID();
 			if ( $post_id ) {
 				return self::cache_key( 'post_' . (int) $post_id );
@@ -443,6 +443,25 @@ class Schema {
 		return defined( 'WPSEO_VERSION' )
 			|| defined( 'RANK_MATH_VERSION' )
 			|| defined( 'SEOPRESS_VERSION' );
+	}
+
+	/**
+	 * Check whether WooCommerce is installed and active.
+	 *
+	 * Only when WooCommerce is active should product-specific schema nodes be
+	 * evaluated or emitted.
+	 *
+	 * @return bool True when WooCommerce is active.
+	 */
+	public static function woocommerce_active(): bool {
+		$active = class_exists( 'WooCommerce' ) || function_exists( 'WC' );
+
+		/**
+		 * Filter whether WooCommerce is considered active for Schema generation.
+		 *
+		 * @param bool $active True if WooCommerce is detected as active.
+		 */
+		return (bool) apply_filters( 'atlas_schema_woocommerce_active', $active );
 	}
 
 	/**
@@ -622,11 +641,15 @@ class Schema {
 	 *
 	 * Supports WooCommerce when active by reading wc_get_product() / WC_Product
 	 * properties, or falls back to standard post data and post meta. Fails
-	 * closed if the product title is missing or empty.
+	 * closed if WooCommerce is inactive or the product title is missing or empty.
 	 *
 	 * @return array The schema.org Product node, or empty array on failure.
 	 */
 	private static function build_product(): array {
+		if ( ! self::woocommerce_active() ) {
+			return array();
+		}
+
 		$post = get_queried_object();
 		if ( ! $post instanceof \WP_Post ) {
 			$post = get_post();

@@ -180,7 +180,35 @@ class Test_Schema_Nodes {
 		);
 
 		// --- Product Schema ---
+		// 1. Without WooCommerce active, no Product node is emitted (fails closed).
 		self::reset();
+		$atlas_test_request = array(
+			'is_singular' => 'product',
+			'post_id'     => 99,
+			'post'        => new WP_Post(
+				array(
+					'ID'         => 99,
+					'post_title' => 'Premium WordPress Theme',
+					'post_name'  => 'premium-theme',
+				)
+			),
+		);
+		$r_inactive = self::render();
+
+		$results[] = array(
+			'name'   => 'Schema product: without WooCommerce active, no Product node is emitted',
+			'passed' => null === self::node( $r_inactive['graph'], 'Product' ),
+		);
+
+		// 2. With WooCommerce active, a single product emits a Product node with title, url, description, and image.
+		self::reset();
+		$atlas_test_filters['atlas_schema_woocommerce_active'] = array(
+			array(
+				'callback'      => '__return_true',
+				'priority'      => 10,
+				'accepted_args' => 1,
+			),
+		);
 		$atlas_test_request = array(
 			'is_singular' => 'product',
 			'post_id'     => 99,
@@ -206,8 +234,15 @@ class Test_Schema_Nodes {
 				&& 'https://example.com/product.jpg' === ( $product['image'] ?? '' ),
 		);
 
-		// Product with empty title fails closed.
+		// 3. Product with empty title fails closed.
 		self::reset();
+		$atlas_test_filters['atlas_schema_woocommerce_active'] = array(
+			array(
+				'callback'      => '__return_true',
+				'priority'      => 10,
+				'accepted_args' => 1,
+			),
+		);
 		$atlas_test_request = array(
 			'is_singular' => 'product',
 			'post_id'     => 100,
