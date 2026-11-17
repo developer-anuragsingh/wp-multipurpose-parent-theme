@@ -297,6 +297,15 @@ class Markdown_Endpoint {
 			case 'core/preformatted':
 				return self::code_to_markdown( $block );
 
+			case 'core/table':
+				return self::table_to_markdown( $block );
+
+			case 'core/separator':
+				return '---';
+
+			case 'core/spacer':
+				return '';
+
 			case '':
 				// Freeform/classic HTML (null blockName): degrade to plain text.
 				return self::plain_text( self::inner_html( $block ) );
@@ -439,8 +448,9 @@ class Markdown_Endpoint {
 	 * Convert a core/code or core/preformatted block to a fenced code block.
 	 *
 	 * Strips the wrapping tags to the raw inner text and wraps it in a
-	 * triple-backtick fence. Entities are decoded so the fenced text is literal.
-	 * Returns '' when the block has no content.
+	 * triple-backtick fence. Preserves language identifiers if specified in
+	 * class attributes (e.g. lang-php, language-js). Entities are decoded so
+	 * the fenced text is literal. Returns '' when the block has no content.
 	 *
 	 * @param array $block The core/code or core/preformatted block.
 	 * @return string The fenced Markdown code block, or '' when empty.
@@ -455,7 +465,76 @@ class Markdown_Endpoint {
 			return '';
 		}
 
-		return "```\n" . $text . "\n```";
+		$lang = '';
+		if ( preg_match( '/\b(?:lang|language)-([a-z0-9_+-]+)\b/i', $html, $m ) ) {
+			$lang = strtolower( $m[1] );
+		}
+
+		return '```' . $lang . "\n" . $text . "\n```";
+	}
+
+	/**
+	 * Convert a core/table block to a GitHub-flavored Markdown table.
+	 *
+	 * Extracts all <tr> rows, cleans each cell to inline text, escapes pipe
+	 * characters inside cell content to avoid breaking the table structure,
+	 * pads rows to equal column lengths, and outputs aligned markdown columns
+	 * with divider rows. Returns '' when the table has no content.
+	 *
+	 * @param array $block The core/table block.
+	 * @return string The Markdown table, or '' when empty.
+	 */
+	private static function table_to_markdown( array $block ): string {
+		$html = self::inner_html( $block );
+		if ( '' === trim( $html ) ) {
+			return '';
+		}
+
+		if ( ! preg_match_all( '/<tr\b[^>]*>(.*?)<\/tr>/is', $html, $row_matches ) ) {
+			return '';
+		}
+
+		$rows = array();
+		foreach ( $row_matches[1] as $row_html ) {
+			if ( ! preg_match_all( '/<(th|td)\b[^>]*>(.*?)<\/\1>/is', $row_html, $cell_matches ) ) {
+				continue;
+			}
+			$cells = array();
+			foreach ( $cell_matches[2] as $cell_html ) {
+				$cell_text = self::inline_markdown( $cell_html );
+				$cells[]   = str_replace( '|', '\|', $cell_text );
+			}
+			if ( ! empty( $cells ) ) {
+				$rows[] = $cells;
+			}
+		}
+
+		if ( empty( $rows ) ) {
+			return '';
+		}
+
+		$col_count = max( array_map( 'count', $rows ) );
+		if ( 0 === $col_count ) {
+			return '';
+		}
+
+		$lines = array();
+
+		// Header row: first row.
+		$header  = array_pad( $rows[0], $col_count, '' );
+		$lines[] = '| ' . implode( ' | ', $header ) . ' |';
+
+		// Divider row.
+		$dividers = array_fill( 0, $col_count, '---' );
+		$lines[]  = '| ' . implode( ' | ', $dividers ) . ' |';
+
+		// Data rows (from index 1 onward).
+		for ( $i = 1, $n = count( $rows ); $i < $n; $i++ ) {
+			$data_row = array_pad( $rows[ $i ], $col_count, '' );
+			$lines[]  = '| ' . implode( ' | ', $data_row ) . ' |';
+		}
+
+		return implode( "\n", $lines );
 	}
 
 	/**

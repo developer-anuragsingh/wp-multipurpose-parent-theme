@@ -179,6 +179,47 @@ class Test_Schema_Nodes {
 				&& null !== $article && $evil === $article['headline'],
 		);
 
+		// --- Product Schema ---
+		self::reset();
+		$atlas_test_request = array(
+			'is_singular' => 'product',
+			'post_id'     => 99,
+			'post'        => new WP_Post(
+				array(
+					'ID'           => 99,
+					'post_title'   => 'Premium WordPress Theme',
+					'post_name'    => 'premium-theme',
+					'post_excerpt' => 'A fast, accessible multipurpose parent theme.',
+				)
+			),
+			'thumbnail'   => 'https://example.com/product.jpg',
+		);
+		$r       = self::render();
+		$product = self::node( $r['graph'], 'Product' );
+
+		$results[] = array(
+			'name'   => 'Schema product: a single product emits a Product node with title, url, description, and image',
+			'passed' => null !== $product
+				&& 'Premium WordPress Theme' === $product['name']
+				&& 'https://example.com/premium-theme/' === $product['url']
+				&& 'A fast, accessible multipurpose parent theme.' === $product['description']
+				&& 'https://example.com/product.jpg' === ( $product['image'] ?? '' ),
+		);
+
+		// Product with empty title fails closed.
+		self::reset();
+		$atlas_test_request = array(
+			'is_singular' => 'product',
+			'post_id'     => 100,
+			'post'        => new WP_Post( array( 'ID' => 100, 'post_title' => '' ) ),
+		);
+		$r_empty = self::render();
+
+		$results[] = array(
+			'name'   => 'Schema product: a product with an empty title emits no Product node (fails closed)',
+			'passed' => null === self::node( $r_empty['graph'], 'Product' ),
+		);
+
 		// --- BreadcrumbList. ---
 		self::reset();
 		self::single_post();

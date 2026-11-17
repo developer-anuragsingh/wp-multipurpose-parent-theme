@@ -103,6 +103,20 @@ class Schema {
 	const FILTER_SPEAKABLE_SELECTORS = 'atlas_schema_speakable_selectors';
 
 	/**
+	 * Filter: override or augment the assembled Product node.
+	 *
+	 * @var string
+	 */
+	const FILTER_PRODUCT = 'atlas_schema_product';
+
+	/**
+	 * The schema.org @type for the product node.
+	 *
+	 * @var string
+	 */
+	const TYPE_PRODUCT = 'Product';
+
+	/**
 	 * The schema.org @type for the brand entity node.
 	 *
 	 * @var string
@@ -312,6 +326,14 @@ class Schema {
 			}
 		}
 
+		if ( is_singular( 'product' ) || ( function_exists( 'is_product' ) && is_product() ) ) {
+			$product = self::build_product();
+
+			if ( ! empty( $product ) ) {
+				$nodes[] = $product;
+			}
+		}
+
 		$breadcrumb = self::build_breadcrumb();
 
 		if ( ! empty( $breadcrumb ) ) {
@@ -335,7 +357,7 @@ class Schema {
 			return self::cache_key( 'front' );
 		}
 
-		if ( is_singular( 'post' ) ) {
+		if ( is_singular( 'post' ) || is_singular( 'product' ) || ( function_exists( 'is_product' ) && is_product() ) ) {
 			$post_id = get_the_ID();
 			if ( $post_id ) {
 				return self::cache_key( 'post_' . (int) $post_id );
@@ -593,6 +615,105 @@ class Schema {
 		}
 
 		return $article;
+	}
+
+	/**
+	 * Build the Product node for the current single product request.
+	 *
+	 * Supports WooCommerce when active by reading wc_get_product() / WC_Product
+	 * properties, or falls back to standard post data and post meta. Fails
+	 * closed if the product title is missing or empty.
+	 *
+	 * @return array The schema.org Product node, or empty array on failure.
+	 */
+	private static function build_product(): array {
+		$post = get_queried_object();
+		if ( ! $post instanceof \WP_Post ) {
+			$post = get_post();
+		}
+
+		if ( ! $post instanceof \WP_Post ) {
+			return array();
+		}
+
+		$title = get_the_title( $post );
+		if ( '' === trim( (string) $title ) ) {
+			return array();
+		}
+
+		$permalink = get_permalink( $post );
+		$node      = array(
+			'@type'            => self::TYPE_PRODUCT,
+			'name'             => $title,
+			'mainEntityOfPage' => array(
+				'@type' => 'WebPage',
+				'@id'   => $permalink,
+			),
+			'url'              => $permalink,
+		);
+
+		$description = get_the_excerpt( $post );
+		if ( is_string( $description ) && '' !== trim( $description ) ) {
+			$node['description'] = wp_strip_all_tags( $description, true );
+		}
+
+		$image = get_the_post_thumbnail_url( $post, 'full' );
+		if ( is_string( $image ) && '' !== $image ) {
+			$node['image'] = $image;
+		}
+
+		// WooCommerce product data resolution if available.
+		$currency     = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : 'USD';
+		$price        = '';
+		$in_stock     = true;
+		$avg_rating   = 0.0;
+		$review_count = 0;
+
+		if ( function_exists( 'wc_get_product' ) ) {
+			$wc_product = wc_get_product( $post->ID );
+			if ( is_object( $wc_product ) && method_exists( $wc_product, 'get_price' ) ) {
+				$price        = (string) $wc_product->get_price();
+				$in_stock     = method_exists( $wc_product, 'is_in_stock' ) ? $wc_product->is_in_stock() : true;
+				$avg_rating   = method_exists( $wc_product, 'get_average_rating' ) ? (float) $wc_product->get_average_rating() : 0.0;
+				$review_count = method_exists( $wc_product, 'get_review_count' ) ? (int) $wc_product->get_review_count() : 0;
+			}
+		} else {
+			// Fallback: check post meta.
+			$meta_price = get_post_meta( $post->ID, '_price', true );
+			if ( '' !== $meta_price && is_numeric( $meta_price ) ) {
+				$price = (string) $meta_price;
+			}
+			$stock_status = get_post_meta( $post->ID, '_stock_status', true );
+			if ( 'outofstock' === $stock_status ) {
+				$in_stock = false;
+			}
+		}
+
+		if ( '' !== $price ) {
+			$node['offers'] = array(
+				'@type'         => 'Offer',
+				'price'         => $price,
+				'priceCurrency' => $currency,
+				'availability'  => $in_stock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+				'url'           => $permalink,
+			);
+		}
+
+		if ( $review_count > 0 && $avg_rating > 0 ) {
+			$node['aggregateRating'] = array(
+				'@type'       => 'AggregateRating',
+				'ratingValue' => $avg_rating,
+				'reviewCount' => $review_count,
+			);
+		}
+
+		/**
+		 * Filter the assembled Product schema node.
+		 *
+		 * @param array    $node The Product node array.
+		 * @param \WP_Post $post The current post object.
+		 */
+		return (array) apply_filters( self::FILTER_PRODUCT, $node, $post );
 	}
 
 	/**

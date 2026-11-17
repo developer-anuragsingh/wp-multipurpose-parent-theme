@@ -728,6 +728,7 @@ if ( ! class_exists( 'WP_Post' ) ) {
 		public $post_title    = '';
 		public $post_name     = '';
 		public $post_content  = '';
+		public $post_excerpt  = '';
 		public $post_author   = 1;
 		public $post_date     = '2026-01-02 03:04:05';
 		public $post_modified = '2026-02-03 04:05:06';

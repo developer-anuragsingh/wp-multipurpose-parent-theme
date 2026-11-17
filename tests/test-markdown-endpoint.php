@@ -66,6 +66,36 @@ class Test_Markdown_Endpoint {
 			'passed' => '' === Atlas\Markdown_Endpoint::blocks_to_markdown( '', '' ),
 		);
 
+		// --- Table conversion test ---
+		$table_content = implode(
+			"\n",
+			array(
+				'<!-- wp:table -->',
+				'<figure class="wp-block-table"><table>',
+				'<thead><tr><th>Feature</th><th>Status</th></tr></thead>',
+				'<tbody><tr><td>Dark Mode</td><td>Ready</td></tr><tr><td>Infinite Scroll</td><td>Active</td></tr></tbody>',
+				'</table></figure>',
+				'<!-- /wp:table -->',
+			)
+		);
+		$table_md      = Atlas\Markdown_Endpoint::blocks_to_markdown( $table_content, 'Table Page' );
+
+		$results[] = array(
+			'name'   => 'Markdown: tables are converted to GFM markdown tables with headers and dividers',
+			'passed' => str_contains( $table_md, '| Feature | Status |' )
+				&& str_contains( $table_md, '| --- | --- |' )
+				&& str_contains( $table_md, '| Dark Mode | Ready |' ),
+		);
+
+		// --- Code with language tag test ---
+		$code_content = '<!-- wp:code --><pre class="wp-block-code"><code class="language-php">echo "hello";</code></pre><!-- /wp:code -->';
+		$code_md      = Atlas\Markdown_Endpoint::blocks_to_markdown( $code_content, '' );
+
+		$results[] = array(
+			'name'   => 'Markdown: code block preserves language tag in code fence',
+			'passed' => str_contains( $code_md, "```php\necho \"hello\";\n```" ),
+		);
+
 		// --- Caching + size cap. ---
 		$atlas_test_transients = array();
 		$atlas_test_posts      = array(
