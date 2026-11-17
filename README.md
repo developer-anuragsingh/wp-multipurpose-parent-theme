@@ -8,3 +8,8 @@ Production-ready Full-Site Editing (FSE) parent theme engineered with native Wor
 👉 **[View Master Plan (`docs/README.md`)](./docs/README.md)** — full technical documentation matrix.
 
 👉 **[View Changelog (`CHANGELOG.md`)](./CHANGELOG.md)** — track completed features and release history.
+
+## Roadmap
+
+- Dedicated visual regression baselines for remaining WooCommerce product archive and cart block states.
+- Interactive NGO Single-Click Donation Modal pattern (`atlas/donation-modal`).
