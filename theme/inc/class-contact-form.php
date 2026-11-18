@@ -269,6 +269,7 @@ class Contact_Form {
 		add_action( 'init', array( self::class, 'register_block_pattern' ) );
 		add_action( 'rest_api_init', array( self::class, 'register_rest_route' ) );
 		add_action( 'wp_enqueue_scripts', array( self::class, 'register_assets' ) );
+		add_filter( 'render_block', array( self::class, 'maybe_enqueue_on_render_block' ), 10, 2 );
 		add_filter( 'rest_post_dispatch', array( self::class, 'add_retry_after_header' ), 10, 3 );
 	}
 
@@ -871,23 +872,18 @@ class Contact_Form {
 	}
 
 	/**
-	 * Seed the Interactivity store and conditionally enqueue the built assets.
+	 * Enqueue the contact-form script module, stylesheet, and interactivity state.
 	 *
-	 * Runs on wp_enqueue_scripts (front end only, guarded by is_admin()). Seeds
-	 * the atlas/contact-form store with the REST and token URLs (no secret is
-	 * seeded, so a cached page leaks and stales nothing) and
-	 * the pre-translated gettext labels (so the module performs no runtime i18n),
-	 * then registers the built module from its .asset.php and enqueues it + the
-	 * built stylesheet ONLY when page_has_contact_form() is true. A missing
-	 * .asset.php (build not run) is skipped so the page fails closed to the
-	 * working no-JS form rather than fataling.
+	 * Idempotent: can be safely called multiple times per request.
 	 *
 	 * @return void
 	 */
-	public static function register_assets(): void {
-		if ( is_admin() || ! self::page_has_contact_form() ) {
+	public static function enqueue_assets(): void {
+		static $enqueued = false;
+		if ( $enqueued || is_admin() ) {
 			return;
 		}
+		$enqueued = true;
 
 		wp_interactivity_state(
 			self::STORE,
@@ -934,31 +930,76 @@ class Contact_Form {
 	}
 
 	/**
+	 * Seed the Interactivity store and conditionally enqueue the built assets.
+	 *
+	 * Runs on wp_enqueue_scripts (front end only, guarded by is_admin()).
+	 *
+	 * @return void
+	 */
+	public static function register_assets(): void {
+		if ( self::page_has_contact_form() ) {
+			self::enqueue_assets();
+		}
+	}
+
+	/**
+	 * Late-enqueue assets if a block containing the contact form renders.
+	 *
+	 * Ensures FSE block templates and dynamic patterns always load assets even if
+	 * page_has_contact_form() was not satisfied during wp_enqueue_scripts.
+	 *
+	 * @param string $block_content Rendered block markup.
+	 * @param array  $block         Parsed block array.
+	 * @return string Unchanged block markup.
+	 */
+	public static function maybe_enqueue_on_render_block( string $block_content, array $block ): string {
+		unset( $block );
+		if ( str_contains( $block_content, self::WRAPPER_CLASS ) ) {
+			self::enqueue_assets();
+		}
+		return $block_content;
+	}
+
+	/**
 	 * Whether the current request renders the contact-form pattern.
 	 *
-	 * Front-end singular only, fail-closed. Mirrors Assets::page_has_quotes():
-	 * a cheap str_contains() pre-check on the stable wrapper class, then a
-	 * recursive parse_blocks() walk to confirm the form wrapper actually exists
-	 * (so a stray class string elsewhere can never enqueue the module). A synced
-	 * pattern (core/block reference) is out of scope for this first cut.
+	 * Front-end check for contact pages and templates.
 	 *
-	 * @return bool True only when the contact-form wrapper is present.
+	 * @return bool True only when the contact-form wrapper or template is present.
 	 */
 	public static function page_has_contact_form(): bool {
-		if ( is_admin() || ! is_singular() ) {
+		if ( is_admin() ) {
 			return false;
 		}
 
-		$post = get_queried_object();
-		if ( ! $post instanceof \WP_Post ) {
-			return false;
+		if ( function_exists( 'is_page_template' ) && ( is_page_template( 'page-contact' ) || is_page_template( 'page-contact.html' ) ) ) {
+			return true;
 		}
 
-		if ( ! str_contains( $post->post_content, self::WRAPPER_CLASS ) ) {
-			return false;
+		if ( function_exists( 'is_page' ) && is_page() ) {
+			$template_slug = function_exists( 'get_page_template_slug' ) ? get_page_template_slug() : '';
+			if ( 'page-contact' === $template_slug || 'page-contact.html' === $template_slug ) {
+				return true;
+			}
+			if ( is_page( 'contact' ) || is_page( 'contact-us' ) ) {
+				return true;
+			}
 		}
 
-		return self::blocks_have_contact_form( parse_blocks( $post->post_content ) );
+		if ( is_singular() ) {
+			$post = get_queried_object();
+			if ( $post instanceof \WP_Post ) {
+				if ( str_contains( $post->post_content, self::WRAPPER_CLASS )
+					|| str_contains( $post->post_content, 'atlas/contact-form' )
+					|| str_contains( $post->post_content, 'atlas/contact-page' ) ) {
+					return true;
+				}
+
+				return self::blocks_have_contact_form( parse_blocks( $post->post_content ) );
+			}
+		}
+
+		return false;
 	}
 
 	/**

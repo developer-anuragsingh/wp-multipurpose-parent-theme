@@ -124,6 +124,7 @@ $atlas_contact_messages = array(
 				aria-describedby="<?php echo esc_attr( $atlas_name_error_id ); ?>"
 				data-wp-bind--aria-invalid="state.nameAriaInvalid"
 				data-wp-on--blur="actions.validateField"
+				data-wp-on--focusout="actions.validateField"
 				data-wp-on--input="actions.liveValidate"
 			/>
 			<p class="atlas-contact-form__error" id="<?php echo esc_attr( $atlas_name_error_id ); ?>" role="alert" aria-live="polite" data-wp-text="state.nameErrorText"></p>
@@ -143,6 +144,7 @@ $atlas_contact_messages = array(
 				aria-describedby="<?php echo esc_attr( $atlas_email_error_id ); ?>"
 				data-wp-bind--aria-invalid="state.emailAriaInvalid"
 				data-wp-on--blur="actions.validateField"
+				data-wp-on--focusout="actions.validateField"
 				data-wp-on--input="actions.liveValidate"
 			/>
 			<p class="atlas-contact-form__error" id="<?php echo esc_attr( $atlas_email_error_id ); ?>" role="alert" aria-live="polite" data-wp-text="state.emailErrorText"></p>
@@ -162,6 +164,7 @@ $atlas_contact_messages = array(
 				aria-describedby="<?php echo esc_attr( $atlas_phone_error_id ); ?>"
 				data-wp-bind--aria-invalid="state.phoneAriaInvalid"
 				data-wp-on--blur="actions.validateField"
+				data-wp-on--focusout="actions.validateField"
 				data-wp-on--input="actions.liveValidate"
 			/>
 			<p class="atlas-contact-form__error" id="<?php echo esc_attr( $atlas_phone_error_id ); ?>" role="alert" aria-live="polite" data-wp-text="state.phoneErrorText"></p>
@@ -181,6 +184,7 @@ $atlas_contact_messages = array(
 				aria-describedby="<?php echo esc_attr( $atlas_message_err_id ); ?>"
 				data-wp-bind--aria-invalid="state.messageAriaInvalid"
 				data-wp-on--blur="actions.validateField"
+				data-wp-on--focusout="actions.validateField"
 				data-wp-on--input="actions.liveValidate"
 			></textarea>
 			<p class="atlas-contact-form__error" id="<?php echo esc_attr( $atlas_message_err_id ); ?>" role="alert" aria-live="polite" data-wp-text="state.messageErrorText"></p>

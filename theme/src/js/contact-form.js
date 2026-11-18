@@ -64,6 +64,114 @@ const isFieldValid = ( field, value ) => {
 	}
 };
 
+const defaultLabels = {
+	nameError: 'Please enter your name.',
+	emailError: 'Please enter a valid email address.',
+	phoneError: 'Please enter a valid phone number (at least 7 digits).',
+	messageError: 'Please enter a message of at least 10 characters.',
+	invalid: 'Please check the form and try again.',
+	submitting: 'Sending your message…',
+	success: 'Thanks — your message has been sent.',
+	error: 'Something went wrong. Please try again later.',
+};
+
+/**
+ * Set the visible error message in the associated error element.
+ *
+ * @param {HTMLElement} input    The input element.
+ * @param {string}      errorMsg The error message to show, or empty to clear.
+ */
+function setFieldErrorMessage( input, errorMsg ) {
+	const describedBy = input.getAttribute( 'aria-describedby' );
+	let errorEl = null;
+
+	if ( describedBy ) {
+		errorEl = document.getElementById( describedBy );
+	}
+
+	if ( ! errorEl ) {
+		const parent = input.closest( '.atlas-contact-form__field' );
+		if ( parent ) {
+			errorEl = parent.querySelector( '.atlas-contact-form__error' );
+		}
+	}
+
+	if ( errorEl ) {
+		errorEl.textContent = errorMsg;
+	}
+}
+
+/**
+ * Validate a single form input element and immediately update its visual state and error text.
+ *
+ * @param {HTMLInputElement|HTMLTextAreaElement} input  The form input.
+ * @param {boolean}                              isBlur Whether this validation is triggered on blur/focusout.
+ * @return {boolean} True if field is valid.
+ */
+function validateFieldElement( input, isBlur = false ) {
+	const field = input.getAttribute( 'data-field' );
+	if ( ! field ) {
+		return true;
+	}
+
+	const rawValue = input.value || '';
+	const trimmed = rawValue.trim();
+	const isRequired = input.hasAttribute( 'required' );
+
+	let isValid = true;
+	let errorMsg = '';
+
+	const labels = state && state.labels ? state.labels : defaultLabels;
+
+	if ( isRequired && trimmed.length === 0 ) {
+		if ( isBlur || input.getAttribute( 'data-touched' ) === 'true' ) {
+			isValid = false;
+			errorMsg =
+				labels[ `${ field }Error` ] ||
+				defaultLabels[ `${ field }Error` ] ||
+				'This field is required.';
+		} else {
+			input.removeAttribute( 'data-valid' );
+			input.setAttribute( 'aria-invalid', 'false' );
+			setFieldErrorMessage( input, '' );
+			return true;
+		}
+	} else if ( trimmed.length > 0 ) {
+		input.setAttribute( 'data-touched', 'true' );
+		isValid = isFieldValid( field, rawValue );
+		if ( ! isValid ) {
+			errorMsg =
+				labels[ `${ field }Error` ] ||
+				defaultLabels[ `${ field }Error` ] ||
+				'Please enter a valid value.';
+		}
+	} else {
+		// Optional empty field (e.g. phone)
+		isValid = true;
+		errorMsg = '';
+	}
+
+	// Update DOM attributes immediately
+	input.setAttribute( 'data-valid', isValid ? 'true' : 'false' );
+	input.setAttribute( 'aria-invalid', isValid ? 'false' : 'true' );
+	setFieldErrorMessage( input, errorMsg );
+
+	// Sync to Interactivity context if available
+	try {
+		const context = getContext();
+		if ( context && context.fields && context.fields[ field ] ) {
+			context.fields[ field ].valid = isValid;
+			if ( isBlur || trimmed.length > 0 ) {
+				context.fields[ field ].touched = true;
+			}
+		}
+	} catch {
+		// Outside interactivity context (fallback)
+	}
+
+	return isValid;
+}
+
 /**
  * Fetch a fresh signed form token and write it into the form's hidden field.
  *
@@ -216,67 +324,24 @@ const { state } = store( 'atlas/contact-form', {
 		/**
 		 * Live validation as the user types (real-time data validation).
 		 *
-		 * Updates valid state and data-valid attribute immediately as the user
-		 * enters or modifies data in real-time.
-		 *
 		 * @return {void}
 		 */
 		liveValidate() {
 			const { ref } = getElement();
-			const field = ref.getAttribute( 'data-field' );
-			if ( ! field ) {
-				return;
-			}
-			const context = getContext();
-			const entry = context.fields ? context.fields[ field ] : null;
-			if ( ! entry ) {
-				return;
-			}
-			const val = ref.value;
-			const trimmed = val.trim();
-
-			if ( trimmed.length > 0 ) {
-				const valid = isFieldValid( field, val );
-				entry.valid = valid;
-				if ( trimmed.length >= 2 || entry.touched ) {
-					entry.touched = true;
-				}
-				ref.setAttribute( 'data-valid', valid ? 'true' : 'false' );
-			} else {
-				if ( entry.touched ) {
-					entry.valid = isFieldValid( field, '' );
-				}
-				ref.removeAttribute( 'data-valid' );
+			if ( ref ) {
+				validateFieldElement( ref, false );
 			}
 		},
 
 		/**
-		 * Validate a single field on blur (instant local check, no debounce).
-		 *
-		 * Reads the field key from the input's data-field attribute and writes
-		 * the result into that field's context so the bound aria-invalid and
-		 * inline error update immediately.
+		 * Validate a single field on blur or focusout.
 		 *
 		 * @return {void}
 		 */
 		validateField() {
 			const { ref } = getElement();
-			const field = ref.getAttribute( 'data-field' );
-			if ( ! field ) {
-				return;
-			}
-			const context = getContext();
-			const entry = context.fields ? context.fields[ field ] : null;
-			if ( ! entry ) {
-				return;
-			}
-			entry.touched = true;
-			const valid = isFieldValid( field, ref.value );
-			entry.valid = valid;
-			if ( ref.value.trim().length > 0 ) {
-				ref.setAttribute( 'data-valid', valid ? 'true' : 'false' );
-			} else {
-				ref.removeAttribute( 'data-valid' );
+			if ( ref ) {
+				validateFieldElement( ref, true );
 			}
 		},
 
@@ -287,21 +352,8 @@ const { state } = store( 'atlas/contact-form', {
 		 */
 		revalidateIfErrored() {
 			const { ref } = getElement();
-			const field = ref.getAttribute( 'data-field' );
-			if ( ! field ) {
-				return;
-			}
-			const entry = getContext().fields
-				? getContext().fields[ field ]
-				: null;
-			if ( ! entry ) {
-				return;
-			}
-			const trimmed = ref.value.trim();
-			if ( trimmed.length > 0 || entry.touched ) {
-				const valid = isFieldValid( field, ref.value );
-				entry.valid = valid;
-				ref.setAttribute( 'data-valid', valid ? 'true' : 'false' );
+			if ( ref ) {
+				validateFieldElement( ref, false );
 			}
 		},
 
@@ -329,21 +381,12 @@ const { state } = store( 'atlas/contact-form', {
 			let firstInvalid = null;
 			[ 'name', 'email', 'phone', 'message' ].forEach( ( field ) => {
 				const input = ref.querySelector( `[data-field="${ field }"]` );
-				const value = input ? input.value : '';
-				values[ field ] = value;
-				const valid = isFieldValid( field, value );
-				if ( context.fields && context.fields[ field ] ) {
-					context.fields[ field ].valid = valid;
-					context.fields[ field ].touched = true;
-				}
-				if ( input && value.trim().length > 0 ) {
-					input.setAttribute(
-						'data-valid',
-						valid ? 'true' : 'false'
-					);
-				}
-				if ( ! valid && ! firstInvalid && input ) {
-					firstInvalid = input;
+				if ( input ) {
+					values[ field ] = input.value;
+					const valid = validateFieldElement( input, true );
+					if ( ! valid && ! firstInvalid ) {
+						firstInvalid = input;
+					}
 				}
 			} );
 
@@ -446,3 +489,36 @@ const { state } = store( 'atlas/contact-form', {
 		},
 	},
 } );
+
+// Progressive enhancement: direct capture listeners for instant live typing and focusout validation.
+if ( typeof document !== 'undefined' ) {
+	const handleEvent = ( event, isBlur ) => {
+		const target = event.target;
+		if (
+			target &&
+			target.getAttribute &&
+			target.hasAttribute( 'data-field' )
+		) {
+			if ( target.closest( '.atlas-contact-form' ) ) {
+				validateFieldElement( target, isBlur );
+			}
+		}
+	};
+
+	document.addEventListener(
+		'input',
+		( e ) => handleEvent( e, false ),
+		true
+	);
+	document.addEventListener(
+		'focusout',
+		( e ) => handleEvent( e, true ),
+		true
+	);
+	document.addEventListener( 'blur', ( e ) => handleEvent( e, true ), true );
+	document.addEventListener(
+		'change',
+		( e ) => handleEvent( e, true ),
+		true
+	);
+}
