@@ -30,6 +30,25 @@ class Test_Security_Headers {
 			'name'   => 'CSP auto-detects and enforces in production environment',
 			'passed' => Atlas\Security_Headers::MODE_ENFORCE === Atlas\Security_Headers::csp_mode(),
 		);
+
+		$atlas_test_env_type = 'staging';
+		$results[]           = array(
+			'name'   => 'CSP defaults to report-only in staging environment',
+			'passed' => Atlas\Security_Headers::MODE_REPORT_ONLY === Atlas\Security_Headers::csp_mode(),
+		);
+
+		add_filter(
+			'atlas_csp_enforced_environments',
+			static function () {
+				return array( 'production', 'staging' );
+			}
+		);
+		$results[] = array(
+			'name'   => 'CSP enforces in staging when environment is in atlas_csp_enforced_environments',
+			'passed' => Atlas\Security_Headers::MODE_ENFORCE === Atlas\Security_Headers::csp_mode(),
+		);
+		global $atlas_test_filters;
+		unset( $atlas_test_filters['atlas_csp_enforced_environments'] );
 		$atlas_test_env_type = 'local';
 
 		$csp  = $headers['Content-Security-Policy-Report-Only'] ?? '';
@@ -41,6 +60,12 @@ class Test_Security_Headers {
 				&& str_contains( $csp, "object-src 'none'" )
 				&& 1 === preg_match( "/script-src [^;]*'nonce-/", $csp )
 				&& 0 === preg_match( "/script-src [^;]*unsafe-inline/", $csp ),
+		);
+
+		$results[] = array(
+			'name'   => 'CSP style-src includes nonce and style-src-attr allows unsafe-inline',
+			'passed' => 1 === preg_match( "/style-src [^;]*'nonce-/", $csp )
+				&& str_contains( $csp, "style-src-attr 'unsafe-inline'" ),
 		);
 
 		$results[] = array(
@@ -100,12 +125,16 @@ class Test_Security_Headers {
 
 		$no_nonce = Atlas\Security_Headers::add_nonce_attribute( array( 'id' => 'x' ) );
 		unset( $atlas_test_filters['atlas_csp_mode'] );
-		$with_nonce = Atlas\Security_Headers::add_nonce_attribute( array( 'id' => 'x' ) );
-		$kept_nonce = Atlas\Security_Headers::add_nonce_attribute( array( 'nonce' => 'abc' ) );
+		$with_nonce  = Atlas\Security_Headers::add_nonce_attribute( array( 'id' => 'x' ) );
+		$kept_nonce  = Atlas\Security_Headers::add_nonce_attribute( array( 'nonce' => 'abc' ) );
+		$style_nonce = Atlas\Security_Headers::add_nonce_attribute( array( 'id' => 'atlas-custom-style' ) );
 
 		$results[] = array(
-			'name'   => 'Nonce is added to scripts only when CSP is active and never replaced',
-			'passed' => ! isset( $no_nonce['nonce'] ) && ! empty( $with_nonce['nonce'] ) && 'abc' === $kept_nonce['nonce'],
+			'name'   => 'Nonce is added to scripts and styles only when CSP is active and never replaced',
+			'passed' => ! isset( $no_nonce['nonce'] )
+				&& ! empty( $with_nonce['nonce'] )
+				&& 'abc' === $kept_nonce['nonce']
+				&& ! empty( $style_nonce['nonce'] ),
 		);
 
 		$atlas_test_filters['atlas_security_headers'] = array(

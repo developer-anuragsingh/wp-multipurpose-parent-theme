@@ -37,11 +37,32 @@ class Security_Headers {
 	const CONSTANT_CSP_MODE = 'ATLAS_CSP_MODE';
 
 	/**
+	 * Constant to enforce CSP in staging environment.
+	 *
+	 * @var string
+	 */
+	const CONSTANT_CSP_ENFORCE_ON_STAGING = 'ATLAS_CSP_ENFORCE_ON_STAGING';
+
+	/**
+	 * Constant that may pin a CSP report-uri endpoint.
+	 *
+	 * @var string
+	 */
+	const CONSTANT_CSP_REPORT_URI = 'ATLAS_CSP_REPORT_URI';
+
+	/**
 	 * Filter: CSP mode. One of MODE_OFF, MODE_REPORT_ONLY, MODE_ENFORCE.
 	 *
 	 * @var string
 	 */
 	const FILTER_CSP_MODE = 'atlas_csp_mode';
+
+	/**
+	 * Filter: environments where CSP is enforced (default ['production'], or ['production', 'staging']).
+	 *
+	 * @var string
+	 */
+	const FILTER_CSP_ENFORCED_ENVIRONMENTS = 'atlas_csp_enforced_environments';
 
 	/**
 	 * Filter: the CSP directives array (name => array of sources).
@@ -107,6 +128,8 @@ class Security_Headers {
 		add_filter( 'wp_headers', array( self::class, 'filter_headers' ), 10, 1 );
 		add_filter( 'wp_inline_script_attributes', array( self::class, 'add_nonce_attribute' ), 10, 1 );
 		add_filter( 'wp_script_attributes', array( self::class, 'add_nonce_attribute' ), 10, 1 );
+		add_filter( 'wp_inline_style_attributes', array( self::class, 'add_nonce_attribute' ), 10, 1 );
+		add_filter( 'wp_style_attributes', array( self::class, 'add_nonce_attribute' ), 10, 1 );
 	}
 
 	/**
@@ -190,9 +213,24 @@ class Security_Headers {
 		if ( defined( self::CONSTANT_CSP_MODE ) ) {
 			$mode = (string) constant( self::CONSTANT_CSP_MODE );
 		} else {
-			// Auto-detect: enforce on production, report-only elsewhere.
-			$env  = function_exists( 'wp_get_environment_type' ) ? wp_get_environment_type() : 'production';
-			$mode = ( 'production' === $env && ( ! defined( 'WP_DEBUG' ) || ! WP_DEBUG ) )
+			$env                = function_exists( 'wp_get_environment_type' ) ? wp_get_environment_type() : 'production';
+			$enforce_on_staging = defined( self::CONSTANT_CSP_ENFORCE_ON_STAGING ) && constant( self::CONSTANT_CSP_ENFORCE_ON_STAGING );
+
+			/**
+			 * Environments where CSP is automatically enforced when WP_DEBUG is off.
+			 * Defaults to ['production'], plus 'staging' when ATLAS_CSP_ENFORCE_ON_STAGING is set.
+			 *
+			 * @param string[] $enforced_envs Array of environment identifiers.
+			 */
+			$enforced_envs = (array) apply_filters(
+				self::FILTER_CSP_ENFORCED_ENVIRONMENTS,
+				$enforce_on_staging ? array( 'production', 'staging' ) : array( 'production' )
+			);
+
+			$is_debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
+
+			// Auto-detect: enforce on specified environments without debug, report-only elsewhere.
+			$mode = ( in_array( $env, $enforced_envs, true ) && ! $is_debug )
 				? self::MODE_ENFORCE
 				: self::MODE_REPORT_ONLY;
 		}
@@ -221,8 +259,9 @@ class Security_Headers {
 		$directives = array(
 			'default-src'     => array( "'self'" ),
 			'script-src'      => array( "'self'", $nonce, $hash ),
-			// Core emits inline block-support styles; styles cannot run code.
-			'style-src'       => array( "'self'", "'unsafe-inline'" ),
+			// Allow nonced inline styles, with 'unsafe-inline' fallback for attributes / older agents.
+			'style-src'       => array( "'self'", $nonce, "'unsafe-inline'" ),
+			'style-src-attr'  => array( "'unsafe-inline'" ),
 			'img-src'         => array( "'self'", 'data:', 'https:' ),
 			'font-src'        => array( "'self'", 'data:' ),
 			'connect-src'     => array( "'self'" ),
@@ -232,6 +271,10 @@ class Security_Headers {
 			'frame-ancestors' => array( "'self'" ),
 			'frame-src'       => array( "'self'", 'https://www.google.com', 'https://maps.google.com' ),
 		);
+
+		if ( defined( self::CONSTANT_CSP_REPORT_URI ) && '' !== (string) constant( self::CONSTANT_CSP_REPORT_URI ) ) {
+			$directives['report-uri'] = array( (string) constant( self::CONSTANT_CSP_REPORT_URI ) );
+		}
 
 		/**
 		 * Filters the CSP directives (directive => list of sources).
