@@ -147,6 +147,26 @@ class UI_States {
 			self::CATEGORY,
 			array( 'label' => __( 'Atlas', 'atlas-theme' ) )
 		);
+		register_block_pattern_category(
+			'atlas-services',
+			array( 'label' => __( 'Atlas: Services & Bento', 'atlas-theme' ) )
+		);
+		register_block_pattern_category(
+			'atlas-team',
+			array( 'label' => __( 'Atlas: Team & Leadership', 'atlas-theme' ) )
+		);
+		register_block_pattern_category(
+			'atlas-trust',
+			array( 'label' => __( 'Atlas: Trust & Logos', 'atlas-theme' ) )
+		);
+		register_block_pattern_category(
+			'atlas-process',
+			array( 'label' => __( 'Atlas: Process & Workflow', 'atlas-theme' ) )
+		);
+		register_block_pattern_category(
+			'atlas-cta',
+			array( 'label' => __( 'Atlas: Call to Action', 'atlas-theme' ) )
+		);
 
 		foreach ( self::PATTERNS as $slug => $file ) {
 			$path = ATLAS_THEME_DIR . '/patterns/' . $file;

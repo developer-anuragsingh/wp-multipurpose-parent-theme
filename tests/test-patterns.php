@@ -67,6 +67,46 @@ class Test_Patterns {
 			'passed' => str_contains( $toc_content, 'role="complementary"' ) && str_contains( $toc_content, 'Table of Contents' ),
 		);
 
+		// Services Bento pattern tests.
+		$bento_file    = ATLAS_THEME_DIR . '/patterns/services-bento.php';
+		$bento_content = file_exists( $bento_file ) ? (string) file_get_contents( $bento_file ) : '';
+		$results[]     = array(
+			'name'   => 'Services Bento Grid pattern file exists and defines slug',
+			'passed' => ! empty( $bento_content ) && str_contains( $bento_content, 'Slug: atlas/services-bento' ),
+		);
+
+		// Team Grid pattern tests.
+		$team_file    = ATLAS_THEME_DIR . '/patterns/team-grid.php';
+		$team_content = file_exists( $team_file ) ? (string) file_get_contents( $team_file ) : '';
+		$results[]    = array(
+			'name'   => 'Team Grid pattern file exists and defines slug',
+			'passed' => ! empty( $team_content ) && str_contains( $team_content, 'Slug: atlas/team-grid' ),
+		);
+
+		// Logo Clouds pattern tests.
+		$logos_file    = ATLAS_THEME_DIR . '/patterns/logo-clouds.php';
+		$logos_content = file_exists( $logos_file ) ? (string) file_get_contents( $logos_file ) : '';
+		$results[]     = array(
+			'name'   => 'Logo Clouds pattern file exists and defines slug',
+			'passed' => ! empty( $logos_content ) && str_contains( $logos_content, 'Slug: atlas/logo-clouds' ),
+		);
+
+		// Process Steps pattern tests.
+		$process_file    = ATLAS_THEME_DIR . '/patterns/process-steps.php';
+		$process_content = file_exists( $process_file ) ? (string) file_get_contents( $process_file ) : '';
+		$results[]       = array(
+			'name'   => 'Process Steps pattern file exists and defines slug',
+			'passed' => ! empty( $process_content ) && str_contains( $process_content, 'Slug: atlas/process-steps' ),
+		);
+
+		// CTA Banner pattern tests.
+		$cta_file    = ATLAS_THEME_DIR . '/patterns/cta-banner.php';
+		$cta_content = file_exists( $cta_file ) ? (string) file_get_contents( $cta_file ) : '';
+		$results[]   = array(
+			'name'   => 'CTA Banner pattern file exists and defines slug',
+			'passed' => ! empty( $cta_content ) && str_contains( $cta_content, 'Slug: atlas/cta-banner' ),
+		);
+
 		// Copy controls rendering tests.
 		$copyable_block = array(
 			'blockName' => 'core/quote',
