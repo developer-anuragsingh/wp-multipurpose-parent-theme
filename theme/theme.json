@@ -21,7 +21,38 @@
         { "slug": "light", "color": "#f8fafc", "name": "Light Surface" },
         { "slug": "white", "color": "#ffffff", "name": "Pure White" },
         { "slug": "surface", "color": "#ffffff", "name": "Surface (white, dark-mode aware)" },
-        { "slug": "link", "color": "#2563eb", "name": "Link (dark-mode aware)" }
+        { "slug": "link", "color": "#2563eb", "name": "Link (dark-mode aware)" },
+        { "slug": "muted", "color": "#64748b", "name": "Muted Slate" },
+        { "slug": "border", "color": "#e2e8f0", "name": "Clean Border" },
+        { "slug": "surface-tint", "color": "#f1f5f9", "name": "Surface Tint" },
+        { "slug": "success", "color": "#10b981", "name": "Success Emerald" },
+        { "slug": "warning", "color": "#f59e0b", "name": "Warning Amber" },
+        { "slug": "danger", "color": "#ef4444", "name": "Danger Red" }
+      ]
+    },
+    "shadow": {
+      "defaultPresets": false,
+      "presets": [
+        {
+          "name": "Subtle",
+          "slug": "subtle",
+          "shadow": "0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.03)"
+        },
+        {
+          "name": "Card",
+          "slug": "card",
+          "shadow": "0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.03)"
+        },
+        {
+          "name": "Elevated",
+          "slug": "elevated",
+          "shadow": "0 12px 28px -4px rgba(15, 23, 42, 0.08), 0 4px 10px -4px rgba(15, 23, 42, 0.04)"
+        },
+        {
+          "name": "Floating",
+          "slug": "floating",
+          "shadow": "0 24px 48px -12px rgba(15, 23, 42, 0.12), 0 8px 16px -6px rgba(15, 23, 42, 0.06)"
+        }
       ]
     },
     "typography": {
@@ -64,6 +95,12 @@
           "name": "Extra Extra Large",
           "size": "1.625rem",
           "fluid": { "min": "1.625rem", "max": "2.125rem" }
+        },
+        {
+          "slug": "display",
+          "name": "Display Hero",
+          "size": "2.75rem",
+          "fluid": { "min": "2.125rem", "max": "3.5rem" }
         }
       ],
       "fontFamilies": [
@@ -225,6 +262,7 @@
   "customTemplates": [
     { "name": "blank", "title": "Blank / Landing", "postTypes": ["page"] },
     { "name": "maintenance", "title": "Maintenance / 503", "postTypes": ["page"] },
-    { "name": "page-contact", "title": "Contact Us (Full Suite)", "postTypes": ["page"] }
+    { "name": "page-contact", "title": "Contact Us (Full Suite)", "postTypes": ["page"] },
+    { "name": "page-no-title", "title": "Page (No Title)", "postTypes": ["page"] }
   ]
 }

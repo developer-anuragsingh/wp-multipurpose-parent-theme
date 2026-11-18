@@ -49,6 +49,9 @@
 	   recolour controls that set color: inherit (nav toggle, language
 	   switcher). Buttons are unaffected: they keep primary + white. */
 	--wp--preset--color--link: #60a5fa;
+	--wp--preset--color--surface-tint: #1e293b;
+	--wp--preset--color--border: #334155;
+	--wp--preset--color--muted: #94a3b8;
 }
 
 /* -------------------------------------------------------------------------

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "title": "Dark Mode",
+  "styles": {
+    "color": {
+      "background": "var:preset|color|dark",
+      "text": "var:preset|color|light"
+    },
+    "elements": {
+      "link": {
+        "color": {
+          "text": "#60a5fa"
+        },
+        ":hover": {
+          "color": {
+            "text": "#93c5fd"
+          }
+        }
+      }
+    }
+  }
+}
