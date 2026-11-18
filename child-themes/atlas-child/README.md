@@ -1,6 +1,8 @@
-# Atlas Child Starter
+# Atlas Child Starter (Starter Boilerplate)
 
-A modern **Zero-PHP Child Theme** for the [Atlas Multipurpose Parent Theme](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme).
+A modern, minimal **Zero-PHP Child Theme Boilerplate** for the [Atlas Multipurpose Parent Theme](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme).
+
+> **Role:** Blank starter template for developers and agencies creating bespoke client designs. For a production-ready corporate theme, see `child-themes/atlas-business`.
 
 ## Key Principles
 - **0 KB PHP:** No `functions.php`. Stylesheet and asset cascading are handled natively by WordPress 6.8+ Full-Site Editing.

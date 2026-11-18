@@ -187,4 +187,8 @@ jobs:
           test -f dist/unpacked/atlas-theme/theme.json
           test -f dist/unpacked/atlas-theme/build/contact-form.js
           test -f dist/unpacked/atlas-theme/build/contact-form.css
-          echo "Verified: Release zip package is valid and production ready."
+          test -f dist/unpacked/atlas-theme/assets/css/interactivity.css
+          test ! -d dist/unpacked/atlas-theme/src
+          test -f dist/atlas-business-*.zip
+          test -f dist/atlas-child-*.zip
+          echo "Verified: Release zip packages are valid and production ready."

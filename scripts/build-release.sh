@@ -45,13 +45,13 @@ for f in theme-mode navigation copy contact-form ui-states infinite-scroll; do
 	fi
 done
 
-# --- 3. Stage a clean copy (no dev/OS junk, no JS sources). -------------------
+# --- 3. Stage a clean copy (no dev/OS junk, no source files). -----------------
 STAGE="$(mktemp -d)"
 trap 'rm -rf "${STAGE}"' EXIT
 mkdir -p "${STAGE}/${SLUG}"
 rsync -a \
 	--exclude='.DS_Store' --exclude='Thumbs.db' --exclude='*.map' \
-	--exclude='.gitignore' --exclude='src/js/' --exclude='node_modules/' \
+	--exclude='.gitignore' --exclude='src/' --exclude='node_modules/' \
 	"${THEME_SRC}/" "${STAGE}/${SLUG}/"
 
 # --- 4. Zip deterministically and checksum. -----------------------------------
@@ -63,35 +63,48 @@ rm -f "${OUT}" "${OUT}.sha256"
 
 # --- 5. Verify the archive contents. ------------------------------------------
 LIST="$(unzip -Z1 "${OUT}")"
-for required in "${SLUG}/style.css" "${SLUG}/screenshot.png" "${SLUG}/readme.txt" "${SLUG}/theme.json" "${SLUG}/functions.php" "${SLUG}/build/contact-form.js" "${SLUG}/src/css/interactivity.css"; do
+for required in "${SLUG}/style.css" "${SLUG}/screenshot.png" "${SLUG}/readme.txt" "${SLUG}/theme.json" "${SLUG}/functions.php" "${SLUG}/build/contact-form.js" "${SLUG}/assets/css/interactivity.css"; do
 	grep -qx "${required}" <<<"${LIST}" || { echo "ERROR: ${required} missing from zip" >&2; exit 1; }
 done
-if grep -E '(^|/)(\.DS_Store|node_modules|src/js)(/|$)|\.map$' <<<"${LIST}" >/dev/null; then
-	echo "ERROR: dev/OS files leaked into the zip" >&2
+if grep -E '(^|/)(\.DS_Store|node_modules|src)(/|$)|\.map$' <<<"${LIST}" >/dev/null; then
+	echo "ERROR: dev/OS/source files leaked into the zip" >&2
 	exit 1
 fi
 
 echo "Built ${OUT} ($(du -h "${OUT}" | cut -f1), $(wc -l <<<"${LIST}" | tr -d ' ') files)"
 cat "${OUT}.sha256"
 
-# --- 6. Package Zero-PHP Child Theme (atlas-business) if present. -------------
-if [[ -d "${REPO_ROOT}/atlas-business" ]]; then
-	CHILD_SLUG="atlas-business"
-	CHILD_DIR="${REPO_ROOT}/${CHILD_SLUG}"
-	CHILD_VER="$(sed -n 's/^Version:[[:space:]]*//p' "${CHILD_DIR}/style.css" | head -1 | tr -d '[:space:]')"
-	CHILD_OUT="${REPO_ROOT}/dist/${CHILD_SLUG}-${CHILD_VER}.zip"
-	rm -f "${CHILD_OUT}" "${CHILD_OUT}.sha256"
+# --- 6. Package Zero-PHP Child Themes in child-themes/ if present. ------------
+if [[ -d "${REPO_ROOT}/child-themes" ]]; then
+	for CHILD_DIR in "${REPO_ROOT}/child-themes"/*; do
+		if [[ -d "${CHILD_DIR}" && -f "${CHILD_DIR}/style.css" ]]; then
+			CHILD_SLUG="$(basename "${CHILD_DIR}")"
+			CHILD_VER="$(sed -n 's/^Version:[[:space:]]*//p' "${CHILD_DIR}/style.css" | head -1 | tr -d '[:space:]')"
+			if [[ -z "${CHILD_VER}" ]]; then
+				CHILD_VER="1.0.0"
+			fi
+			CHILD_OUT="${REPO_ROOT}/dist/${CHILD_SLUG}-${CHILD_VER}.zip"
+			rm -f "${CHILD_OUT}" "${CHILD_OUT}.sha256"
 
-	CHILD_STAGE="$(mktemp -d)"
-	mkdir -p "${CHILD_STAGE}/${CHILD_SLUG}"
-	rsync -a \
-		--exclude='.DS_Store' --exclude='Thumbs.db' \
-		"${CHILD_DIR}/" "${CHILD_STAGE}/${CHILD_SLUG}/"
+			CHILD_STAGE="$(mktemp -d)"
+			mkdir -p "${CHILD_STAGE}/${CHILD_SLUG}"
+			rsync -a \
+				--exclude='.DS_Store' --exclude='Thumbs.db' --exclude='*.map' \
+				--exclude='.gitignore' --exclude='node_modules/' \
+				"${CHILD_DIR}/" "${CHILD_STAGE}/${CHILD_SLUG}/"
 
-	(cd "${CHILD_STAGE}" && find "${CHILD_SLUG}" -type f | LC_ALL=C sort | zip -X -q "${CHILD_OUT}" -@)
-	(cd dist && shasum -a 256 "${CHILD_SLUG}-${CHILD_VER}.zip" > "${CHILD_SLUG}-${CHILD_VER}.zip.sha256")
-	rm -rf "${CHILD_STAGE}"
+			(cd "${CHILD_STAGE}" && find "${CHILD_SLUG}" -type f | LC_ALL=C sort | zip -X -q "${CHILD_OUT}" -@)
+			(cd dist && shasum -a 256 "${CHILD_SLUG}-${CHILD_VER}.zip" > "${CHILD_SLUG}-${CHILD_VER}.zip.sha256")
+			rm -rf "${CHILD_STAGE}"
 
-	echo "Built Child Theme ${CHILD_OUT} ($(du -h "${CHILD_OUT}" | cut -f1))"
-	cat "${CHILD_OUT}.sha256"
+			# Verify child archive
+			CHILD_LIST="$(unzip -Z1 "${CHILD_OUT}")"
+			for req_child in "${CHILD_SLUG}/style.css" "${CHILD_SLUG}/theme.json" "${CHILD_SLUG}/readme.txt" "${CHILD_SLUG}/screenshot.png"; do
+				grep -qx "${req_child}" <<<"${CHILD_LIST}" || { echo "ERROR: ${req_child} missing from child zip" >&2; exit 1; }
+			done
+
+			echo "Built Child Theme ${CHILD_OUT} ($(du -h "${CHILD_OUT}" | cut -f1), $(wc -l <<<"${CHILD_LIST}" | tr -d ' ') files)"
+			cat "${CHILD_OUT}.sha256"
+		fi
+	done
 fi

@@ -27,7 +27,7 @@ CHILD_SLUG="$1"
 CHILD_NAME="${2:-${CHILD_SLUG}}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-TARGET_BASE="${3:-${REPO_ROOT}}"
+TARGET_BASE="${3:-${REPO_ROOT}/child-themes}"
 
 # Target directory
 CHILD_DIR="${TARGET_BASE}/${CHILD_SLUG}"
@@ -52,8 +52,13 @@ Description:  Zero-PHP Child Theme for Atlas Multipurpose Parent Theme.
 Author:       Anurag Singh
 Template:     atlas-theme
 Version:      1.0.0
+Requires at least: 6.8
+Tested up to: 6.8
+Requires PHP: 8.1
 Text Domain:  ${CHILD_SLUG}
+Tags:         block-theme, full-site-editing, custom-colors, custom-spacing, custom-typography
 License:      GNU General Public License v2 or later
+License URI:  http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 /*
@@ -127,6 +132,36 @@ A modern **Zero-PHP Child Theme** for the [Atlas Multipurpose Parent Theme](http
 2. Copy this folder into \`wp-content/themes/${CHILD_SLUG}\`.
 3. In WordPress Admin, navigate to **Appearance → Themes** and activate **${CHILD_NAME}**.
 EOF
+
+# 5. Create readme.txt for WordPress standards
+cat <<EOF > "${CHILD_DIR}/readme.txt"
+=== ${CHILD_NAME} ===
+Contributors: developer-anuragsingh
+Requires at least: 6.8
+Tested up to: 6.8
+Requires PHP: 8.1
+Stable tag: 1.0.0
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tags: block-theme, full-site-editing, custom-colors, custom-spacing, custom-typography
+
+Modern Zero-PHP Full-Site Editing child theme built on the Atlas Multipurpose Parent Theme.
+
+== Description ==
+
+${CHILD_NAME} is an ultra-fast, zero-overhead child theme leveraging modern WordPress Full-Site Editing design tokens and templates.
+
+== Installation ==
+
+1. Ensure the parent theme atlas-theme is installed in wp-content/themes/atlas-theme.
+2. In your WordPress admin, navigate to Appearance > Themes > Add New.
+3. Upload the child theme package and activate it.
+EOF
+
+# 6. Copy screenshot.png if present in parent
+if [[ -f "${REPO_ROOT}/theme/screenshot.png" ]]; then
+	cp "${REPO_ROOT}/theme/screenshot.png" "${CHILD_DIR}/screenshot.png"
+fi
 
 # Ensure zero PHP files were created
 PHP_COUNT=$(find "${CHILD_DIR}" -name "*.php" | wc -l | tr -d ' ')

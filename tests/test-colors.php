@@ -48,7 +48,7 @@ class Test_Colors {
 		}
 
 		// Dark-mode overrides come straight from interactivity.css (single source of truth).
-		$css  = (string) file_get_contents( ATLAS_THEME_DIR . '/src/css/interactivity.css' );
+		$css  = (string) file_get_contents( ATLAS_THEME_DIR . '/assets/css/interactivity.css' );
 		$dark = $light;
 		if ( preg_match( '/:root\[data-theme="dark"\]\s*\{(.*?)\}/s', $css, $block ) ) {
 			preg_match_all( '/--wp--preset--color--([a-z0-9-]+):\s*(#[0-9a-fA-F]{6})/', $block[1], $m, PREG_SET_ORDER );

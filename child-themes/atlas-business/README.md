@@ -1,6 +1,8 @@
-# Atlas Business
+# Atlas Business (Turnkey Corporate Child Theme)
 
-A modern, high-performance **Zero-PHP Child Theme** for the [Atlas Multipurpose Parent Theme](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme).
+A modern, high-performance, **turnkey Zero-PHP Child Theme** for the [Atlas Multipurpose Parent Theme](https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme).
+
+> **Role:** Production-ready niche theme for enterprise, consulting, SaaS, and B2B digital experiences. For a blank starter boilerplate, see `child-themes/atlas-child`.
 
 Designed specifically for modern B2B enterprises, corporate organizations, consulting firms, and agencies requiring authority, modern aesthetics, and verified performance.
 

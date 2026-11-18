@@ -2,9 +2,9 @@
  * Atlas Phase 2 — interactivity component styles.
  *
  * Plain hand-authored stylesheet (NOT a webpack build artifact). Enqueued by
- * Atlas\Assets from theme/src/css/ and versioned by ATLAS_THEME_VERSION so it
- * is present even when the JS modules fail to load — which is what makes the
- * no-JS progressive-enhancement states usable.
+ * Atlas\Assets from theme/assets/css/ and versioned by ATLAS_THEME_VERSION
+ * so it is present even when the JS modules fail to load — which is what
+ * makes the no-JS progressive-enhancement states usable.
  *
  * Progressive-enhancement gate: every drawer collapse/off-canvas rule is
  * scoped under BOTH the hydration class `.atlas-nav.is-atlas-interactive`

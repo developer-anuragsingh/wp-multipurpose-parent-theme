@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "lint:js": "wp-scripts lint-js theme/src/js",
-    "lint:css": "wp-scripts lint-style \"theme/src/css/**/*.css\"",
+    "lint:css": "wp-scripts lint-style \"theme/{src,assets}/css/**/*.css\"",
     "build": "wp-scripts build --experimental-modules",
     "start": "wp-scripts start --experimental-modules",
     "test": "node --test 'tests/js/**/*.test.js'",

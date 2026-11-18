@@ -7,7 +7,9 @@
       "changelog-path": "CHANGELOG.md",
       "extra-files": [
         "theme/style.css",
-        "theme/functions.php"
+        "theme/functions.php",
+        "child-themes/atlas-child/style.css",
+        "child-themes/atlas-business/style.css"
       ]
     }
   }

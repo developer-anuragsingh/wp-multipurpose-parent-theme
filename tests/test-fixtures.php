@@ -77,7 +77,7 @@ class Test_Fixtures {
 			'passed' => false !== $tag_pos && false !== $group_pos && $tag_pos < $group_pos,
 		);
 
-		$css = (string) file_get_contents( ATLAS_THEME_DIR . '/src/css/interactivity.css' );
+		$css = (string) file_get_contents( ATLAS_THEME_DIR . '/assets/css/interactivity.css' );
 
 		$results[] = array(
 			'name'   => 'CSS: the mobile drawer has a no-JS :target open rule and is not gated on hydration for its closed layout',

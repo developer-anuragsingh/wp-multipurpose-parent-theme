@@ -1017,6 +1017,18 @@ spl_autoload_register(
 
 		if ( file_exists( $file ) ) {
 			require_once $file;
+			return;
+		}
+
+		if ( empty( $sub_path ) ) {
+			$subdirs = array( 'core', 'seo', 'forms', 'security' );
+			foreach ( $subdirs as $dir ) {
+				$candidate = ATLAS_THEME_DIR . '/inc/' . $dir . '/' . $file_name;
+				if ( file_exists( $candidate ) ) {
+					require_once $candidate;
+					return;
+				}
+			}
 		}
 	}
 );

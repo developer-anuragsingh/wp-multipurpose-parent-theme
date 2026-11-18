@@ -18,7 +18,20 @@ Production-ready Full-Site Editing (FSE) parent theme engineered with native Wor
 > ```bash
 > ./scripts/build-release.sh
 > ```
-> This compiles all Interactivity API modules with `@wordpress/scripts`, verifies version consistency across `style.css`, `functions.php`, and `package.json`, and packages an optimized `dist/atlas-theme-<version>.zip`.
+> This compiles all Interactivity API modules with `@wordpress/scripts`, verifies version consistency across `style.css`, `functions.php`, and `package.json`, and packages an optimized `dist/atlas-theme-<version>.zip` alongside installable packages for child themes in `dist/`.
+
+## 👶 Official Zero-PHP Child Themes (`child-themes/`)
+
+Atlas includes official **Zero-PHP** child themes adhering to WordPress 6.8+ Full-Site Editing architecture. They contain no `functions.php`, achieving styling and layout customizations purely through `theme.json` v3 cascading and HTML template parts.
+
+- **`child-themes/atlas-child` (Atlas Child Starter):**
+  - **Purpose:** A clean, minimal boilerplate for developers and agencies building custom bespoke client themes from scratch.
+  - **Included:** Blank template hierarchy, baseline color overrides in `theme.json`, and sample header template parts.
+  - **Scaffolding:** New custom child themes can be instantly generated via `./scripts/create-child-theme.sh <slug> [Theme Name]`.
+
+- **`child-themes/atlas-business` (Atlas Business):**
+  - **Purpose:** A production-ready, turnkey corporate theme built for enterprise, B2B services, consulting, and SaaS platforms.
+  - **Included:** Deep Navy & Emerald design tokens, high-impact services bento grid (`patterns/services-bento.php`), tailored typography scales, and custom corporate front-page template.
 
 ## Roadmap
 

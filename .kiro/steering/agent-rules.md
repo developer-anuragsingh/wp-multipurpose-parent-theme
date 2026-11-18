@@ -28,7 +28,7 @@ any machine: `scripts/link-to-studio.sh <studio-site-local-path>`. Full guide: `
 ## Non-negotiable quick reference
 - **Security first:** authorize (`current_user_can`) → verify intent (nonce) → sanitize input → escape output; REST/Interactivity endpoints need an explicit `permission_callback`.
 - **Zero-KB JS baseline:** native Interactivity API only; no jQuery/React/Vue; no JS validation library (Zod/Yup).
-- **FSE-first:** markup in `templates/`+`parts/`, tokens in `theme.json` (v3), behaviour in `inc/`.
+- **FSE-first:** markup in `templates/`+`parts/`, tokens in `theme.json` (v3), behaviour in `inc/` subdirectories (`core/`, `seo/`, `forms/`, `security/`), runtime CSS in `assets/css/`, child themes in `child-themes/`.
 - **i18n:** every user-facing string via gettext with the literal `atlas-theme` text domain.
 - **Coding principles:** KISS, DRY, YAGNI, SOLID (SOLID only for `inc/` OOP); centralize semantic/repeated strings as constants (never user-facing strings).
 - **WordPress floor:** 6.8 (core Speculation Rules, theme.json v3, Block Bindings editor UI).

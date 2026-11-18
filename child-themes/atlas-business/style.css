@@ -5,9 +5,13 @@ Description:  Modern, high-performance Zero-PHP Child Theme for enterprise, B2B,
 Author:       Anurag Singh
 Template:     atlas-theme
 Version:      1.0.0
+Requires at least: 6.8
+Tested up to: 6.8
+Requires PHP: 8.1
 Text Domain:  atlas-business
-License:      GNU General Public License v2 or later
 Tags:         block-theme, full-site-editing, custom-colors, custom-spacing, custom-typography, wide-blocks
+License:      GNU General Public License v2 or later
+License URI:  http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 /*

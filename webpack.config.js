@@ -10,7 +10,7 @@
  * source layout.
  *
  * The Phase 2 stores (navigation, theme-mode, copy) are plain JS modules;
- * theme/src/css/interactivity.css is a hand-authored file enqueued directly,
+ * theme/assets/css/interactivity.css is a hand-authored file enqueued directly,
  * outside this pipeline. The `ui-states` entry additionally imports its own
  * stylesheet (theme/src/css/ui-states.css), so wp-scripts emits
  * build/ui-states.css alongside build/ui-states.js from that single entry.

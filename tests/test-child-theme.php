@@ -10,7 +10,7 @@ class Test_Child_Theme {
 	public static function run(): array {
 		$results = array();
 
-		$child_dir   = dirname( __DIR__ ) . '/atlas-child';
+		$child_dir   = dirname( __DIR__ ) . '/child-themes/atlas-child';
 		$style_css   = $child_dir . '/style.css';
 		$theme_json  = $child_dir . '/theme.json';
 		$script_file = dirname( __DIR__ ) . '/scripts/create-child-theme.sh';
