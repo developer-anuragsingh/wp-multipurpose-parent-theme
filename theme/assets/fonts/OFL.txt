@@ -1,0 +1,16 @@
+This directory contains the variable font assets bundled with Atlas Multipurpose.
+
+1. Inter Variable Font
+   Copyright (c) Rasmus Andersson (https://rsms.me/inter/)
+   Licensed under the SIL Open Font License, Version 1.1
+   https://openfontlicense.org/
+
+2. Sora Variable Font
+   Copyright (c) Jonathan Barnbrook, Julian Moncada (https://github.com/wght/Sora)
+   Licensed under the SIL Open Font License, Version 1.1
+   https://openfontlicense.org/
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font Software,
+subject to the conditions published at https://openfontlicense.org/
