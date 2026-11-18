@@ -1,18 +1,18 @@
 /*
-x-release-please-start-version
 Theme Name: Atlas Multipurpose
 Theme URI: https://github.com/developer-anuragsingh/wp-multipurpose-parent-theme
 Author: Anurag Singh
 Author URI: https://github.com/developer-anuragsingh
 Description: Modern FSE parent theme with native Interactivity API, GEO, Speculation Rules, and Block Bindings.
+x-release-please-start-version
 Version: 1.3.0
+x-release-please-end
 Requires at least: 6.8
-Tested up to: 1.3.0
+Tested up to: 6.8
 Requires PHP: 8.1
 License: GNU General Public License v2 or later
 Text Domain: atlas-theme
 Domain Path: /languages
-x-release-please-end
 */
 
 /* Critical base: accessibility skip link (unlayered top-level rule). */
