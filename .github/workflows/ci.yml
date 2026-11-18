@@ -6,8 +6,12 @@ name: CI
 
 jobs:
   php:
-    name: PHP standards & compatibility
+    name: PHP ${{ matrix.php-version }} standards & tests
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.1', '8.2', '8.3', '8.4']
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -15,7 +19,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
-          php-version: '8.1'
+          php-version: ${{ matrix.php-version }}
           tools: composer
           coverage: none
 
@@ -157,6 +161,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up PHP
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        with:
+          php-version: '8.1'
+          coverage: none
       - name: Set up Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -166,3 +175,16 @@ jobs:
         run: npm ci
       - name: Build and verify the installable zip
         run: scripts/build-release.sh
+      - name: Verify unpack and PHP lint on packaged distribution
+        run: |
+          mkdir -p dist/unpacked
+          LATEST_ZIP=$(ls -t dist/atlas-theme-*.zip | head -1)
+          unzip -q -o "${LATEST_ZIP}" -d dist/unpacked/
+          find dist/unpacked/ -name "*.php" -exec php -l {} +
+          test -f dist/unpacked/atlas-theme/screenshot.png
+          test -f dist/unpacked/atlas-theme/readme.txt
+          test -f dist/unpacked/atlas-theme/style.css
+          test -f dist/unpacked/atlas-theme/theme.json
+          test -f dist/unpacked/atlas-theme/build/contact-form.js
+          test -f dist/unpacked/atlas-theme/build/contact-form.css
+          echo "Verified: Release zip package is valid and production ready."

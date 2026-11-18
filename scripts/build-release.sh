@@ -63,7 +63,7 @@ rm -f "${OUT}" "${OUT}.sha256"
 
 # --- 5. Verify the archive contents. ------------------------------------------
 LIST="$(unzip -Z1 "${OUT}")"
-for required in "${SLUG}/style.css" "${SLUG}/theme.json" "${SLUG}/functions.php" "${SLUG}/build/contact-form.js" "${SLUG}/src/css/interactivity.css"; do
+for required in "${SLUG}/style.css" "${SLUG}/screenshot.png" "${SLUG}/readme.txt" "${SLUG}/theme.json" "${SLUG}/functions.php" "${SLUG}/build/contact-form.js" "${SLUG}/src/css/interactivity.css"; do
 	grep -qx "${required}" <<<"${LIST}" || { echo "ERROR: ${required} missing from zip" >&2; exit 1; }
 done
 if grep -E '(^|/)(\.DS_Store|node_modules|src/js)(/|$)|\.map$' <<<"${LIST}" >/dev/null; then
@@ -73,3 +73,25 @@ fi
 
 echo "Built ${OUT} ($(du -h "${OUT}" | cut -f1), $(wc -l <<<"${LIST}" | tr -d ' ') files)"
 cat "${OUT}.sha256"
+
+# --- 6. Package Zero-PHP Child Theme (atlas-business) if present. -------------
+if [[ -d "${REPO_ROOT}/atlas-business" ]]; then
+	CHILD_SLUG="atlas-business"
+	CHILD_DIR="${REPO_ROOT}/${CHILD_SLUG}"
+	CHILD_VER="$(sed -n 's/^Version:[[:space:]]*//p' "${CHILD_DIR}/style.css" | head -1 | tr -d '[:space:]')"
+	CHILD_OUT="${REPO_ROOT}/dist/${CHILD_SLUG}-${CHILD_VER}.zip"
+	rm -f "${CHILD_OUT}" "${CHILD_OUT}.sha256"
+
+	CHILD_STAGE="$(mktemp -d)"
+	mkdir -p "${CHILD_STAGE}/${CHILD_SLUG}"
+	rsync -a \
+		--exclude='.DS_Store' --exclude='Thumbs.db' \
+		"${CHILD_DIR}/" "${CHILD_STAGE}/${CHILD_SLUG}/"
+
+	(cd "${CHILD_STAGE}" && find "${CHILD_SLUG}" -type f | LC_ALL=C sort | zip -X -q "${CHILD_OUT}" -@)
+	(cd dist && shasum -a 256 "${CHILD_SLUG}-${CHILD_VER}.zip" > "${CHILD_SLUG}-${CHILD_VER}.zip.sha256")
+	rm -rf "${CHILD_STAGE}"
+
+	echo "Built Child Theme ${CHILD_OUT} ($(du -h "${CHILD_OUT}" | cut -f1))"
+	cat "${CHILD_OUT}.sha256"
+fi
