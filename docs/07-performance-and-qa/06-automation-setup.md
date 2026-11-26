@@ -52,7 +52,7 @@ The hook catches style and obvious secret issues before they reach CI. Per `05-c
 
 **Supply-chain hardening**
 * Every third-party action is **pinned to a full commit SHA** (the readable tag is kept as a trailing comment). A moved or hijacked tag can no longer change what CI runs. To update, change the SHA and comment together, or let Dependabot do it.
-* The workflow sets top-level `permissions: contents: read` (least privilege). `release-please.yml` is the only workflow with write scopes (`contents`, `pull-requests`), scoped to `main`.
+* `ci.yml` sets top-level `permissions: contents: read` (least privilege); a job that needs more asks for it (only `secrets` adds `pull-requests: read`). `release-please.yml` is the only workflow with write scopes (`contents`, `pull-requests`), scoped to `main`.
 * `concurrency` cancels superseded runs on branches (never on `main`).
 * `.github/dependabot.yml` opens weekly grouped PRs for GitHub Actions, npm and Composer; security advisories open PRs immediately.
 * Recommended repository settings (not enforceable from code): branch protection on `main` requiring the CI jobs above, "Require approval for first-time contributors", and GitHub secret scanning + push protection.
