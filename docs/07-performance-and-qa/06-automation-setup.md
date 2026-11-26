@@ -41,7 +41,8 @@ The hook catches style and obvious secret issues before they reach CI. Per `05-c
 
 ## 4. CI (authoritative, every push and PR)
 `.github/workflows/ci.yml` runs on `push` and `pull_request` with independent jobs:
-* **`php`** — `shivammathur/setup-php` (PHP 8.1) → `composer install` → `composer lint` → `composer test`.
+* **`php`** — `shivammathur/setup-php` (PHP 8.1, 8.2, 8.3, 8.4) → `composer install` → `composer lint` → `composer test`.
+* **`wp-integration`** — the theme inside real WordPress: MySQL 8 service, WordPress 6.8 on PHP 8.1 and the `composer.lock` version on PHP 8.4 → `composer test:wp` (`03-testing-strategy.md` §8).
 * **`node`** — `actions/setup-node` (Node LTS) → `npm ci` → `npm run lint:js` + `npm run lint:css` → `npm test`.
 * **`e2e`** — build + Playwright E2E and visual regression.
 * **`secrets`** — full-history checkout → `gitleaks/gitleaks-action` using `.gitleaks.toml`. On pull requests the action needs `GITHUB_TOKEN` in its `env` and the job needs `pull-requests: read` (it reads the PR's commits through the API); without them it stops with "GITHUB_TOKEN is now required to scan pull requests". Push events do not need the token, which is why this only shows up on PRs (for example Dependabot's).

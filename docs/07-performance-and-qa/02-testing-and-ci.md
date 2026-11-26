@@ -20,7 +20,7 @@ A change is "done" only when it passes every gate below. A command exiting witho
 | **Performance** | Lighthouse + bundle-size budget (see `01-performance-budget.md`) | Within budget |
 
 ## 3. Tooling Setup
-* **`composer.json`** declares dev dependencies: `squizlabs/php_codesniffer`, `wp-coding-standards/wpcs`, `phpcompatibility/phpcompatibility-wp`, and wires a `composer lint` script.
+* **`composer.json`** declares dev dependencies: `squizlabs/php_codesniffer`, `wp-coding-standards/wpcs`, `phpcompatibility/phpcompatibility-wp`, and, for the integration suite, `phpunit/phpunit` 9.6, `yoast/phpunit-polyfills`, `wp-phpunit/wp-phpunit` and `roots/wordpress-no-content`; it wires `composer lint`, `composer test`, `composer test:wp` and `composer test:wp:local`, and pins `config.platform.php` to 8.1.
 * **`package.json`** uses `@wordpress/scripts` for `lint-js` / `lint-style` and build steps (Interactivity API bundles, optional Tailwind).
 * **`.phpcs.xml.dist`** pins the ruleset (`WordPress-Extra`), the text domain (`atlas-theme`), the minimum WP/PHP versions, and the paths to scan.
 
@@ -62,7 +62,8 @@ Automated gates are necessary but not sufficient. Before a release, run manual p
 ## 6. Local Verification Commands
 ```bash
 composer lint            # PHPCS (WordPress-Extra) + PHP 8.1 compatibility
-composer test            # PHP unit suite (224 tests)
+composer test            # PHP unit suite (259 tests, WordPress doubles)
+composer test:wp:local   # integration suite in real WordPress, SQLite via Studio (no Docker)
 npm run test:e2e         # Playwright: E2E + visual + axe accessibility
 scripts/smoke-test.sh    # live-site headers, token endpoint, JSON-LD (running site)
 scripts/lighthouse.sh    # live-site Lighthouse gate (running site)
