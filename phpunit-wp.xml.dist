@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+	Integration suite: the theme running inside a real WordPress (core test
+	library + a real database). Run with `composer test:wp`.
+	See docs/07-performance-and-qa/03-testing-strategy.md §8.
+-->
+<phpunit
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
+	bootstrap="tests/integration/bootstrap.php"
+	colors="true"
+	beStrictAboutTestsThatDoNotTestAnything="true"
+	beStrictAboutOutputDuringTests="true"
+	failOnWarning="true"
+	failOnRisky="true">
+	<testsuites>
+		<testsuite name="Atlas Theme in real WordPress">
+			<directory prefix="test-" suffix=".php">./tests/integration</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>

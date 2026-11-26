@@ -41,6 +41,63 @@ jobs:
       - name: Run PHP Unit Tests
         run: composer test
 
+  wp-integration:
+    # The theme running inside REAL WordPress (core test library + MySQL):
+    # theme.json as core applies it, REST routes through the real REST server,
+    # wp_mail, capabilities, privacy exporters, block templates and patterns.
+    # Docs: docs/07-performance-and-qa/03-testing-strategy.md §8.
+    name: WordPress ${{ matrix.wp }} integration (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Oldest supported WordPress on the oldest supported PHP.
+          - wp: '6.8'
+            php: '8.1'
+          # The version pinned in composer.lock, on the newest PHP in the matrix.
+          - wp: locked
+            php: '8.4'
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      WP_TESTS_DB_HOST: 127.0.0.1:3306
+      WP_TESTS_DB_NAME: wordpress_test
+      WP_TESTS_DB_USER: root
+      WP_TESTS_DB_PASSWORD: root
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mysqli
+          tools: composer
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-interaction --prefer-dist
+
+      - name: Use WordPress ${{ matrix.wp }}
+        if: matrix.wp != 'locked'
+        run: >-
+          composer require --dev --no-interaction --no-progress --update-with-dependencies
+          "wp-phpunit/wp-phpunit:${{ matrix.wp }}.*" "roots/wordpress-no-content:${{ matrix.wp }}.*"
+
+      - name: Run integration tests in real WordPress
+        run: composer test:wp
+
   node:
     name: JS & CSS lint and tests
     runs-on: ubuntu-latest

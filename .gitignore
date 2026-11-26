@@ -22,3 +22,6 @@ playwright-report/
 blob-report/
 
 dist/
+
+# PHPUnit result cache
+.phpunit.result.cache
