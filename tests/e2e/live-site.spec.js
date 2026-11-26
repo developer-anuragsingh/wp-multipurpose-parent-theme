@@ -1,7 +1,27 @@
 // @ts-check
+/**
+ * Live-site checks: these run against a REAL, running WordPress site, not the
+ * fixture server, so they only run when a site address is given:
+ *
+ *   LIVE_BASE_URL=http://localhost:8885 npx playwright test live-site
+ *   npm run test:e2e:live        (the local WordPress Studio site)
+ *
+ * Without LIVE_BASE_URL (for example in CI, where no such site exists) the
+ * whole file is skipped instead of failing with ERR_CONNECTION_REFUSED.
+ *
+ * Note: test 4 submits the contact form for real, so the site stores one
+ * submission and tries to send one email each run.
+ */
 const { test, expect } = require( '@playwright/test' );
 
-test.use( { baseURL: 'http://localhost:8885' } );
+const LIVE_BASE_URL = ( process.env.LIVE_BASE_URL || '' ).replace( /\/$/, '' );
+
+test.skip(
+	! LIVE_BASE_URL,
+	'Live-site checks need a running site: set LIVE_BASE_URL (e.g. http://localhost:8885).'
+);
+
+test.use( { baseURL: LIVE_BASE_URL || undefined } );
 
 test.describe( 'Atlas Full Site & Contact Form Live Verification', () => {
 	test( '1. Home page loads with valid elements and navigation', async ( {

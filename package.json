@@ -13,7 +13,8 @@
     "test:e2e": "playwright test",
     "create-child": "bash scripts/create-child-theme.sh",
     "commitlint": "commitlint --from=HEAD~1",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:e2e:live": "LIVE_BASE_URL=http://localhost:8885 playwright test tests/e2e/live-site.spec.js"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
