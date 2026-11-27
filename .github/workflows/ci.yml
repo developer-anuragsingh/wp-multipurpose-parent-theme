@@ -40,6 +40,25 @@ jobs:
 
       - name: Run PHP Unit Tests
         run: composer test
+  phpstan:
+    # Static analysis (phpstan.neon.dist, level 5, WordPress stubs): undefined
+    # functions/methods/constants, wrong argument types and dead conditions.
+    # PHP 8.1 is the analysed language level (phpVersion), whatever runs it.
+    name: PHPStan static analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up PHP
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        with:
+          php-version: '8.4'
+          tools: composer
+          coverage: none
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-interaction --prefer-dist
+      - name: Run PHPStan
+        run: composer analyse -- --no-progress --error-format=github
 
   wp-integration:
     # The theme running inside REAL WordPress (core test library + MySQL):

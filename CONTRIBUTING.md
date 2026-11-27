@@ -156,6 +156,7 @@ ln -s "$(pwd)/theme" "/absolute/path/to/your-studio-site/wp-content/themes/atlas
 # PHP
 composer lint        # PHPCS: WordPress + WordPress-Extra + PHPCompatibility (8.1-)
 composer lint:fix    # phpcbf: auto-fix the fixable subset
+composer analyse     # PHPStan level 5 (WordPress stubs); CI fails on any finding
 
 # JS / CSS
 npm run lint:js      # wp-scripts lint-js  (theme/src/js)
