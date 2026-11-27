@@ -23,7 +23,7 @@
     "@playwright/test": "^1.65.1",
     "@wordpress/scripts": "^37.1.0",
     "husky": "^9.1.7",
-    "lint-staged": "^17.0.0"
+    "lint-staged": "^17.6.1"
   },
   "lint-staged": {
     "theme/**/*.php": "vendor/bin/phpcs --standard=.phpcs.xml.dist",
