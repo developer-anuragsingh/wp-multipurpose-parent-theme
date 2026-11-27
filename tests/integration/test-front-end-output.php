@@ -105,6 +105,17 @@ class Test_Front_End_Output extends WP_UnitTestCase {
 		$this->assertStringEndsWith( '/og-default.png', $m[1] );
 	}
 
+	public function test_locale_cookie_is_httponly_and_secure_on_https(): void {
+		$_SERVER['HTTPS'] = 'on';
+		$https            = Atlas\I18n::locale_cookie_options();
+		unset( $_SERVER['HTTPS'] );
+		$http = Atlas\I18n::locale_cookie_options();
+		$this->assertTrue( $https['httponly'] );
+		$this->assertSame( 'Lax', $https['samesite'] );
+		$this->assertTrue( $https['secure'], 'The locale cookie must be Secure on HTTPS.' );
+		$this->assertFalse( $http['secure'], 'A Secure cookie would never be sent back over plain HTTP.' );
+		$this->assertSame( COOKIEPATH, $https['path'] );
+	}
 	public function test_language_switch_shows_short_labels_with_full_names(): void {
 		$this->go_to( home_url( '/' ) );
 		$html = Atlas\I18n::render_switcher();

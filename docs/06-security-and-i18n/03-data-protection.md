@@ -22,6 +22,7 @@ Treat anything in the top two tiers as protected: it must be authorized to acces
 * **HTTPS everywhere:** the theme assumes TLS. Never submit forms, load the Interactivity API store, or hit REST endpoints over plain HTTP. Recommend `HSTS` at the server/host layer.
 * **No plaintext secrets at rest:** never store API keys, tokens, or credentials in `wp_options`, post meta, `theme.json`, or committed files. Sensitive stored values that must round-trip should be encrypted, not stored raw.
 * **Cookies:** any theme-set cookie carrying session or preference data uses `Secure`, `HttpOnly` (unless it must be read by JS), and `SameSite=Lax` or `Strict`. The dark-mode preference in `localStorage` is non-personal and exempt.
+  * **`atlas_locale`** (language switcher, `Atlas\I18n`): `HttpOnly; SameSite=Lax`, `Secure` on HTTPS, one year, path `COOKIEPATH`. Only PHP reads it (`filter_locale()`), so it is `HttpOnly`; `tests/test-i18n.php` fails if a theme script starts reading `document.cookie`. It is set from `?lang=` at most once per request and only when the browser does not already hold that value (it used to send the same `Set-Cookie` three times per response, and on every `?lang=` link). Attributes live in `I18n::locale_cookie_options()`; the integration suite checks `Secure` follows HTTPS.
 
 ## 4. Secrets Management
 * **Never hardcode** API keys, payment credentials, SMTP passwords, or tokens in PHP, JS, templates, or `theme.json`.

@@ -50,7 +50,7 @@ Please report it privately as described in SECURITY.md in the project repository
 == Privacy ==
 
 * Contact form submissions are stored as private posts, visible only to administrators, and deleted automatically after 90 days (filter: atlas_submission_retention_days). They are included in WordPress's personal data export and erase tools.
-* The language switcher stores the chosen language in the atlas_locale cookie.
+* The language switcher stores the chosen language in the atlas_locale cookie (one year, HttpOnly, SameSite=Lax, Secure on HTTPS). It holds only the language code.
 * The dark mode toggle stores the chosen mode in the browser's localStorage (atlas-theme-mode). It is never sent to the server.
 * Fonts are self-hosted; the theme loads no third-party scripts, fonts or trackers, with one exception: the Contact Us pattern embeds a Google Maps iframe (lazy-loaded) when its map section is on, and it is on by default. Google may set cookies and receives the visitor's IP address when the map loads. Turn it off in Appearance > Customize > Atlas: Contact Page & Channels > Show Google Maps Section, or mention it in your privacy policy.
 
