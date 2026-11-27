@@ -504,9 +504,8 @@ class Markdown_Endpoint {
 				$cell_text = self::inline_markdown( $cell_html );
 				$cells[]   = str_replace( '|', '\|', $cell_text );
 			}
-			if ( ! empty( $cells ) ) {
-				$rows[] = $cells;
-			}
+			// preg_match_all() matched at least one cell, so $cells is never empty.
+			$rows[] = $cells;
 		}
 
 		if ( empty( $rows ) ) {

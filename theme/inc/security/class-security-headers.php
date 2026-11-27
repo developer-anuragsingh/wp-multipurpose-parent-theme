@@ -285,7 +285,7 @@ class Security_Headers {
 
 		$parts = array();
 		foreach ( $directives as $directive => $sources ) {
-			$sources = array_filter( array_map( 'strval', (array) $sources ), 'strlen' );
+			$sources = array_filter( array_map( 'strval', (array) $sources ), static fn( string $source ): bool => '' !== $source );
 			$parts[] = trim( $directive . ' ' . implode( ' ', $sources ) );
 		}
 
