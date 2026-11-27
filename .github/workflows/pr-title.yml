@@ -1,0 +1,37 @@
+name: PR title
+# A squash merge uses the PR title as the commit header on main, so a title
+# that is not a Conventional Commit fails commitlint on main after the merge
+# (it happened with #16) and release-please ignores the change. Check the title
+# before the merge instead, and again whenever it is edited.
+"on":
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+permissions:
+  contents: read
+concurrency:
+  group: pr-title-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+jobs:
+  title:
+    name: PR title is a Conventional Commit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 'lts/*'
+          cache: npm
+      - name: Install npm dependencies
+        run: npm ci
+      - name: Validate the squash-merge header with commitlint
+        # The title comes in through env, never interpolated into the script
+        # (a PR title is untrusted input). " (#N)" is appended because that is
+        # exactly the header GitHub writes on main, so the length limit applies
+        # to the real commit.
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          printf '%s (#%s)\n' "$PR_TITLE" "$PR_NUMBER" | npx commitlint --verbose

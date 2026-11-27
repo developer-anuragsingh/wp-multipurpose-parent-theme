@@ -187,6 +187,7 @@ Four layers, from fastest/local to authoritative:
 
 - **Conventional Commits:** `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
 - Work on a feature branch; open a small, focused PR with what/why and how you verified it.
+- Give the PR a Conventional Commit title (for example `fix(copy): keep the button box reserved`), not the branch name GitHub suggests. PRs are squash-merged and the title becomes the commit on `main`; the "PR title is a Conventional Commit" check fails until it is right.
 - Keep PRs green: all gates in §7 must pass before merge.
 - Full standards: `docs/07-performance-and-qa/05-coding-standards.md`.
 
