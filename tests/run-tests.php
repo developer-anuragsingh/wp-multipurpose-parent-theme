@@ -28,6 +28,7 @@ require_once __DIR__ . '/test-colors.php';
 require_once __DIR__ . '/test-fixtures.php';
 require_once __DIR__ . '/test-icons.php';
 require_once __DIR__ . '/test-typography.php';
+require_once __DIR__ . '/test-readme.php';
 require_once __DIR__ . '/test-schema-nodes.php';
 require_once __DIR__ . '/test-seo-schema.php';
 
@@ -55,6 +56,7 @@ $suites = array(
 	'Fixture Drift & Nav' => Test_Fixtures::run(),
 	'Icons' => Test_Icons::run(),
 	'Typography & Layout' => Test_Typography::run(),
+	'Readme & Security Policy' => Test_Readme::run(),
 	'Schema Nodes & Cache' => Test_Schema_Nodes::run(),
 	// MUST stay last: defines an SEO-plugin constant that disables Seo/Schema for the rest of the process.
 	'SEO & Schema'       => Test_Seo_Schema::run(),
