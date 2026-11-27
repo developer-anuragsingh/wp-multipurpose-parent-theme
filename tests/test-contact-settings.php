@@ -99,6 +99,45 @@ class Test_Contact_Settings {
 			'passed' => false === \Atlas\Contact_Settings::verify_turnstile_challenge( true, $req ),
 		);
 
+		// 8b. Click-to-load map: nothing is requested from Google before a click.
+		$embed   = 'https://maps.google.com/maps?q=28.6139%2C77.2090&z=15&output=embed';
+		$map     = \Atlas\Contact_Settings::render_map( $embed );
+		preg_match( '/data-wp-context="([^"]*)"/', $map, $ctx );
+		$context = isset( $ctx[1] ) ? json_decode( html_entity_decode( $ctx[1], ENT_QUOTES ), true ) : null;
+		$results[] = array(
+			'name'   => 'Contact Map: the server renders no iframe (no request to Google, no cookies) until the visitor clicks',
+			'passed' => '' !== $map && ! str_contains( $map, '<iframe' ),
+		);
+		$results[] = array(
+			'name'   => 'Contact Map: the embed URL waits in the atlas/map context, with loaded=false',
+			'passed' => str_contains( $map, 'data-wp-interactive="atlas/map"' ) && is_array( $context )
+				&& false === $context['loaded'] && $embed === $context['src'] && '' !== $context['title'],
+		);
+		$results[] = array(
+			'name'   => 'Contact Map: the privacy notice explains Google gets the IP address, and describes the button',
+			'passed' => str_contains( $map, 'IP address' ) && 1 === preg_match( '/<p class="atlas-map__notice" id="([^"]+)">.*aria-describedby="\1"/s', $map ),
+		);
+		$results[] = array(
+			'name'   => 'Contact Map: the JS-only "Show map" button ships hidden; a no-JS "Open in Google Maps" link opens a new tab',
+			'passed' => 1 === preg_match( '/<button type="button"[^>]*atlas-map__show[^>]*\shidden[\s>]/', $map )
+				&& 1 === preg_match( '#href="https://www\.google\.com/maps/search/\?api=1&(?:\#038|amp);query=28\.6139%2C77\.2090"#', $map )
+				&& str_contains( $map, 'target="_blank" rel="noopener noreferrer"' ),
+		);
+		$results[] = array(
+			'name'   => 'Contact Map: no embed URL renders nothing; a /maps/embed?pb= URL is linked as is',
+			'passed' => '' === \Atlas\Contact_Settings::render_map( '' )
+				&& 'https://www.google.com/maps/embed?pb=abc' === \Atlas\Contact_Settings::get_map_link_url( 'https://www.google.com/maps/embed?pb=abc' ),
+		);
+		$hostile  = \Atlas\Contact_Settings::render_map( 'https://maps.google.com/maps?q=x"><script>alert(1)</script>&output=embed' );
+		$results[] = array(
+			'name'   => 'Contact Map: a hostile embed URL cannot break out of the context attribute',
+			'passed' => ! str_contains( $hostile, '<script>' ) && 1 === substr_count( $hostile, 'data-wp-context="' ),
+		);
+		$pattern   = (string) file_get_contents( ATLAS_THEME_DIR . '/patterns/contact-page.php' );
+		$results[] = array(
+			'name'   => 'Contact Map: the contact-page pattern has no hard-coded iframe and uses render_map()',
+			'passed' => ! str_contains( $pattern, '<iframe' ) && str_contains( $pattern, 'Contact_Settings::render_map( $atlas_map_url )' ),
+		);
 		// 9. Pattern and template files exist.
 		$pattern_file  = ATLAS_THEME_DIR . '/patterns/contact-page.php';
 		$template_file = ATLAS_THEME_DIR . '/templates/page-contact.html';

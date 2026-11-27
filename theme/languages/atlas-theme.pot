@@ -610,3 +610,23 @@ msgstr ""
 #: theme/patterns/testimonial.php:40
 msgid "Jordan Rivera, Head of Web"
 msgstr ""
+
+#: theme/inc/forms/class-contact-settings.php
+msgid "Office location on Google Maps"
+msgstr ""
+
+#: theme/inc/forms/class-contact-settings.php
+msgid "The map is provided by Google. Showing it sends your IP address to Google, which may also set cookies."
+msgstr ""
+
+#: theme/inc/forms/class-contact-settings.php
+msgid "Show map"
+msgstr ""
+
+#: theme/inc/forms/class-contact-settings.php
+msgid "Open in Google Maps"
+msgstr ""
+
+#: theme/inc/forms/class-contact-settings.php
+msgid "(opens in a new tab)"
+msgstr ""

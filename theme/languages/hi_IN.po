@@ -643,3 +643,23 @@ msgstr ""
 #: theme/patterns/testimonial.php:40
 msgid "Jordan Rivera, Head of Web"
 msgstr "जॉर्डन रिवेरा, वेब प्रमुख"
+
+#: theme/inc/forms/class-contact-settings.php
+msgid "Office location on Google Maps"
+msgstr "Google Maps पर कार्यालय का स्थान"
+
+#: theme/inc/forms/class-contact-settings.php
+msgid "The map is provided by Google. Showing it sends your IP address to Google, which may also set cookies."
+msgstr "यह नक्शा Google द्वारा दिया जाता है। इसे दिखाने पर आपका IP पता Google को भेजा जाता है, और Google कुकीज़ भी सेट कर सकता है।"
+
+#: theme/inc/forms/class-contact-settings.php
+msgid "Show map"
+msgstr "नक्शा दिखाएँ"
+
+#: theme/inc/forms/class-contact-settings.php
+msgid "Open in Google Maps"
+msgstr "Google Maps में खोलें"
+
+#: theme/inc/forms/class-contact-settings.php
+msgid "(opens in a new tab)"
+msgstr "(नए टैब में खुलता है)"

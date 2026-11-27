@@ -48,7 +48,7 @@ stamp_stable_tag() {
 if [[ "${SKIP_BUILD}" -eq 0 ]]; then
 	npm run build
 fi
-for f in theme-mode navigation copy contact-form ui-states infinite-scroll; do
+for f in theme-mode navigation copy contact-form ui-states infinite-scroll map; do
 	if [[ ! -f "${THEME_SRC}/build/${f}.js" || ! -f "${THEME_SRC}/build/${f}.asset.php" ]]; then
 		echo "ERROR: missing build output theme/build/${f}.js(.asset.php). Run without --skip-build." >&2
 		exit 1

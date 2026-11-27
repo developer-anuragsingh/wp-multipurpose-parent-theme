@@ -26,6 +26,7 @@ const entry = {
 	'ui-states': path.resolve( __dirname, 'theme/src/js/ui-states.js' ),
 	'contact-form': path.resolve( __dirname, 'theme/src/js/contact-form.js' ),
 	'infinite-scroll': path.resolve( __dirname, 'theme/src/js/infinite-scroll.js' ),
+	map: path.resolve( __dirname, 'theme/src/js/map.js' ),
 };
 
 const outputPath = path.resolve( __dirname, 'theme/build' );

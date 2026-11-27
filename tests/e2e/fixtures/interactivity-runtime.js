@@ -89,6 +89,21 @@ function resolvePath( obj, path ) {
 		);
 }
 
+/**
+ * Resolve a directive value the way the real runtime does: `context.*` reads
+ * the element's context, anything else reads the store (state/actions/...).
+ *
+ * @param {Object} storeDef The namespace store.
+ * @param {Object} context  The active context.
+ * @param {string} path     Directive value, e.g. "state.isOpen" or "context.loaded".
+ * @return {*} The resolved value.
+ */
+function resolveValue( storeDef, context, path ) {
+	if ( path && path.startsWith( 'context.' ) ) {
+		return resolvePath( context, path.slice( 'context.'.length ) );
+	}
+	return resolvePath( storeDef, path );
+}
 function updateBindings( root, storeDef, context ) {
 	activeContext = context;
 	activeElement = root;
@@ -102,7 +117,7 @@ function updateBindings( root, storeDef, context ) {
 		const expr = el.getAttribute( 'data-wp-text' );
 		if ( expr ) {
 			activeElement = el;
-			const val = resolvePath( storeDef, expr );
+			const val = resolveValue( storeDef, context, expr );
 			if ( val !== undefined && val !== null ) {
 				el.textContent = String( val );
 			}
@@ -116,7 +131,7 @@ function updateBindings( root, storeDef, context ) {
 			if ( attr.name.startsWith( 'data-wp-bind--' ) ) {
 				const targetAttr = attr.name.replace( 'data-wp-bind--', '' );
 				activeElement = el;
-				const val = resolvePath( storeDef, attr.value );
+				const val = resolveValue( storeDef, context, attr.value );
 				if ( targetAttr === 'hidden' ) {
 					if ( val ) {
 						el.setAttribute( 'hidden', '' );
@@ -135,7 +150,7 @@ function updateBindings( root, storeDef, context ) {
 			} else if ( attr.name.startsWith( 'data-wp-class--' ) ) {
 				const className = attr.name.replace( 'data-wp-class--', '' );
 				activeElement = el;
-				const val = resolvePath( storeDef, attr.value );
+				const val = resolveValue( storeDef, context, attr.value );
 				if ( val ) {
 					el.classList.add( className );
 				} else {

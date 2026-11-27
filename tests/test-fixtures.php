@@ -47,6 +47,13 @@ class Test_Fixtures {
 			);
 		}
 
+		// The harness map is a pasted copy of render_map(); only the generated
+		// notice id may differ.
+		$map_real = (string) preg_replace( '/atlas-map-notice-\d+/', 'atlas-map-notice-1', \Atlas\Contact_Settings::render_map( 'https://maps.google.com/maps?q=28.6139%2C77.2090&z=15&output=embed' ) );
+		$results[] = array(
+			'name'   => 'Fixture drift: the E2E harness map markup equals Atlas\\Contact_Settings::render_map() output',
+			'passed' => '' !== $map_real && str_contains( $harness, $map_real ),
+		);
 		$results[] = array(
 			'name'   => 'Header: the drawer toggle is a real link to the panel (works with no JS) and not a bare button',
 			'passed' => 1 === preg_match( '/<a href="#atlas-nav-panel"[^>]*class="atlas-nav__toggle"/', $header )
