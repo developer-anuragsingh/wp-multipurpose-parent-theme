@@ -213,4 +213,4 @@ Four layers, from fastest/local to authoritative:
 - **Docs matrix:** [`docs/README.md`](./docs/README.md)
 - **Automation detail:** [`docs/07-performance-and-qa/06-automation-setup.md`](./docs/07-performance-and-qa/06-automation-setup.md)
 - **Coding standards:** [`docs/07-performance-and-qa/05-coding-standards.md`](./docs/07-performance-and-qa/05-coding-standards.md)
-- **Security:** [`docs/06-security-and-i18n/01-security-and-data.md`](./docs/06-security-and-i18n/01-security-and-data.md)
+- **Security:** [`docs/06-security-and-i18n/01-security-and-data.md`](./docs/06-security-and-i18n/01-security-and-data.md); report vulnerabilities privately as described in [`SECURITY.md`](./SECURITY.md)

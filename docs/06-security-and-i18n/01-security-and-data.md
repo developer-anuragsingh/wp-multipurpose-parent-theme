@@ -53,7 +53,7 @@ Because the theme uses the WordPress Interactivity API for dynamic frontend feat
 * CSRF intent is confirmed via the standard `wp_rest` nonce (`X-WP-Nonce`) that the Interactivity API attaches to store requests — in addition to, never instead of, the capability check.
 
 ## 8. Content Security Policy (CSP)
-The theme **emits** security headers itself via `Atlas\Security_Headers` (`theme/inc/class-security-headers.php`, wired on the core `wp_headers` filter), preventing unauthorized third-party scripts from loading — critical for the E-Commerce (WooCommerce) checkout flows.
+The theme **emits** security headers itself via `Atlas\Security_Headers` (`theme/inc/security/class-security-headers.php`, wired on the core `wp_headers` filter), preventing unauthorized third-party scripts from loading — critical for the E-Commerce (WooCommerce) checkout flows.
 
 | Header | Default | Notes |
 |---|---|---|
@@ -83,4 +83,7 @@ Rules: a header already set by the server, CDN or a plugin is **never overwritte
 NGO and commerce niches collect personal data, so privacy is a first-class security concern, not an afterthought.
 * **Consent before collection:** gate non-essential cookies and third-party embeds behind explicit consent.
 * **Local-first assets:** self-host fonts via the Font Library API (no third-party `<link>` beacons) — see `01-architecture/01-fse-overview.md` §6.
-* **Core privacy hooks:** integrate with WordPress personal-data export/erasure hooks for any custom data the theme stores, and document retention periods for form submissions.
+* **Core privacy hooks:** integrate with WordPress personal-data export/erasure hooks for any custom data the theme stores, and document retention periods for form submissions.* **Known gap, Google Maps embed:** the Contact Us pattern (`theme/patterns/contact-page.php`) shows a Google Maps `<iframe>` by default (`atlas_contact_show_map` defaults to on). It is lazy-loaded but not behind consent, so it breaks the "consent before collection" rule above: Google receives the visitor's IP and may set cookies once the map scrolls into view. Until a click-to-load placeholder exists, the theme's `readme.txt` (Privacy) tells site owners to turn it off (Customizer, "Atlas: Contact Page & Channels") or disclose it in their privacy policy.
+
+## 10. Vulnerability Disclosure
+[`SECURITY.md`](../../SECURITY.md) at the repository root is the policy: supported versions (the latest minor line of the parent, the latest release of each child), private reporting through GitHub's **Report a vulnerability** form (never a public issue), response targets, scope and coordinated disclosure through a GitHub Security Advisory. GitHub shows it on the repository's Security tab. Private vulnerability reporting must be switched on in **Settings -> Code security -> Private vulnerability reporting** for that form to appear. `tests/test-readme.php` fails if `SECURITY.md` disappears or stops asking for private reporting, and if the theme `readme.txt` stops pointing to it.

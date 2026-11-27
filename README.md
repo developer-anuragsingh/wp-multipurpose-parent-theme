@@ -8,6 +8,7 @@ Production-ready Full-Site Editing (FSE) parent theme engineered with native Wor
 👉 **[View Master Plan (`docs/README.md`)](./docs/README.md)** — full technical documentation matrix.
 
 👉 **[View Changelog (`CHANGELOG.md`)](./CHANGELOG.md)** — track completed features and release history.
+👉 **Found a security problem? Read [`SECURITY.md`](./SECURITY.md)** and report it privately, not in a public issue.
 
 ## 📦 Building & Packaging Releases
 
