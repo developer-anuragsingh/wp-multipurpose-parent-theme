@@ -42,10 +42,17 @@ function paletteCss() {
 	const fontVars = themeJson.settings.typography.fontSizes
 		.map( ( f ) => `--wp--preset--font-size--${ f.slug }:${ f.size };` )
 		.join( '' );
+	// Spacing presets from theme.json too (the harnesses used to hard-code a
+	// scale that matched neither the theme nor core).
+	const spacingVars = themeJson.settings.spacing.spacingSizes
+		.map( ( s ) => `--wp--preset--spacing--${ s.slug }:${ s.size };` )
+		.join( '' );
 	const vars =
 		palette
 			.map( ( c ) => `--wp--preset--color--${ c.slug }:${ c.color };` )
-			.join( '' ) + fontVars;
+			.join( '' ) +
+		fontVars +
+		spacingVars;
 	const classes = palette
 		.map(
 			( c ) =>

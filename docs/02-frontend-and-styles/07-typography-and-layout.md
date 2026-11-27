@@ -37,5 +37,20 @@ The switcher shows **EN / HI** (the `short` value in `Atlas\I18n::get_supported_
 * The tooltip shows the native name for sighted users.
 * To show the native script instead, change one `esc_html( $short )` back to `$native` in `render_switcher()` (and the static copy in `header.html`); `HI` in Latin script is the more compact choice but is less recognisable to a reader who knows only Devanagari.
 
-## 5. Known Open Item: the Spacing Scale Is Ignored Too
-`settings.spacing.spacingSizes` has the same problem (`defaultSpacingSizes` is still true): the theme's `20..60` values (0.5 / 1 / 1.5 / 2.5 / 4 rem) are not applied, core's defaults (0.44 / 0.67 / 1 / 1.5 / 2.25 rem) are. Fixing it means setting `defaultSpacingSizes: false`, which would make section padding **larger** (`60`: 2.25 rem -> 4 rem), the opposite of this change's direction, so it is deliberately left for a design decision. Until then, treat the rendered (core default) values as the real ones.
+## 5. The Spacing Scale
+
+`settings.spacing.spacingSizes` had the same trap as the font scale: with `defaultSpacingSizes` left on, core's `20..80` presets (0.44 / 0.67 / 1 / 1.5 / 2.25 / 3.38 / 5.06 rem) replaced the theme's colliding slugs and the theme origin was empty. The theme now sets `"defaultSpacingSizes": false` and owns the full scale:
+
+| Slug | Name | Size | Core value it replaces |
+|---|---|---|---|
+| `20` | X-Small | 0.5rem (8px) | 0.44rem |
+| `30` | Small | 0.75rem (12px) | 0.67rem |
+| `40` | Medium | 1rem (16px) | 1rem |
+| `50` | Large | 1.5rem (24px) | 1.5rem |
+| `60` | X-Large | clamp(1.5rem, 4vw, 2.25rem) (24-36px) | 2.25rem |
+| `70` | 2X-Large | clamp(2rem, 5vw, 3rem) (32-48px) | 3.38rem |
+| `80` | 3X-Large | clamp(2.5rem, 7vw, 4rem) (40-64px) | 5.06rem |
+
+Why these values: the old theme values (`60` = 4rem) were never rendered, so adopting them would have made every section much larger, against the compact-UI direction of §1. The scale keeps the spacing users already see on desktop (`40`, `50`, `60` are unchanged at 1280px), rounds the small steps to whole pixels, and makes the large steps fluid so section padding tightens on phones (`60` is 24px at 412px instead of 36px). `70` and `80` are not used by the theme itself but are defined so content saved with core's presets keeps a value.
+
+Guards: `tests/test-typography.php` (the switch is off, every slug 20-80 exists, the scale is increasing, 40 = 16px, 60 <= 36px, 80 <= 64px, nothing below 8px) and `tests/integration/test-theme-json.php` (real WordPress emits `--wp--preset--spacing--40: 1rem` and the clamp for `60`, and none of core's values). The E2E harnesses read the spacing presets from `theme.json` through `/theme-palette.css` (`tests/e2e/fixtures/server.js`) instead of a hand-copied scale.

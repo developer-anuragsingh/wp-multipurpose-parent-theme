@@ -53,6 +53,20 @@ class Test_Theme_Json extends WP_UnitTestCase {
 		$this->assertStringContainsString( '--wp--style--root--padding-right: clamp(1rem, 4vw, 2rem)', $css );
 	}
 
+	public function test_the_theme_spacing_scale_is_used_not_cores(): void {
+		// Same trap as the font scale: with defaultSpacingSizes left on, core's
+		// 20-80 presets (0.44rem ... 5.06rem) win and the theme origin is empty.
+		$by_slug = wp_list_pluck( wp_get_global_settings( array( 'spacing', 'spacingSizes', 'theme' ) ) ?? array(), 'size', 'slug' );
+		foreach ( array( '20' => '0.5rem', '30' => '0.75rem', '40' => '1rem', '50' => '1.5rem' ) as $slug => $size ) {
+			$this->assertSame( $size, $by_slug[ $slug ] ?? null, "Theme spacing preset {$slug} is not applied." );
+		}
+		$css = wp_get_global_stylesheet( array( 'variables' ) );
+		$this->assertStringContainsString( '--wp--preset--spacing--40: 1rem', $css );
+		$this->assertStringContainsString( '--wp--preset--spacing--60: clamp(1.5rem, 4vw, 2.25rem)', $css );
+		foreach ( array( '20: 0.44rem', '30: 0.67rem', '60: 2.25rem', '80: 5.06rem' ) as $core_value ) {
+			$this->assertStringNotContainsString( '--wp--preset--spacing--' . $core_value, $css, "Core default spacing {$core_value} is still emitted." );
+		}
+	}
 	public function test_role_based_colour_presets_exist(): void {
 		$palette = wp_list_pluck( wp_get_global_settings( array( 'color', 'palette', 'theme' ) ), 'color', 'slug' );
 
