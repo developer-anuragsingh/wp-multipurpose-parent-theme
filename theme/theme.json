@@ -140,12 +140,15 @@
       "margin": true,
       "blockGap": true,
       "customSpacingSize": true,
+      "defaultSpacingSizes": false,
       "spacingSizes": [
         { "slug": "20", "name": "X-Small", "size": "0.5rem" },
-        { "slug": "30", "name": "Small", "size": "1rem" },
-        { "slug": "40", "name": "Medium", "size": "1.5rem" },
-        { "slug": "50", "name": "Large", "size": "2.5rem" },
-        { "slug": "60", "name": "X-Large", "size": "4rem" }
+        { "slug": "30", "name": "Small", "size": "0.75rem" },
+        { "slug": "40", "name": "Medium", "size": "1rem" },
+        { "slug": "50", "name": "Large", "size": "1.5rem" },
+        { "slug": "60", "name": "X-Large", "size": "clamp(1.5rem, 4vw, 2.25rem)" },
+        { "slug": "70", "name": "2X-Large", "size": "clamp(2rem, 5vw, 3rem)" },
+        { "slug": "80", "name": "3X-Large", "size": "clamp(2.5rem, 7vw, 4rem)" }
       ]
     }
   },

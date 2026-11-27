@@ -90,6 +90,53 @@ class Test_Typography {
 			'passed' => 'var:preset|font-size|medium' === $json['styles']['typography']['fontSize'],
 		);
 
+		// --- Spacing scale. Same trap as the font scale: with defaultSpacingSizes
+		// left on, core's 20-80 presets replace the theme's colliding slugs. ---
+		$spacing = $json['settings']['spacing'];
+		$results[] = array(
+			'name'   => 'Spacing: defaultSpacingSizes is false, otherwise core silently replaces the theme\'s own spacing scale',
+			'passed' => isset( $spacing['defaultSpacingSizes'] ) && false === $spacing['defaultSpacingSizes'],
+		);
+		$space = array();
+		foreach ( $spacing['spacingSizes'] as $s ) {
+			$space[ $s['slug'] ] = $s['size'];
+		}
+		$results[] = array(
+			'name'   => 'Spacing: every core slug (20-80) is defined, so content saved with any core preset keeps a value',
+			'passed' => array() === array_diff( array( '20', '30', '40', '50', '60', '70', '80' ), array_keys( $space ) ),
+		);
+		// Largest value a size can reach: the clamp() maximum, or the fixed size.
+		$max_px = static function ( string $size ): float {
+			if ( preg_match( '/^clamp\(\s*([\d.]+(?:rem|px))\s*,[^,]+,\s*([\d.]+(?:rem|px))\s*\)$/', $size, $m ) ) {
+				return self::px( $m[2] );
+			}
+			return self::px( $size );
+		};
+		$min_px = static function ( string $size ): float {
+			if ( preg_match( '/^clamp\(\s*([\d.]+(?:rem|px))\s*,/', $size, $m ) ) {
+				return self::px( $m[1] );
+			}
+			return self::px( $size );
+		};
+		$maxes   = array_map( $max_px, array_values( $space ) );
+		$ordered = $maxes;
+		sort( $ordered );
+		$results[] = array(
+			'name'   => 'Spacing: the scale is strictly increasing (' . implode( ' < ', array_map( 'strval', $maxes ) ) . ' px at most)',
+			'passed' => $maxes === $ordered && count( array_unique( $maxes ) ) === count( $maxes ),
+		);
+		$results[] = array(
+			'name'   => 'Spacing: the scale stays compact (40 = 16px for gaps, 60 tops out at 36px, 80 at 64px)',
+			'passed' => 16.0 === $max_px( $space['40'] ) && $max_px( $space['60'] ) <= 36 && $max_px( $space['80'] ) <= 64,
+		);
+		$fluid_ok = true;
+		foreach ( $space as $size ) {
+			$fluid_ok = $fluid_ok && $min_px( $size ) <= $max_px( $size ) && $min_px( $size ) >= 8;
+		}
+		$results[] = array(
+			'name'   => 'Spacing: every preset is at least 8px, and fluid presets have min <= max',
+			'passed' => $fluid_ok,
+		);
 		// --- Side padding. ---
 		$pad = $json['styles']['spacing']['padding'] ?? array();
 
