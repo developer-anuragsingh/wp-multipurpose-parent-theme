@@ -27,4 +27,4 @@ The deployment workflow depends strictly on the hosting environment:
 The theme natively supports both English and Hindi languages to cater to a diverse user base[cite: 2].
 * **Text Domains:** Every string in the theme (PHP or Block JSON) must be wrapped in native gettext functions (e.g., `__('Read More', 'atlas-theme')`).
 * **Translation Catalogs:** The theme ships with a canonical `atlas-theme.pot` file in the `/languages/` directory, alongside pre-compiled Hindi (`hi_IN.po` / `hi_IN.mo`) localization bundles.
-* **RTL & Typography:** The `theme.json` engine automatically adjusts CSS margins, padding, and font families when a Hindi locale or Right-to-Left (RTL) language is detected.
+* **Hindi typography:** on a Hindi page (`<html lang="hi-IN">`) the body text grows to 15-16px with 1.75 line-height and captions to 13-14px, via `:root:lang(hi)` in `theme/assets/css/interactivity.css` (see `02-frontend-and-styles/07-typography-and-layout.md` §6). **RTL** is not handled yet: the theme ships no RTL stylesheet or RTL-specific rules.

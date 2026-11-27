@@ -55,6 +55,26 @@
 }
 
 /* -------------------------------------------------------------------------
+ * Hindi (Devanagari) text size.
+ *
+ * Devanagari has stacked vowel signs above and below the letters, so at the
+ * Latin body size (14-15px, theme.json "medium") it is hard to read. When the
+ * page is Hindi (<html lang="hi-IN">, set by Atlas\I18n), re-point the body
+ * and caption presets, as dark mode does for colours. Scoped to the ROOT only:
+ * an inline lang="hi" element on an English page (the "HI" switcher link)
+ * keeps the Latin sizes. Ranges: body 15-16px, captions 13-14px.
+ * ------------------------------------------------------------------------- */
+:root:lang(hi) {
+	--wp--preset--font-size--medium: clamp(0.9375rem, 0.875rem + 0.25vw, 1rem);
+	--wp--preset--font-size--small: clamp(0.8125rem, 0.75rem + 0.2vw, 0.875rem);
+}
+
+/* More leading for the vowel signs (theme.json body line-height is 1.6). */
+:root:lang(hi) body {
+	line-height: 1.75;
+}
+
+/* -------------------------------------------------------------------------
  * Icons (Atlas\Icons). Inline SVG, stroke = currentColor, so every icon follows
  * its control's text colour in light mode, dark mode, hover and focus. Purely
  * decorative: the control carries the accessible name.
