@@ -1,4 +1,4 @@
-# 07. Typography, Side Padding & the Language Switcher
+# 07. Typography, Side Padding, the Language Switcher & Hindi Text
 
 **File:** `docs/02-frontend-and-styles/07-typography-and-layout.md`
 **Module:** Frontend & Styles
@@ -54,3 +54,18 @@ The switcher shows **EN / HI** (the `short` value in `Atlas\I18n::get_supported_
 Why these values: the old theme values (`60` = 4rem) were never rendered, so adopting them would have made every section much larger, against the compact-UI direction of §1. The scale keeps the spacing users already see on desktop (`40`, `50`, `60` are unchanged at 1280px), rounds the small steps to whole pixels, and makes the large steps fluid so section padding tightens on phones (`60` is 24px at 412px instead of 36px). `70` and `80` are not used by the theme itself but are defined so content saved with core's presets keeps a value.
 
 Guards: `tests/test-typography.php` (the switch is off, every slug 20-80 exists, the scale is increasing, 40 = 16px, 60 <= 36px, 80 <= 64px, nothing below 8px) and `tests/integration/test-theme-json.php` (real WordPress emits `--wp--preset--spacing--40: 1rem` and the clamp for `60`, and none of core's values). The E2E harnesses read the spacing presets from `theme.json` through `/theme-palette.css` (`tests/e2e/fixtures/server.js`) instead of a hand-copied scale.
+
+## 6. Hindi (Devanagari) Text Size
+Devanagari stacks vowel signs above and below the letters, so the Latin body size (`medium`, 14-15px) is too small for Hindi. When `Atlas\I18n` renders a Hindi page (`<html lang="hi-IN">`), `theme/assets/css/interactivity.css` re-points the presets under `:root:lang(hi)`, the same way dark mode re-points colours:
+
+| Preset | Latin (theme.json) | Hindi page |
+|---|---|---|
+| `medium` (body) | 14-15px | `clamp(0.9375rem, 0.875rem + 0.25vw, 1rem)`: 15px at 412px, 16px from about 1000px |
+| `small` (captions, labels, switcher) | 12-13px | `clamp(0.8125rem, 0.75rem + 0.2vw, 0.875rem)`: 13-14px |
+| body `line-height` | 1.6 | 1.75 |
+
+* **Root only.** The selector is `:root:lang(hi)`, never a bare `:lang(hi)`: an inline `lang="hi"` element on an English page (the "HI" switcher link, a Hindi quotation) keeps the Latin size, so words do not jump in size inside English text.
+* **Whole page.** On a Hindi page every element that uses those presets grows, including any English content the site has not translated yet. That is deliberate: the UI chrome is Hindi, and a mixed-size page reads worse.
+* **Fonts.** Inter and Sora have no Devanagari glyphs; Hindi text uses the `system-ui` fallback in the font stack (Kohinoor/ITF Devanagari on Apple, Nirmala UI on Windows, Noto Sans Devanagari on Android).
+* **Child themes** that change the scale can override the Hindi values with the same `:root:lang(hi)` selector in their own CSS.
+* **Guards:** `tests/test-typography.php` (Hindi body 15-16px, captions 13-14px, line-height >= 1.7, no unscoped `:lang(hi)`) and `tests/e2e/language-switcher.spec.js` (computed body size and leading on a Hindi root; an inline Hindi paragraph on an English page keeps the Latin size). Verified on the Studio site: `?lang=hi` body 15.03px at 412px and 16px at 1280px, English unchanged (14.1px / 15px).
