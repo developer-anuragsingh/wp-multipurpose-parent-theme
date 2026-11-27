@@ -363,9 +363,13 @@
 	display: inline-flex;
 }
 
-/* JS-only control: ships hidden, revealed on hydration only when canCopy. */
+/* JS-only control: ships hidden, revealed on hydration only when canCopy.
+ * The box is reserved while hidden (visibility, not display:none) so revealing
+ * it does not push the content below the quote down (CLS). visibility:hidden
+ * also keeps it out of the tab order and the accessibility tree. */
 .atlas-copy__button[hidden] {
-	display: none;
+	display: inline-flex;
+	visibility: hidden;
 }
 
 .atlas-copy__button:focus-visible {
