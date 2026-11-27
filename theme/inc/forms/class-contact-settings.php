@@ -504,7 +504,7 @@ class Contact_Settings {
 
 		foreach ( $settings as $key => $meta ) {
 			$sanitize = 'sanitize_text_field';
-			if ( 'switch' === $meta['type'] || 'checkbox' === $meta['type'] ) {
+			if ( 'switch' === $meta['type'] ) {
 				$sanitize = static fn( $val ) => $val ? '1' : '0';
 			} elseif ( 'email' === $meta['type'] ) {
 				$sanitize = 'sanitize_email';

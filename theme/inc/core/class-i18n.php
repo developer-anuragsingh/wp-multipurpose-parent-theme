@@ -327,7 +327,7 @@ class I18n {
 		}
 
 		$lifetime = defined( 'YEAR_IN_SECONDS' ) ? (int) YEAR_IN_SECONDS : 31536000;
-		$path     = defined( 'COOKIEPATH' ) && is_string( COOKIEPATH ) && '' !== COOKIEPATH ? COOKIEPATH : '/';
+		$path     = defined( 'COOKIEPATH' ) && '' !== COOKIEPATH ? COOKIEPATH : '/';
 		$domain   = defined( 'COOKIE_DOMAIN' ) && is_string( COOKIE_DOMAIN ) ? COOKIE_DOMAIN : '';
 		$secure   = function_exists( 'is_ssl' ) ? is_ssl() : false;
 

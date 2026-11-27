@@ -3,7 +3,6 @@
   "description": "Dev tooling for the Atlas FSE parent theme: PHP_CodeSniffer with WordPress Coding Standards and PHPCompatibilityWP (PHP 8.1).",
   "type": "wordpress-theme",
   "license": "GPL-2.0-or-later",
-  "require": {},
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.9",
     "wp-coding-standards/wpcs": "^3.1",
@@ -12,7 +11,9 @@
     "phpunit/phpunit": "^9.6",
     "yoast/phpunit-polyfills": "^2.0",
     "wp-phpunit/wp-phpunit": "7.1.*",
-    "roots/wordpress-no-content": "7.1.*"
+    "roots/wordpress-no-content": "7.1.*",
+    "phpstan/phpstan": "^2.1",
+    "szepeviktor/phpstan-wordpress": "^2.0"
   },
   "config": {
     "allow-plugins": {
@@ -25,6 +26,7 @@
   "scripts": {
     "lint": "phpcs",
     "lint:fix": "phpcbf",
+    "analyse": "phpstan analyse --memory-limit=1G",
     "test": "php tests/run-tests.php",
     "test:wp": "phpunit -c phpunit-wp.xml.dist",
     "test:wp:local": "bash scripts/test-wp-local.sh"

@@ -24,6 +24,7 @@ npm install        # @wordpress/scripts, husky, lint-staged (also installs the g
 | **PHP standards** | `composer lint` (`phpcs`) | `.phpcs.xml.dist` | `WordPress` + `WordPress-Extra` ruleset, text domain `atlas-theme`, `atlas`/`Atlas`/`ATLAS` prefixes, min WP 6.8 |
 | **PHP compatibility** | `composer lint` (`phpcs`) | `.phpcs.xml.dist` | `PHPCompatibilityWP` against `testVersion` `8.1-` |
 | **PHP auto-fix** | `composer lint:fix` (`phpcbf`) | `.phpcs.xml.dist` | Applies the auto-fixable subset of the above |
+| **PHP static analysis** | `composer analyse` (`phpstan`) | `phpstan.neon.dist` | Level 5 with WordPress stubs (`szepeviktor/phpstan-wordpress`), PHP 8.1 language level: undefined functions/methods/constants, wrong argument types, dead conditions |
 | **JS lint** | `npm run lint:js` | `@wordpress/scripts` defaults | `wp-scripts lint-js` over `theme/src/js` |
 | **CSS lint** | `npm run lint:css` | `@wordpress/scripts` defaults | `wp-scripts lint-style` over `theme/src/css/**/*.css` |
 | **Build** | `npm run build` | `@wordpress/scripts` | Interactivity API bundles / optional Tailwind compile |
@@ -42,6 +43,8 @@ The hook catches style and obvious secret issues before they reach CI. Per `05-c
 ## 4. CI (authoritative, every push and PR)
 `.github/workflows/ci.yml` runs on `push` and `pull_request` with independent jobs:
 * **`php`** — `shivammathur/setup-php` (PHP 8.1, 8.2, 8.3, 8.4) → `composer install` → `composer lint` → `composer test`.
+* **`phpstan`** — PHP 8.4 → `composer install` → `composer analyse` (annotations on the PR diff via `--error-format=github`). Config notes: `treatPhpDocTypesAsCertain: false` because WordPress does not enforce PHPDoc types (a filter can return anything, so the theme re-checks types after `apply_filters()`, and PHPStan must not call those checks redundant); `tests/phpstan/bootstrap.php` gives types to constants defined at runtime (`ATLAS_THEME_DIR`, ...); every `ignoreErrors` entry carries the reason (stub too strict, generated `theme/build/`, an intentional return value). Fix new findings rather than adding ignores; level 6+ mainly adds missing array value types (35 at level 6).
+* **CodeQL** (separate workflow `.github/workflows/codeql.yml`) — `security-extended` queries for `javascript-typescript` (theme modules, tests, scripts) and `actions` (the workflows themselves: script injection, over-broad permissions) on pushes to `main`, PRs and weekly. Results appear under **Security -> Code scanning**. CodeQL has no PHP support; PHP is covered by PHPStan and PHPCS. Only this job gets `security-events: write`.
 * **`wp-integration`** — the theme inside real WordPress: MySQL 8 service, WordPress 6.8 on PHP 8.1 and the `composer.lock` version on PHP 8.4 → `composer test:wp` (`03-testing-strategy.md` §8).
 * **`node`** — `actions/setup-node` (Node LTS) → `npm ci` → `npm run lint:js` + `npm run lint:css` → `npm test`.
 * **`e2e`** — build + Playwright E2E and visual regression.
