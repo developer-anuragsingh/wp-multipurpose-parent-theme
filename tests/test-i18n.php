@@ -121,6 +121,32 @@ class Test_I18n {
 			'passed' => $updated,
 		);
 
+		// Test 9: the locale cookie is HttpOnly (no script reads it) and Lax.
+		$opts      = Atlas\I18n::locale_cookie_options();
+		$results[] = array(
+			'name'   => 'I18n locale cookie is HttpOnly and SameSite=Lax, with a future expiry and a path',
+			'passed' => true === $opts['httponly'] && 'Lax' === $opts['samesite'] && $opts['expires'] > time() && '' !== $opts['path'],
+		);
+		// No theme script may depend on the cookie, or HttpOnly would break it.
+		$reads_cookie = false;
+		foreach ( glob( ATLAS_THEME_DIR . '/src/js/*.js' ) as $js ) {
+			$reads_cookie = $reads_cookie || str_contains( (string) file_get_contents( $js ), 'document.cookie' );
+		}
+		$results[] = array(
+			'name'   => 'I18n no theme script reads document.cookie (the HttpOnly locale cookie stays server-only)',
+			'passed' => ! $reads_cookie,
+		);
+		// Test 10: the cookie is sent only when the browser does not hold that value.
+		unset( $_COOKIE['atlas_locale'] );
+		$needs_new = Atlas\I18n::needs_locale_cookie( 'hi_IN' );
+		$_COOKIE['atlas_locale'] = 'hi_IN';
+		$needs_same   = Atlas\I18n::needs_locale_cookie( 'hi_IN' );
+		$needs_change = Atlas\I18n::needs_locale_cookie( 'en_US' );
+		unset( $_COOKIE['atlas_locale'] );
+		$results[] = array(
+			'name'   => 'I18n sets the locale cookie for a new or changed value, not when the browser already has it',
+			'passed' => true === $needs_new && false === $needs_same && true === $needs_change,
+		);
 		return $results;
 	}
 }

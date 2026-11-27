@@ -316,35 +316,67 @@ class I18n {
 	}
 
 	/**
-	 * Set the locale cookie on public GET responses.
+	 * Locale already sent as a cookie in this request ('' = none yet).
+	 *
+	 * The filter_locale() method runs on every determine_locale call (several per
+	 * request), which used to send the same Set-Cookie header three times.
+	 *
+	 * @var string
+	 */
+	private static $cookie_sent = '';
+	/**
+	 * Whether this request still has to (re)send the locale cookie.
+	 *
+	 * Not when it was already sent in this request, and not when the browser
+	 * already holds the same value (so a plain ?lang= link adds no header).
+	 *
+	 * @param string $locale Validated locale code.
+	 * @return bool True when setcookie() should run.
+	 */
+	public static function needs_locale_cookie( string $locale ): bool {
+		if ( $locale === self::$cookie_sent ) {
+			return false;
+		}
+		$current = isset( $_COOKIE[ self::COOKIE_NAME ] ) && is_string( $_COOKIE[ self::COOKIE_NAME ] )
+			? sanitize_text_field( wp_unslash( $_COOKIE[ self::COOKIE_NAME ] ) )
+			: '';
+		return $current !== $locale;
+	}
+	/**
+	 * Attributes of the locale cookie.
+	 *
+	 * HttpOnly: only PHP reads the cookie (filter_locale); no script needs it,
+	 * so injected JavaScript cannot read or change it. SameSite=Lax and Secure
+	 * on HTTPS.
+	 *
+	 * @return array{expires:int,path:string,domain:string,secure:bool,httponly:bool,samesite:string}
+	 */
+	public static function locale_cookie_options(): array {
+		$lifetime = defined( 'YEAR_IN_SECONDS' ) ? (int) YEAR_IN_SECONDS : 31536000;
+		$path     = defined( 'COOKIEPATH' ) && '' !== COOKIEPATH ? COOKIEPATH : '/';
+		$domain   = defined( 'COOKIE_DOMAIN' ) && is_string( COOKIE_DOMAIN ) ? COOKIE_DOMAIN : '';
+		return array(
+			'expires'  => time() + $lifetime,
+			'path'     => $path,
+			'domain'   => $domain,
+			'secure'   => function_exists( 'is_ssl' ) ? is_ssl() : false,
+			'httponly' => true,
+			'samesite' => 'Lax',
+		);
+	}
+	/**
+	 * Set the locale cookie on public GET responses (at most once per request).
 	 *
 	 * @param string $locale Validated locale code.
 	 * @return void
 	 */
 	private static function set_locale_cookie( string $locale ): void {
-		if ( headers_sent() ) {
+		if ( headers_sent() || ! self::needs_locale_cookie( $locale ) ) {
 			return;
 		}
-
-		$lifetime = defined( 'YEAR_IN_SECONDS' ) ? (int) YEAR_IN_SECONDS : 31536000;
-		$path     = defined( 'COOKIEPATH' ) && '' !== COOKIEPATH ? COOKIEPATH : '/';
-		$domain   = defined( 'COOKIE_DOMAIN' ) && is_string( COOKIE_DOMAIN ) ? COOKIE_DOMAIN : '';
-		$secure   = function_exists( 'is_ssl' ) ? is_ssl() : false;
-
-		setcookie(
-			self::COOKIE_NAME,
-			$locale,
-			array(
-				'expires'  => time() + $lifetime,
-				'path'     => $path,
-				'domain'   => $domain,
-				'secure'   => $secure,
-				'httponly' => false,
-				'samesite' => 'Lax',
-			)
-		);
+		setcookie( self::COOKIE_NAME, $locale, self::locale_cookie_options() );
+		self::$cookie_sent = $locale;
 	}
-
 	/**
 	 * Resolve the current request URL for canonical hreflang and query building.
 	 *
