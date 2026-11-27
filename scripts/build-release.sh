@@ -33,6 +33,16 @@ if [[ -z "${STYLE_VER}" || "${STYLE_VER}" != "${CONST_VER}" || "${STYLE_VER}" !=
 	exit 1
 fi
 VERSION="${STYLE_VER}"
+# stamp_stable_tag <readme.txt> <version>: set the WordPress.org "Stable tag"
+# of a STAGED readme to the release version. release-please bumps style.css but
+# cannot annotate readme.txt (an annotation would show up in the parsed
+# header), so the zip is stamped here and never ships a stale Stable tag.
+stamp_stable_tag() {
+	local readme="$1" ver="$2"
+	grep -q '^Stable tag:' "${readme}" || { echo "ERROR: ${readme} has no 'Stable tag:' line" >&2; exit 1; }
+	sed -i.bak "s/^Stable tag:.*/Stable tag: ${ver}/" "${readme}" && rm -f "${readme}.bak"
+	grep -qx "Stable tag: ${ver}" "${readme}" || { echo "ERROR: could not stamp Stable tag in ${readme}" >&2; exit 1; }
+}
 
 # --- 2. Build the generated assets. ------------------------------------------
 if [[ "${SKIP_BUILD}" -eq 0 ]]; then
@@ -53,6 +63,7 @@ rsync -a \
 	--exclude='.DS_Store' --exclude='Thumbs.db' --exclude='*.map' \
 	--exclude='.gitignore' --exclude='src/' --exclude='node_modules/' \
 	"${THEME_SRC}/" "${STAGE}/${SLUG}/"
+stamp_stable_tag "${STAGE}/${SLUG}/readme.txt" "${VERSION}"
 
 # --- 4. Zip deterministically and checksum. -----------------------------------
 mkdir -p dist
@@ -92,6 +103,7 @@ if [[ -d "${REPO_ROOT}/child-themes" ]]; then
 				--exclude='.DS_Store' --exclude='Thumbs.db' --exclude='*.map' \
 				--exclude='.gitignore' --exclude='node_modules/' \
 				"${CHILD_DIR}/" "${CHILD_STAGE}/${CHILD_SLUG}/"
+			stamp_stable_tag "${CHILD_STAGE}/${CHILD_SLUG}/readme.txt" "${CHILD_VER}"
 
 			(cd "${CHILD_STAGE}" && find "${CHILD_SLUG}" -type f | LC_ALL=C sort | zip -X -q "${CHILD_OUT}" -@)
 			(cd dist && shasum -a 256 "${CHILD_SLUG}-${CHILD_VER}.zip" > "${CHILD_SLUG}-${CHILD_VER}.zip.sha256")
