@@ -90,6 +90,34 @@ class Test_Typography {
 			'passed' => 'var:preset|font-size|medium' === $json['styles']['typography']['fontSize'],
 		);
 
+		// --- Hindi (Devanagari) sizes, re-pointed on <html lang="hi-*">. ---
+		$icss = (string) file_get_contents( ATLAS_THEME_DIR . '/assets/css/interactivity.css' );
+		preg_match( '/:root:lang\(hi\)\s*\{(.*?)\}/s', $icss, $hi );
+		$hi_body = '';
+		$hi_small = '';
+		if ( isset( $hi[1] ) ) {
+			preg_match( '/--wp--preset--font-size--medium:\s*clamp\(\s*([\d.]+rem)\s*,[^,]+,\s*([\d.]+rem)\s*\)/', $hi[1], $m_body );
+			preg_match( '/--wp--preset--font-size--small:\s*clamp\(\s*([\d.]+rem)\s*,[^,]+,\s*([\d.]+rem)\s*\)/', $hi[1], $m_small );
+			$hi_body  = $m_body ? sprintf( '%g-%g', self::px( $m_body[1] ), self::px( $m_body[2] ) ) : '';
+			$hi_small = $m_small ? sprintf( '%g-%g', self::px( $m_small[1] ), self::px( $m_small[2] ) ) : '';
+		}
+		$results[] = array(
+			'name'   => 'Typography: Hindi pages get 15-16px body text (Devanagari needs more than the 14-15px Latin size), got ' . ( '' === $hi_body ? 'none' : $hi_body . 'px' ),
+			'passed' => '15-16' === $hi_body,
+		);
+		$results[] = array(
+			'name'   => 'Typography: Hindi captions (small) are 13-14px, never the 12px Latin minimum, got ' . ( '' === $hi_small ? 'none' : $hi_small . 'px' ),
+			'passed' => '13-14' === $hi_small,
+		);
+		preg_match( '/:root:lang\(hi\)\s+body\s*\{[^}]*line-height:\s*([\d.]+)/', $icss, $hi_lh );
+		$results[] = array(
+			'name'   => 'Typography: Hindi body line-height is at least 1.7 (room for vowel signs above and below)',
+			'passed' => isset( $hi_lh[1] ) && (float) $hi_lh[1] >= 1.7,
+		);
+		$results[] = array(
+			'name'   => 'Typography: the Hindi sizes are scoped to the root, so an inline lang="hi" element on an English page keeps Latin sizes',
+			'passed' => 0 === preg_match( '/(?<!:root)(?<![\w-]):lang\(hi\)/', $icss ),
+		);
 		// --- Spacing scale. Same trap as the font scale: with defaultSpacingSizes
 		// left on, core's 20-80 presets replace the theme's colliding slugs. ---
 		$spacing = $json['settings']['spacing'];
