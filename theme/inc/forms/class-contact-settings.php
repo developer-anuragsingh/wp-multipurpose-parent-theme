@@ -91,6 +91,112 @@ class Contact_Settings {
 	}
 
 	/**
+	 * Script module handle of the click-to-load map (theme/src/js/map.js).
+	 *
+	 * @var string
+	 */
+	const MAP_MODULE_HANDLE = 'atlas-map';
+	/**
+	 * A normal Google Maps link for the same place as an embed URL.
+	 *
+	 * Used for the "Open in Google Maps" link, which works without JavaScript
+	 * and without loading anything from Google on this page. A q= place or
+	 * coordinates becomes an official Maps search URL; any other embed URL
+	 * (for example /maps/embed?pb=...) opens as is.
+	 *
+	 * @param string $embed_url Embed URL from get_map_embed_url().
+	 * @return string Link URL, or '' when there is no embed URL.
+	 */
+	public static function get_map_link_url( string $embed_url ): string {
+		if ( '' === $embed_url ) {
+			return '';
+		}
+		$query = (string) wp_parse_url( $embed_url, PHP_URL_QUERY );
+		parse_str( $query, $args );
+		if ( isset( $args['q'] ) && is_string( $args['q'] ) && '' !== $args['q'] ) {
+			return esc_url_raw( 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode( $args['q'] ) );
+		}
+		return esc_url_raw( $embed_url );
+	}
+	/**
+	 * Render the map as a click-to-load placeholder (no request to Google yet).
+	 *
+	 * Privacy: an embedded Google map sends the visitor's IP address to Google
+	 * and may set cookies as soon as it loads. The server therefore renders NO
+	 * iframe: only a notice, a "Show map" button (revealed by the atlas/map
+	 * module) and an "Open in Google Maps" link that also works without
+	 * JavaScript. The iframe is created in the browser after the click.
+	 *
+	 * @param string $embed_url Embed URL from get_map_embed_url().
+	 * @return string Placeholder HTML, or '' when there is no embed URL.
+	 */
+	public static function render_map( string $embed_url ): string {
+		if ( '' === $embed_url ) {
+			return '';
+		}
+		self::enqueue_map_module();
+		$context = wp_json_encode(
+			array(
+				'loaded' => false,
+				'src'    => $embed_url,
+				'title'  => __( 'Office location on Google Maps', 'atlas-theme' ),
+			)
+		);
+		if ( false === $context ) {
+			return '';
+		}
+		$notice_id = 'atlas-map-notice-' . wp_unique_id();
+		return sprintf(
+			'<div class="atlas-map-wrapper atlas-map" data-wp-interactive="atlas/map" data-wp-context="%1$s">' .
+				'<div class="atlas-map__frame" data-wp-watch="callbacks.renderFrame"></div>' .
+				'<div class="atlas-map__consent" data-wp-bind--hidden="context.loaded">' .
+					'<span class="atlas-map__icon" aria-hidden="true">%2$s</span>' .
+					'<p class="atlas-map__notice" id="%3$s">%4$s</p>' .
+					'<div class="atlas-map__actions">' .
+						'<button type="button" class="wp-element-button atlas-map__show" hidden aria-describedby="%3$s" data-wp-init="callbacks.revealButton" data-wp-on--click="actions.load">%5$s</button>' .
+						'<a class="atlas-map__link" href="%6$s" target="_blank" rel="noopener noreferrer">%7$s<span class="screen-reader-text"> %8$s</span></a>' .
+					'</div>' .
+				'</div>' .
+			'</div>',
+			esc_attr( $context ),
+			Icons::get( 'map-pin' ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static, trusted SVG from Atlas\Icons.
+			esc_attr( $notice_id ),
+			esc_html__( 'The map is provided by Google. Showing it sends your IP address to Google, which may also set cookies.', 'atlas-theme' ),
+			esc_html__( 'Show map', 'atlas-theme' ),
+			esc_url( self::get_map_link_url( $embed_url ) ),
+			esc_html__( 'Open in Google Maps', 'atlas-theme' ),
+			esc_html__( '(opens in a new tab)', 'atlas-theme' )
+		);
+	}
+	/**
+	 * Register and enqueue the atlas/map script module (once, front end only).
+	 *
+	 * Called from render_map(), so the module ships only on pages that
+	 * actually render a map. A missing build (npm run build not run) is
+	 * skipped: the page keeps the no-JS link.
+	 *
+	 * @return void
+	 */
+	private static function enqueue_map_module(): void {
+		static $done = false;
+		if ( $done || is_admin() || ! function_exists( 'wp_register_script_module' ) ) {
+			return;
+		}
+		$done       = true;
+		$asset_file = ATLAS_THEME_DIR . '/build/map.asset.php';
+		if ( ! file_exists( $asset_file ) ) {
+			return;
+		}
+		$asset = require $asset_file;
+		wp_register_script_module(
+			self::MAP_MODULE_HANDLE,
+			ATLAS_THEME_URI . '/build/map.js',
+			isset( $asset['dependencies'] ) ? $asset['dependencies'] : array(),
+			isset( $asset['version'] ) ? $asset['version'] : ATLAS_THEME_VERSION
+		);
+		wp_enqueue_script_module( self::MAP_MODULE_HANDLE );
+	}
+	/**
 	 * Resolve Google Maps embed source URL.
 	 *
 	 * Supports explicit embed URLs or latitude/longitude coordinates.

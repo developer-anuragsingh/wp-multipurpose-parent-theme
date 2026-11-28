@@ -11,7 +11,8 @@
  *  - Instant Direct Chat buttons (WhatsApp, Telegram, Instagram, Messenger)
  *  - Contact Information cards (Phone, Email, Hours, Physical Address)
  *  - Progressive-enhancement AJAX Contact Form with signed anti-bot token
- *  - Google Maps responsive embed (URL or coordinates)
+ *  - Google Maps embed (URL or coordinates), click-to-load: nothing is
+ *    requested from Google until the visitor clicks "Show map"
  *  - Social Media Profile links and 1-Click Page Share bar
  *
  * Every section respects its On/Off switch in Atlas\Contact_Settings.
@@ -166,15 +167,7 @@ $atlas_recipient     = \Atlas\Contact_Settings::filter_recipient_email( get_opti
 			<!-- /wp:heading -->
 
 			<!-- wp:html -->
-			<div class="atlas-map-wrapper">
-				<iframe
-					src="<?php echo esc_url( $atlas_map_url ); ?>"
-					title="<?php echo esc_attr__( 'Office location on Google Maps', 'atlas-theme' ); ?>"
-					loading="lazy"
-					referrerpolicy="no-referrer-when-downgrade"
-					allowfullscreen
-				></iframe>
-			</div>
+			<?php echo \Atlas\Contact_Settings::render_map( $atlas_map_url ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside render_map(). ?>
 			<!-- /wp:html -->
 		</section>
 		<!-- /wp:group -->

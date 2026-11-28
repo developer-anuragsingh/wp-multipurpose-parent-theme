@@ -293,6 +293,12 @@ if ( ! function_exists( 'get_bloginfo' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_unique_id' ) ) {
+	function wp_unique_id( $prefix = '' ) {
+		static $id = 0;
+		return $prefix . (string) ++$id;
+	}
+}
 if ( ! function_exists( 'wp_parse_url' ) ) {
 	function wp_parse_url( $url, $component = -1 ) {
 		return parse_url( $url, $component );

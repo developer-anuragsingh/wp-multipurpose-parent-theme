@@ -31,6 +31,18 @@ class Test_Templates_And_Patterns extends WP_UnitTestCase {
 		}
 	}
 
+	public function test_the_contact_page_map_is_click_to_load(): void {
+		$html = do_blocks( '<!-- wp:pattern {"slug":"atlas/contact-page"} /-->' );
+		$this->assertStringContainsString( 'data-wp-interactive="atlas/map"', $html, 'The map section is missing (it is on by default).' );
+		$this->assertStringNotContainsString( '<iframe', $html, 'A Google iframe in the server HTML loads before consent.' );
+		$this->assertMatchesRegularExpression( '#<a class="atlas-map__link" href="https://www\.google\.com/maps/search/\?api=1&\#038;query=#', $html );
+		// The registry caches pattern content per request, so check the switch
+		// through the same calls the pattern makes.
+		update_option( \Atlas\Contact_Settings::OPT_SHOW_MAP, '0' );
+		$off = \Atlas\Contact_Settings::render_map( \Atlas\Contact_Settings::get_map_embed_url() );
+		delete_option( \Atlas\Contact_Settings::OPT_SHOW_MAP );
+		$this->assertSame( '', $off, 'The map renders although its switch is off.' );
+	}
 	public function test_the_contact_pattern_ships_a_valid_form_token_and_no_nonce(): void {
 		$html = WP_Block_Patterns_Registry::get_instance()->get_registered( 'atlas/contact-form' )['content'];
 

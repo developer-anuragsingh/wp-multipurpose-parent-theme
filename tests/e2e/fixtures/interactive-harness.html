@@ -90,6 +90,11 @@
 			</blockquote>
 		</section>
 
+		<!-- 2b. Click-to-load map: exact output of Atlas\Contact_Settings::render_map() (tests/test-fixtures.php checks drift). -->
+		<section>
+			<h2>Our location</h2>
+			<div class="atlas-map-wrapper atlas-map" data-wp-interactive="atlas/map" data-wp-context="{&quot;loaded&quot;:false,&quot;src&quot;:&quot;https:\/\/maps.google.com\/maps?q=28.6139%2C77.2090&amp;z=15&amp;output=embed&quot;,&quot;title&quot;:&quot;Office location on Google Maps&quot;}"><div class="atlas-map__frame" data-wp-watch="callbacks.renderFrame"></div><div class="atlas-map__consent" data-wp-bind--hidden="context.loaded"><span class="atlas-map__icon" aria-hidden="true"><svg class="atlas-icon atlas-icon--map-pin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><p class="atlas-map__notice" id="atlas-map-notice-1">The map is provided by Google. Showing it sends your IP address to Google, which may also set cookies.</p><div class="atlas-map__actions"><button type="button" class="wp-element-button atlas-map__show" hidden aria-describedby="atlas-map-notice-1" data-wp-init="callbacks.revealButton" data-wp-on--click="actions.load">Show map</button><a class="atlas-map__link" href="https://www.google.com/maps/search/?api=1&amp;query=28.6139%2C77.2090" target="_blank" rel="noopener noreferrer">Open in Google Maps<span class="screen-reader-text"> (opens in a new tab)</span></a></div></div></div>
+		</section>
 		<!-- 3. Contact Form Section -->
 		<section style="margin-top: 3rem;">
 			<h2>Contact Us</h2>
@@ -127,6 +132,7 @@
 	<script type="module" src="/theme/build/navigation.js"></script>
 	<script type="module" src="/theme/build/theme-mode.js"></script>
 	<script type="module" src="/theme/build/copy.js"></script>
+	<script type="module" src="/theme/build/map.js"></script>
 
 	<!-- Contact form client-side validator -->
 	<script>
