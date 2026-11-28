@@ -17,13 +17,13 @@
     "test:e2e:live": "LIVE_BASE_URL=http://localhost:8885 playwright test tests/e2e/live-site.spec.js"
   },
   "devDependencies": {
-    "@axe-core/playwright": "4.14.0",
+    "@axe-core/playwright": "4.14.1",
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
     "@playwright/test": "^1.65.1",
-    "@wordpress/scripts": "^37.1.0",
+    "@wordpress/scripts": "^37.2.0",
     "husky": "^9.1.7",
-    "lint-staged": "^17.6.1"
+    "lint-staged": "^17.6.2"
   },
   "lint-staged": {
     "theme/**/*.php": "vendor/bin/phpcs --standard=.phpcs.xml.dist",
